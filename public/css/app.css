@@ -1,0 +1,45 @@
+.bg-body-primary{
+    background-color: #F9F9F9 !important;
+}
+
+.bg-utama1{
+    background-color: #2C3137 !important;
+}
+
+.bg-utama2{
+    background-color: #1C88D3 !important;
+}
+.text-hitam{
+    color: #202020 !important;
+}
+.text-putih{
+    color: #fdfdfd !important;
+}
+
+.bg-button-add-primary{
+    background-color: #1C88D3 !important;
+    color: #ffffff !important;
+}
+.bg-button-edit-primary{
+    background-color: #ffc107 !important;
+    color: #343a40 !important;
+}
+.bg-button-delete-primary{
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+.bg-button-cancel-primary{
+    background-color: #6c757d !important;
+    color: #ffffff !important;
+}
+
+/* Efek hover untuk link navigasi sidebar */
+.bg-utama1 .nav-link.text-putih:not(.bg-utama2):hover {
+    background-color: #202020 !important; /* Ini adalah warna .bg-utama2 Anda */
+    /* Warna teks tidak perlu diubah karena sudah .text-putih */
+}
+/* Efek hover untuk link logout (merah) */
+.bg-utama1 .nav-link.text-danger:hover {
+    background-color: #dc3545 !important; /* Warna dari .bg-button-delete-primary */
+    color: #ffffff !important; /* Ubah teksnya jadi putih */
+}

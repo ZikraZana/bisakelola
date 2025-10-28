@@ -20,6 +20,7 @@
     background-color: #1C88D3 !important;
     color: #ffffff !important;
 }
+
 .bg-button-edit-primary{
     background-color: #ffc107 !important;
     color: #343a40 !important;
@@ -34,10 +35,17 @@
 }
 
 /* Efek hover untuk link navigasi sidebar */
+.bg-button-add-primary:hover {
+    opacity: 0.9;
+    transition: opacity 0.5s ease;
+}
+
+/* Efek hover untuk link navigasi sidebar */
 .bg-utama1 .nav-link.text-putih:not(.bg-utama2):hover {
     background-color: #202020 !important; /* Ini adalah warna .bg-utama2 Anda */
     /* Warna teks tidak perlu diubah karena sudah .text-putih */
 }
+
 /* Efek hover untuk link logout (merah) */
 .bg-utama1 .nav-link.text-danger:hover {
     background-color: #dc3545 !important; /* Warna dari .bg-button-delete-primary */

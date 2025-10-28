@@ -50,10 +50,13 @@
                 <hr>
                 <ul class="nav nav-pills flex-column">
                     <li>
-                        <a href="#" class="nav-link text-danger ">
-                            <i class="bi bi-box-arrow-left me-2"></i>
-                            Logout
-                        </a>
+                        <form action="{{route('logout')}}" method="POST" class="w-100">
+                            @csrf
+                            <button type="submit" class="nav-link text-danger w-100 text-start">
+                                <i class="bi bi-box-arrow-left me-2"></i>
+                                Logout
+                            </button>
+                        </form>
                     </li>
                 </ul>
             </div>

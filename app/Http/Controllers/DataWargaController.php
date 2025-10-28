@@ -38,4 +38,23 @@ class DataWargaController extends Controller
         return view('__simulasi_aja__.form_edit.index', compact('data_warga'));
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'no_kk' => 'required|string|max:255',
+            'nama_kepala_keluarga' => 'required|string|max:255',
+            'nik_kepala_keluarga' => 'required|string|max:255',
+        ]);
+
+        $data_warga = DataWarga::findOrFail($id);
+        $data_warga->update([
+            'no_kk' => $request->no_kk,
+            'nama_kepala_keluarga' => $request->nama_kepala_keluarga,
+            'nik_kepala_keluarga' => $request->nik_kepala_keluarga,
+        ]);
+
+        // Redirect kembali ke halaman data warga dengan pesan sukses
+        return redirect()->route('data_warga.index')->with('success', 'Data warga berhasil diperbarui.');
+    }
+
 }

@@ -14,7 +14,7 @@
             <form action="{{route('data_warga.index')}}" method="GET" style="display: inline;">
                 <button>Back</button>
             </form>
-            <form action="" method="POST">
+            <form action="{{route('data_warga.update', $data_warga->id)}}" method="POST">
                 @csrf
                 <div class="mb-3">
                     <label for="nama_kepala_keluarga" class="form-label">Nama Kepala Keluarga</label>

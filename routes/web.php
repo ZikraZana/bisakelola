@@ -20,4 +20,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard.index');
     })->name('dashboard');
+
+    
+
+    //=============== Dibawah Ini Simulasi Aja, JANGAN DIHAPUS ===============//
+
+    // Route::get('/data_warga', [App\Http\Controllers\DataWargaController::class, 'index'])->name('data_warga.index');
+
+    // Route::get('/form_tambah', function () {
+    //     return view('__simulasi_aja__.form_tambah.index');
+    // })->name('form_tambah.index');
+
+    // Route::post('/data_warga/store', [App\Http\Controllers\DataWargaController::class, 'store'])->name('data_warga.store');
+    // Route::post('/data_warga/edit/{id}', [App\Http\Controllers\DataWargaController::class, 'edit'])->name('data_warga.edit');
+
 });

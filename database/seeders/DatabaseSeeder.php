@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             adminSeeder::class,
+            BlokSeeder::class,
+            DesilSeeder::class,
         ]);
     }
 }

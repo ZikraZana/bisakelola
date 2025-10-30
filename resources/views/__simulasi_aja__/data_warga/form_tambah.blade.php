@@ -16,12 +16,29 @@
                     <div class="card-header">
                         <h4 class="card-title">Tambah Data Warga</h4>
                     </div>
-                    <form action="" method="POST">
+                    {{-- TAMBAHKAN KODE INI --}}
+                    @if ($errors->any())
+                        <div class="alert alert-danger m-3">
+                            <strong>Whoops!</strong> Ada masalah dengan input Anda.<br><br>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    @if (session('error'))
+                        <div class="alert alert-danger m-3">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+                    {{-- AKHIR KODE TAMBAHAN --}}
+                    <form action="{{ route('data_warga.store') }}" method="POST">
                         <div class="card-body">
                             @csrf
                             <div class="form-group">
                                 <label for="no_kk">Nomor KK</label>
-                                <input type="text" class="form-control" id="no_kk" name="no_kk" required>
+                                <input type="number" class="form-control" id="no_kk" name="no_kk" required>
                             </div>
                             <div class="form-group">
                                 <label for="blok">Blok</label>
@@ -29,7 +46,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="desil">Desil</label>
-                                <input type="text" class="form-control" id="desil" name="desil" required>
+                                <input type="number" class="form-control" id="desil" name="desil" required>
                             </div>
                             <div class="form-group">
                                 <label for="jumlah">Jumlah Anggota Keluarga</label>
@@ -49,7 +66,7 @@
                                         <div class="form-row">
                                             <div class="form-group col-md-4">
                                                 <label for="nik_anggota_0">NIK Anggota</label>
-                                                <input type="text" class="form-control" id="nik_anggota_0"
+                                                <input type="number" class="form-control" id="nik_anggota_0"
                                                     name="anggota_keluarga[0][nik]" required>
                                             </div>
                                             <div class="form-group col-md-4">
@@ -90,12 +107,11 @@
                                                     name="anggota_keluarga[0][agama]" required>
                                                     <option value="">Pilih Agama</option>
                                                     <option value="Islam">Islam</option>
-                                                    <option value="Kristen Protestan">Kristen Protestan</option>
-                                                    <option value="Kristen Katolik">Kristen Katolik</option>
+                                                    <option value="Kristen">Kristen</option>
+                                                    <option value="Katolik">Katolik</option>
                                                     <option value="Hindu">Hindu</option>
                                                     <option value="Buddha">Buddha</option>
-                                                    <option value="Konghucu">Konghucu</option>
-                                                    <option value="Lainnya">Lainnya</option>
+                                                    <option value="Konghuchu">Konghucu</option>
                                                 </select>
                                             </div>
                                             <div class="form-group col-md-4">
@@ -105,8 +121,7 @@
                                                     <option value="">Pilih Status Perkawinan</option>
                                                     <option value="Belum Kawin">Belum Kawin</option>
                                                     <option value="Kawin">Kawin</option>
-                                                    <option value="Cerai Hidup">Cerai Hidup</option>
-                                                    <option value="Cerai Mati">Cerai Mati</option>
+                                                    <option value="Cerai">Cerai</option>
                                                 </select>
                                             </div>
                                             <div class="form-group col-md-4">
@@ -117,11 +132,6 @@
                                                     <option value="Kepala Keluarga">Kepala Keluarga</option>
                                                     <option value="Istri">Istri</option>
                                                     <option value="Anak">Anak</option>
-                                                    <option value="Orang Tua">Orang Tua</option>
-                                                    <option value="Menantu">Menantu</option>
-                                                    <option value="Cucu">Cucu</option>
-                                                    <option value="Famili Lain">Famili Lain</option>
-                                                    <option value="Lainnya">Lainnya</option>
                                                 </select>
                                             </div>
                                             <div class="form-group col-md-4">
@@ -184,7 +194,7 @@
         </div>
     </div>
 
-    
+
 @endsection
 @push('scripts')
     <script>

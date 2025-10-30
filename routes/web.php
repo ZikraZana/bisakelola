@@ -22,11 +22,27 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard.index');
     })->name('dashboard');
-    
-    Route::get('/data_warga', function () {
-        return view('__simulasi_aja__.data_warga.index');
-    })->name('data_warga.index');
 
-    Route::get('/data_warga/tambah_data', [DataKeluargaController::class, 'formTambah'])->name('data_warga.tambah');
+
+    Route::prefix('data-warga')->name('data_warga.')->group(function () {
+        // GET /data-warga (Menampilkan semua data)
+        Route::get('/', [DataKeluargaController::class, 'index'])->name('index');
+
+        // GET /data-warga/tambah (Menampilkan form tambah)
+        Route::get('/tambah_data', [DataKeluargaController::class, 'formTambah'])->name('tambah');
+
+        // POST /data-warga (Menyimpan data baru)
+        Route::post('/', [DataKeluargaController::class, 'store'])->name('store');
+
+        // GET /data-warga/{id_keluarga}/edit (Menampilkan form edit)
+        Route::get('/{dataKeluarga:id_keluarga}/edit', [DataKeluargaController::class, 'edit'])->name('edit');
+
+        // PUT/PATCH /data-warga/{id_keluarga} (Mengupdate data)
+        Route::put('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'update'])->name('update');
+
+        // DELETE /data-warga/{id_keluarga} (Menghapus data)
+        Route::delete('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'destroy'])->name('destroy');
+    });
+
     
 });

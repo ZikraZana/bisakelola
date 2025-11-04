@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_anggota');
             $table->foreignId('id_keluarga')->constrained('data_keluarga', 'id_keluarga')->onDelete('cascade');
 
-            $table->string('nik_anggota');
+            $table->string('nik_anggota')->unique();
             $table->string('nama_lengkap');
             $table->string('tempat_lahir');
             $table->string('tanggal_lahir');

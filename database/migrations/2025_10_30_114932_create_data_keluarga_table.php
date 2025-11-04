@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('data_keluarga', function (Blueprint $table) {
             $table->id('id_keluarga');
-            $table->string('no_kk');
+            $table->string('no_kk')->unique();
 
             // foreign key
             $table->foreignId('id_blok')->constrained('blok', 'id_blok');

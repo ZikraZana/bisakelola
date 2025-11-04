@@ -30,20 +30,71 @@ class DataKeluargaController extends Controller
     {
         // 1. Validasi Data
         $validator = Validator::make($request->all(), [
-            'no_kk' => 'required|int',
-            'blok' => 'required|string|max:100', // Validasi nama blok
-            'desil' => 'required|int', // Validasi nama desil
-            'anggota_keluarga' => 'required|array|min:1',
-            'anggota_keluarga.*.nik' => 'required|string|max:255',
+            'no_kk' => 'required|numeric|unique:data_keluarga,no_kk',
+            'blok' => 'required|string|max:15',
+            'desil' => 'required|numeric|exists:desil,tingkat_desil',
+            
+            'anggota_keluarga' => [
+                'required',
+                'array',
+                'min:1',
+                // Aturan kustom untuk mengecek minimal satu Kepala Keluarga
+                function ($attribute, $value, $fail) {
+                    // $value adalah seluruh array 'anggota_keluarga'
+                    $hasKepalaKeluarga = collect($value)
+                        ->where('status_dalam_keluarga', 'Kepala Keluarga')
+                        ->isNotEmpty(); // true jika ada minimal 1
+
+                    if (!$hasKepalaKeluarga) {
+                        // Jika tidak ada, gagalkan validasi dengan pesan kustom
+                        $fail('Harus ada setidaknya satu anggota keluarga dengan status "Kepala Keluarga".');
+                    }
+                },
+            ],
+
+            'anggota_keluarga.*.nik' => 'required|numeric|distinct|unique:data_anggota_keluarga,nik_anggota', // Ditambah 'distinct'
             'anggota_keluarga.*.nama' => 'required|string|max:255',
             'anggota_keluarga.*.tempat_lahir' => 'required|string|max:100',
             'anggota_keluarga.*.tanggal_lahir' => 'required|date',
             'anggota_keluarga.*.jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'anggota_keluarga.*.agama' => 'required|string',
-            'anggota_keluarga.*.status_perkawinan' => 'required|string',
-            'anggota_keluarga.*.status_dalam_keluarga' => 'required|string',
+            'anggota_keluarga.*.agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghuchu',
+            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai',
+            'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Istri,Anak',
             'anggota_keluarga.*.pendidikan' => 'required|string',
             'anggota_keluarga.*.pekerjaan' => 'required|string',
+        ], [
+            'no_kk.required' => 'Nomor Kartu Keluarga wajib diisi.',
+            'no_kk.numeric' => 'Nomor Kartu Keluarga harus berupa angka.',
+            'no_kk.unique' => 'Nomor Kartu Keluarga sudah terdaftar.',
+            'blok.required' => 'Blok wajib diisi.',
+            'blok.string' => 'Blok harus berupa teks.',
+            'blok.max' => 'Blok tidak boleh lebih dari :max karakter.',
+            'desil.required' => 'Desil wajib diisi.',
+            'desil.numeric' => 'Desil harus berupa angka.',
+            'desil.exists' => 'Desil tidak valid.',
+            'anggota_keluarga.required' => 'Minimal harus ada satu anggota keluarga.',
+            'anggota_keluarga.array' => 'Data anggota keluarga tidak valid.',
+            'anggota_keluarga.min' => 'Minimal harus ada satu anggota keluarga.',
+            'anggota_keluarga.*.nik.required' => 'NIK anggota keluarga wajib diisi.',
+            'anggota_keluarga.*.nik.numeric' => 'NIK anggota keluarga harus berupa angka.',
+            'anggota_keluarga.*.nik.distinct' => 'NIK anggota keluarga tidak boleh sama dalam satu form.', // Pesan u/ distinct
+            'anggota_keluarga.*.nik.unique' => 'NIK anggota keluarga sudah terdaftar.',
+            'anggota_keluarga.*.nama.required' => 'Nama lengkap anggota keluarga wajib diisi.',
+            'anggota_keluarga.*.nama.max' => 'Nama lengkap anggota keluarga tidak boleh lebih dari :max karakter.',
+            'anggota_keluarga.*.tempat_lahir.required' => 'Tempat lahir anggota keluarga wajib diisi.',
+            'anggota_keluarga.*.tempat_lahir.max' => 'Tempat lahir anggota keluarga tidak boleh lebih dari :max karakter.',
+            'anggota_keluarga.*.tanggal_lahir.required' => 'Tanggal lahir anggota keluarga wajib diisi.',
+            'anggota_keluarga.*.tanggal_lahir.date' => 'Tanggal lahir anggota keluarga harus berupa tanggal yang valid.',
+            'anggota_keluarga.*.jenis_kelamin.required' => 'Jenis kelamin anggota keluarga wajib dipilih.',
+            'anggota_keluarga.*.jenis_kelamin.in' => 'Jenis kelamin anggota keluarga tidak valid.',
+            'anggota_keluarga.*.agama.required' => 'Agama anggota keluarga wajib dipilih.',
+            'anggota_keluarga.*.agama.in' => 'Agama anggota keluarga tidak valid.',
+            'anggota_keluarga.*.status_perkawinan.required' => 'Status perkawinan anggota keluarga wajib dipilih.',
+            'anggota_keluarga.*.status_perkawinan.in' => 'Status perkawinan anggota keluarga tidak valid.',
+            'anggota_keluarga.*.status_dalam_keluarga.required' => 'Status dalam keluarga wajib dipilih.',
+            'anggota_keluarga.*.status_dalam_keluarga.in' => 'Status dalam keluarga tidak valid.',
+            'anggota_keluarga.*.pendidikan.required' => 'Pendidikan anggota keluarga wajib diisi.',
+            'anggota_keluarga.*.pekerjaan.required' => 'Pekerjaan anggota keluarga wajib diisi.',
         ]);
 
         if ($validator->fails()) {
@@ -56,12 +107,11 @@ class DataKeluargaController extends Controller
         DB::beginTransaction();
         try {
             // 3. Handle Blok dan Desil (Gunakan firstOrCreate)
-            // Asumsi Model Blok punya kolom 'nama_blok' dan Desil punya 'tingkat_desil'
             $blok = Blok::firstOrCreate(
-                ['nama_blok' => $request->blok], // Sesuaikan 'nama_blok'
+                ['nama_blok' => $request->blok],
             );
             $desil = Desil::firstOrCreate(
-                ['tingkat_desil' => $request->desil] // Sesuaikan 'tingkat_desil'
+                ['tingkat_desil' => $request->desil]
             );
 
             // 4. Simpan DataKeluarga
@@ -124,35 +174,70 @@ class DataKeluargaController extends Controller
      */
     public function update(Request $request, DataKeluarga $dataKeluarga)
     {
-        // 1. Validasi Data (Mirip 'store', tapi dengan 'ignore' untuk data unik)
+        // 1. Validasi Data
         $validator = Validator::make($request->all(), [
-            'no_kk' => [
+            'no_kk' => ['required', 'numeric', Rule::unique('data_keluarga', 'no_kk')->ignore($dataKeluarga->id_keluarga, 'id_keluarga')],
+            'blok' => 'required|string|max:255', 
+            'desil' => 'required|numeric|exists:desil,tingkat_desil',
+
+            // --- INI PERBAIKAN UNTUK METHOD UPDATE ---
+            'anggota_keluarga' => [
                 'required',
-                'int', // Sesuai 'store' Anda
-                Rule::unique('data_keluarga', 'no_kk')->ignore($dataKeluarga->id_keluarga, 'id_keluarga')
+                'array',
+                'min:1',
+                // Aturan kustom untuk mengecek minimal satu Kepala Keluarga
+                function ($attribute, $value, $fail) {
+                    $hasKepalaKeluarga = collect($value)
+                        ->where('status_dalam_keluarga', 'Kepala Keluarga')
+                        ->isNotEmpty(); 
+                    if (!$hasKepalaKeluarga) {
+                        $fail('Harus ada setidaknya satu anggota keluarga dengan status "Kepala Keluarga".');
+                    }
+                },
             ],
-            'blok' => 'required|string|max:100',
-            'desil' => 'required|int', // Sesuai 'store' Anda
-            'anggota_keluarga' => 'required|array|min:1',
+            // --- AKHIR PERBAIKAN ---
+
             'anggota_keluarga.*.nik' => [
                 'required',
-                'string', // Sesuai 'store' Anda
-                'max:255',
-                // Pastikan NIK unik, tapi abaikan NIK milik anggota dari keluarga ini
-                // (Karena kita akan hapus-dan-buat-ulang)
-                Rule::unique('data_anggota_keluarga', 'nik_anggota')->where(function ($query) use ($dataKeluarga) {
-                    return $query->where('id_keluarga', '!=', $dataKeluarga->id_keluarga);
-                })
+                'numeric',
+                'distinct', // Pastikan NIK unik di dalam form
+                Rule::unique('data_anggota_keluarga', 'nik_anggota')
+                    ->where(function ($query) use ($dataKeluarga) {
+                        // Cek NIK unik, TAPI abaikan NIK yang dimiliki oleh anggota keluarga ini
+                        return $query->where('id_keluarga', '!=', $dataKeluarga->id_keluarga);
+                    })
             ],
             'anggota_keluarga.*.nama' => 'required|string|max:255',
             'anggota_keluarga.*.tempat_lahir' => 'required|string|max:100',
             'anggota_keluarga.*.tanggal_lahir' => 'required|date',
             'anggota_keluarga.*.jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'anggota_keluarga.*.agama' => 'required|string',
-            'anggota_keluarga.*.status_perkawinan' => 'required|string',
-            'anggota_keluarga.*.status_dalam_keluarga' => 'required|string',
+            'anggota_keluarga.*.agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghuchu',
+            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai',
+            'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Istri,Anak',
             'anggota_keluarga.*.pendidikan' => 'required|string',
             'anggota_keluarga.*.pekerjaan' => 'required|string',
+        ], [
+            'no_kk.required' => 'Nomor Kartu Keluarga wajib diisi.',
+            'no_kk.numeric' => 'Nomor Kartu Keluarga harus berupa angka.',
+            'no_kk.unique' => 'Nomor Kartu Keluarga sudah terdaftar untuk keluarga lain.',
+            'blok.required' => 'Blok wajib diisi.',
+            'blok.string' => 'Blok harus berupa teks.',
+            'blok.max' => 'Blok tidak boleh lebih dari :max karakter.',
+            'desil.required' => 'Desil wajib diisi.',
+            'desil.numeric' => 'Desil harus berupa angka.',
+            'desil.exists' => 'Desil tidak valid.',
+            'anggota_keluarga.required' => 'Minimal harus ada satu anggota keluarga.',
+            'anggota_keluarga.array' => 'Data anggota keluarga tidak valid.',
+            'anggota_keluarga.min' => 'Minimal harus ada satu anggota keluarga.',
+            'anggota_keluarga.*.nik.required' => 'NIK anggota keluarga wajib diisi.',
+            'anggota_keluarga.*.nik.numeric' => 'NIK anggota keluarga harus berupa angka.',
+            'anggota_keluarga.*.nik.distinct' => 'NIK anggota keluarga tidak boleh sama dalam satu form.',
+            'anggota_keluarga.*.nik.unique' => 'NIK anggota keluarga sudah terdaftar untuk anggota keluarga lain.',
+            'anggota_keluarga.*.nama.required' => 'Nama lengkap anggota keluarga wajib diisi.',
+            'anggota_keluarga.*.status_dalam_keluarga.required' => 'Status dalam keluarga wajib dipilih.',
+            'anggota_keluarga.*.status_dalam_keluarga.in' => 'Status dalam keluarga tidak valid.',
+            'anggota_keluarga.*.pendidikan.required' => 'Pendidikan anggota keluarga wajib diisi.',
+            'anggota_keluarga.*.pekerjaan.required' => 'Pekerjaan anggota keluarga wajib diisi.',
         ]);
 
         if ($validator->fails()) {
@@ -180,7 +265,6 @@ class DataKeluargaController extends Controller
             ]);
 
             // 5. Update AnggotaKeluarga (Metode: Hapus & Buat Ulang)
-            // Ini adalah cara paling sederhana untuk form dinamis
             $dataKeluarga->anggotaKeluarga()->delete();
 
             // Loop dan buat ulang anggota keluarga

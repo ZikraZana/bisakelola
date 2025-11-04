@@ -15,7 +15,8 @@ class DataKeluargaController extends Controller
 {
     public function index()
     {
-        $dataKeluarga = DataKeluarga::all();
+        
+        $dataKeluarga = DataKeluarga::with('anggotaKeluarga', 'blok', 'desil')->get();
 
         return view('__simulasi_aja__.data_warga.index', compact('dataKeluarga'));
     }
@@ -33,7 +34,7 @@ class DataKeluargaController extends Controller
             'no_kk' => 'required|numeric|unique:data_keluarga,no_kk',
             'blok' => 'required|string|max:15',
             'desil' => 'required|numeric|exists:desil,tingkat_desil',
-            
+
             'anggota_keluarga' => [
                 'required',
                 'array',
@@ -177,7 +178,7 @@ class DataKeluargaController extends Controller
         // 1. Validasi Data
         $validator = Validator::make($request->all(), [
             'no_kk' => ['required', 'numeric', Rule::unique('data_keluarga', 'no_kk')->ignore($dataKeluarga->id_keluarga, 'id_keluarga')],
-            'blok' => 'required|string|max:255', 
+            'blok' => 'required|string|max:255',
             'desil' => 'required|numeric|exists:desil,tingkat_desil',
 
             // --- INI PERBAIKAN UNTUK METHOD UPDATE ---
@@ -189,7 +190,7 @@ class DataKeluargaController extends Controller
                 function ($attribute, $value, $fail) {
                     $hasKepalaKeluarga = collect($value)
                         ->where('status_dalam_keluarga', 'Kepala Keluarga')
-                        ->isNotEmpty(); 
+                        ->isNotEmpty();
                     if (!$hasKepalaKeluarga) {
                         $fail('Harus ada setidaknya satu anggota keluarga dengan status "Kepala Keluarga".');
                     }

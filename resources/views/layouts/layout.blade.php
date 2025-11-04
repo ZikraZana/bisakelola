@@ -50,7 +50,7 @@
                 <hr>
                 <ul class="nav nav-pills flex-column">
                     <li>
-                        <form action="{{route('logout')}}" method="POST" class="w-100">
+                        <form action="{{ route('logout') }}" method="POST" class="w-100">
                             @csrf
                             <button type="submit" class="nav-link text-danger w-100 text-start">
                                 <i class="bi bi-box-arrow-left me-2"></i>
@@ -78,8 +78,8 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
     </script>
     @stack('scripts')
 </body>

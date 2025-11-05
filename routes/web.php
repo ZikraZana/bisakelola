@@ -24,25 +24,27 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 
 
-    Route::prefix('data-warga')->name('data_warga.')->group(function () {
-        // GET /data-warga (Menampilkan semua data)
-        Route::get('/', [DataKeluargaController::class, 'index'])->name('index');
 
-        // GET /data-warga/tambah (Menampilkan form tambah)
-        Route::get('/tambah_data', [DataKeluargaController::class, 'formTambah'])->name('tambah');
+    //========================= INI AREA SIMULASI BACKEND, JANGAN DIHAPUS ATAUPUN DIUBAH YAAA =========================//
+    // Route::prefix('data-warga')->name('data_warga.')->group(function () {
+    //     // GET /data-warga (Menampilkan semua data)
+    //     Route::get('/', [DataKeluargaController::class, 'index'])->name('index');
 
-        // POST /data-warga (Menyimpan data baru)
-        Route::post('/', [DataKeluargaController::class, 'store'])->name('store');
+    //     // GET /data-warga/tambah (Menampilkan form tambah)
+    //     Route::get('/tambah_data', [DataKeluargaController::class, 'formTambah'])->name('tambah');
 
-        // GET /data-warga/{id_keluarga}/edit (Menampilkan form edit)
-        Route::get('/{dataKeluarga:id_keluarga}/edit', [DataKeluargaController::class, 'edit'])->name('edit');
+    //     // POST /data-warga (Menyimpan data baru)
+    //     Route::post('/', [DataKeluargaController::class, 'store'])->name('store');
 
-        // PUT/PATCH /data-warga/{id_keluarga} (Mengupdate data)
-        Route::put('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'update'])->name('update');
+    //     // GET /data-warga/{id_keluarga}/edit (Menampilkan form edit)
+    //     Route::get('/{dataKeluarga:id_keluarga}/edit', [DataKeluargaController::class, 'edit'])->name('edit');
 
-        // DELETE /data-warga/{id_keluarga} (Menghapus data)
-        Route::delete('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'destroy'])->name('destroy');
-    });
+    //     // PUT/PATCH /data-warga/{id_keluarga} (Mengupdate data)
+    //     Route::put('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'update'])->name('update');
+
+    //     // DELETE /data-warga/{id_keluarga} (Menghapus data)
+    //     Route::delete('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'destroy'])->name('destroy');
+    // });
 
     
 });

@@ -40,13 +40,13 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('data_warga.index') }}" class="nav-link text-putih">
+                        <a href="/data-warga" class="nav-link text-putih">
                             <i class="bi bi-people-fill me-2"></i>
                             Daftar Warga
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link text-putih">
+                        <a href="/penerima-bansos" class="nav-link text-putih">
                             <i class="bi bi-gift-fill me-2"></i>
                             Penerima Bansos
                         </a>

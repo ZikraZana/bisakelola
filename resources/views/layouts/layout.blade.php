@@ -8,8 +8,13 @@
 
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+
+    <link href="{{ asset('bootstrap-5.3.8-dist/css/bootstrap.min.css') }}" rel="stylesheet" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -24,18 +29,18 @@
                 style="width: 280px; position: fixed; left: 0; top: 0; bottom: 0; overflow: auto; z-index: 1030;">
                 <a href="/"
                     class="d-flex justify-content-center align-items-center mb-3 mb-md-0 text-putih text-decoration-none">
-                    <span class="fs-4 fw-bold">BISAKELOLA</span>
+                    <span style="font-family: 'Roboto+Slab'; font-weight: 600; font-size: 24px;">BISAKELOLA</span>
                 </a>
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li class="nav-item">
-                        <a href="#" class="nav-link bg-utama2 text-putih" aria-current="page">
+                        <a href="/dashboard" class="nav-link bg-utama2 text-putih" aria-current="page">
                             <i class="bi bi-house-door-fill me-2"></i>
                             Dashboard
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link text-putih">
+                        <a href="{{ route('data_warga.index') }}" class="nav-link text-putih">
                             <i class="bi bi-people-fill me-2"></i>
                             Daftar Warga
                         </a>

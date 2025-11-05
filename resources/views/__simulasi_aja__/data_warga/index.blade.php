@@ -66,7 +66,7 @@
                                                 <a href="{{ route('data_warga.edit', $keluarga->id_keluarga) }}"
                                                     class="btn btn-warning btn-sm">Edit</a>
 
-                                                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                                     data-bs-target="#detailModal" data-nokk="{{ $keluarga->no_kk }}"
                                                     data-kepala="{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}"
                                                     data-blok="{{ $keluarga->blok?->nama_blok ?? 'N/A' }}"
@@ -188,7 +188,7 @@
                                 var date = new Date(dateString);
                                 var d = date.getDate().toString().padStart(2, '0');
                                 var m = (date.getMonth() + 1).toString().padStart(2,
-                                '0'); // Bulan mulai dari 0
+                                    '0'); // Bulan mulai dari 0
                                 var y = date.getFullYear();
                                 return d + '-' + m + '-' + y;
                             } catch (e) {

@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('username')->unique();
             $table->string('password');
+            $table->string('nama_lengkap');
+            $table->string('no_handphone');
             $table->string('role');
+            $table->string('blok')->nullable();
+            $table->string('bagian')->nullable();
             $table->timestamps();
         });
     }

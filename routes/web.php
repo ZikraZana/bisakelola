@@ -2,6 +2,7 @@
 
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DataKeluargaController;
 
@@ -36,26 +37,12 @@ Route::middleware('auth')->group(function () {
         Route::put('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'update'])->name('update');
     });
 
-    //========================= INI AREA SIMULASI BACKEND, JANGAN DIHAPUS ATAUPUN DIUBAH YAAA =========================//
-    // Route::prefix('data-warga')->name('data_warga.')->group(function () {
-    //     // GET /data-warga (Menampilkan semua data)
-    //     Route::get('/', [DataKeluargaController::class, 'index'])->name('index');
-
-    //     // GET /data-warga/tambah (Menampilkan form tambah)
-    //     Route::get('/tambah_data', [DataKeluargaController::class, 'formTambah'])->name('tambah');
-
-    //     // POST /data-warga (Menyimpan data baru)
-    //     Route::post('/', [DataKeluargaController::class, 'store'])->name('store');
-
-    //     // GET /data-warga/{id_keluarga}/edit (Menampilkan form edit)
-    //     Route::get('/{dataKeluarga:id_keluarga}/edit', [DataKeluargaController::class, 'edit'])->name('edit');
-
-    //     // PUT/PATCH /data-warga/{id_keluarga} (Mengupdate data)
-    //     Route::put('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'update'])->name('update');
-
-    //     // DELETE /data-warga/{id_keluarga} (Menghapus data)
-    //     Route::delete('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'destroy'])->name('destroy');
-    // });
+    // Akun Admin
+    Route::prefix('akun-admin')->name('akun-admin.')->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('index');
+        Route::get('/tambah-admin', [AdminController::class, 'formTambah'])->name('formTambah');
+        Route::post('/', [AdminController::class, 'store'])->name('store');
+    });
 
 
 });

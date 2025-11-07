@@ -54,6 +54,12 @@
                             Penerima Bansos
                         </a>
                     </li>
+                    <li>
+                        <a href="{{route('akun-admin.index')}}" class="nav-link text-putih {{ Request::routeIs('akun-admin.*') ? 'bg-utama2' : '' }}">
+                            <i class="bi bi-gift-fill me-2"></i>
+                            Akun Admin
+                        </a>
+                    </li>
                 </ul>
                 <hr>
                 <ul class="nav nav-pills flex-column">

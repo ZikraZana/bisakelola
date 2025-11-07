@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('desil', function (Blueprint $table) {
             $table->id('id_desil');
-            $table->integer('tingkat_desil');
+            $table->integer('tingkat_desil')->nullable();
             $table->timestamps();
         });
     }

@@ -34,13 +34,16 @@
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li class="nav-item">
-                        <a href="/dashboard" class="nav-link bg-utama2 text-putih" aria-current="page">
+                        <a href="{{ route('dashboard') }}"
+                            class="nav-link text-putih {{ Request::routeIs('dashboard') ? 'bg-utama2' : '' }}"
+                            aria-current="page">
                             <i class="bi bi-house-door-fill me-2"></i>
                             Dashboard
                         </a>
                     </li>
                     <li>
-                        <a href="/data-warga" class="nav-link text-putih">
+                        <a href="{{ route('data-warga.index') }}"
+                            class="nav-link text-putih {{ Request::routeIs('data-warga.*') ? 'bg-utama2' : '' }}">
                             <i class="bi bi-people-fill me-2"></i>
                             Daftar Warga
                         </a>

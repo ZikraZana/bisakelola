@@ -16,13 +16,16 @@ class BlokSeeder extends Seeder
         Blok::insert(
             [
                 [
-                    'nama_blok' => 'A',
+                    'nama_blok' => 'Lrg. Duren',
                 ],
                 [
-                    'nama_blok' => 'B',
+                    'nama_blok' => 'Makakau',
                 ],
                 [
-                    'nama_blok' => 'C',
+                    'nama_blok' => 'Matahari',
+                ],
+                [
+                    'nama_blok' => 'Lrg. Gardu'
                 ],
             ]
         );

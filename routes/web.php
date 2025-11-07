@@ -19,11 +19,22 @@ Route::middleware('guest')->group(function () {
 //========================= AREA Admins =========================//
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    // Dashboard
     Route::get('/dashboard', function () {
         return view('dashboard.index');
     })->name('dashboard');
 
 
+    // Data Warga
+    Route::prefix('data-warga')->name('data-warga.')->group(function () {
+        // GET /data-warga (Menampilkan semua data)
+        Route::get('/', [DataKeluargaController::class, 'index'])->name('index');
+        Route::get('/tambah-data', [DataKeluargaController::class, 'formTambah'])->name('formTambah');
+        Route::post('/', [DataKeluargaController::class, 'store'])->name('store');
+        Route::get('/{dataKeluarga:id_keluarga}/edit', [DataKeluargaController::class, 'formEdit'])->name('formEdit');
+        Route::put('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'update'])->name('update');
+    });
 
     //========================= INI AREA SIMULASI BACKEND, JANGAN DIHAPUS ATAUPUN DIUBAH YAAA =========================//
     // Route::prefix('data-warga')->name('data_warga.')->group(function () {
@@ -46,5 +57,5 @@ Route::middleware('auth')->group(function () {
     //     Route::delete('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'destroy'])->name('destroy');
     // });
 
-    
+
 });

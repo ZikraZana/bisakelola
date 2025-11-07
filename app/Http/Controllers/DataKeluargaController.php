@@ -18,13 +18,13 @@ class DataKeluargaController extends Controller
         
         $dataKeluarga = DataKeluarga::with('anggotaKeluarga', 'blok', 'desil')->get();
 
-        return view('__simulasi_aja__.data_warga.index', compact('dataKeluarga'));
+        return view('data-warga.index', compact('dataKeluarga'));
     }
 
 
     public function formTambah()
     {
-        return view('__simulasi_aja__.data_warga.form_tambah');
+        return view('data-warga.form-tambah');
     }
 
     public function store(Request $request)
@@ -32,8 +32,8 @@ class DataKeluargaController extends Controller
         // 1. Validasi Data
         $validator = Validator::make($request->all(), [
             'no_kk' => 'required|numeric|unique:data_keluarga,no_kk',
-            'blok' => 'required|string|max:15',
-            'desil' => 'required|numeric|exists:desil,tingkat_desil',
+            'blok' => 'required|string|exists:blok,nama_blok',
+            'desil' => 'nullable|exists:desil,tingkat_desil',
 
             'anggota_keluarga' => [
                 'required',
@@ -53,7 +53,7 @@ class DataKeluargaController extends Controller
                 },
             ],
 
-            'anggota_keluarga.*.nik' => 'required|numeric|distinct|unique:data_anggota_keluarga,nik_anggota', // Ditambah 'distinct'
+            'anggota_keluarga.*.nik' => 'required|numeric|distinct|unique:data_anggota_keluarga,nik_anggota',
             'anggota_keluarga.*.nama' => 'required|string|max:255',
             'anggota_keluarga.*.tempat_lahir' => 'required|string|max:100',
             'anggota_keluarga.*.tanggal_lahir' => 'required|date',
@@ -68,9 +68,7 @@ class DataKeluargaController extends Controller
             'no_kk.numeric' => 'Nomor Kartu Keluarga harus berupa angka.',
             'no_kk.unique' => 'Nomor Kartu Keluarga sudah terdaftar.',
             'blok.required' => 'Blok wajib diisi.',
-            'blok.string' => 'Blok harus berupa teks.',
-            'blok.max' => 'Blok tidak boleh lebih dari :max karakter.',
-            'desil.required' => 'Desil wajib diisi.',
+            'blok.exists' => 'Blok tidak valid.',
             'desil.numeric' => 'Desil harus berupa angka.',
             'desil.exists' => 'Desil tidak valid.',
             'anggota_keluarga.required' => 'Minimal harus ada satu anggota keluarga.',
@@ -99,7 +97,7 @@ class DataKeluargaController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('data_warga.tambah')
+            return redirect()->route('data-warga.formTambah')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -145,13 +143,13 @@ class DataKeluargaController extends Controller
             // 6. Commit Transaksi
             DB::commit();
 
-            return redirect()->route('data_warga.index')->with('success', 'Data keluarga berhasil ditambahkan.');
+            return redirect()->route('data-warga.index')->with('success', 'Data keluarga berhasil ditambahkan.');
         } catch (\Exception $e) {
             // 7. Rollback jika ada error
             DB::rollBack();
             Log::error('Error storing data warga: ' . $e->getMessage());
 
-            return redirect()->route('data_warga.tambah')
+            return redirect()->route('data-warga.formTambah')
                 ->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage())
                 ->withInput();
         }
@@ -161,13 +159,13 @@ class DataKeluargaController extends Controller
     /**
      * Menampilkan form untuk mengedit data
      */
-    public function edit(DataKeluarga $dataKeluarga)
+    public function formEdit(DataKeluarga $dataKeluarga)
     {
         // $dataKeluarga sudah otomatis didapatkan dari Route Model Binding
         // Kita load relasinya agar bisa ditampilkan di form edit
         $dataKeluarga->load('anggotaKeluarga', 'blok', 'desil');
 
-        return view('__simulasi_aja__.data_warga.form_edit', compact('dataKeluarga'));
+        return view('data-warga.form-edit', compact('dataKeluarga'));
     }
 
     /**
@@ -288,13 +286,13 @@ class DataKeluargaController extends Controller
             // 6. Commit Transaksi
             DB::commit();
 
-            return redirect()->route('data_warga.index')->with('success', 'Data keluarga berhasil diperbarui.');
+            return redirect()->route('data-warga.index')->with('success', 'Data keluarga berhasil diperbarui.');
         } catch (\Exception $e) {
             // 7. Rollback jika ada error
             DB::rollBack();
             Log::error('Error updating data warga: ' . $e->getMessage());
 
-            return redirect()->route('data_warga.edit', $dataKeluarga->id_keluarga)
+            return redirect()->route('data-warga.edit', $dataKeluarga->id_keluarga)
                 ->with('error', 'Terjadi kesalahan saat memperbarui data: ' . $e->getMessage())
                 ->withInput();
         }

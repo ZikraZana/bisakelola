@@ -13,9 +13,22 @@ class adminSeeder extends Seeder
      */
     public function run(): void
     {
-        Admin::create([
-            'username' => 'admin',
-            'password' => bcrypt('admin1234'),
+        Admin::insert([
+            [
+                'username' => 'ketuart',
+                'password' => bcrypt('ketuart1234'),
+                'role' => 'Ketua RT',
+            ],
+            [
+                'username' => 'ketuablok',
+                'password' => bcrypt('ketuablok1234'),
+                'role' => 'Ketua Blok',
+            ],
+            [
+                'username' => 'ketuabagian',
+                'password' => bcrypt('ketuabagian1234'),
+                'role' => 'Ketua Bagian',
+            ],
         ]);
     }
 }

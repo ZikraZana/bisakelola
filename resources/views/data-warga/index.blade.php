@@ -60,11 +60,14 @@
             </div>
 
             {{-- button Tambah Data --}}
-            <div>
-                <a href="{{ route('data-warga.formTambah') }}" class="btn btn-primary">
-                    Tambah Data
-                </a>
-            </div>
+
+            @if (Auth::user()->role === 'Ketua RT' || Auth::user()->role === 'Ketua Blok')
+                <div>
+                    <a href="{{ route('data-warga.formTambah') }}" class="btn btn-primary">
+                        Tambah Data
+                    </a>
+                </div>
+            @endif
         </div>
 
         {{-- Table --}}
@@ -98,9 +101,10 @@
                                 <td class="px-3">{{ $keluarga->blok?->nama_blok ?? 'N/A' }}</td>
                                 <td class="px-3">{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}</td>
                                 <td class="px-3">
-                                    <a href="{{ route('data-warga.formEdit', $keluarga->id_keluarga) }}"
-                                        class="btn btn-warning btn-sm">Edit</a>
-
+                                    @if (Auth::user()->role === 'Ketua RT' || Auth::user()->role === 'Ketua Blok')
+                                        <a href="{{ route('data-warga.formEdit', $keluarga->id_keluarga) }}"
+                                            class="btn btn-warning btn-sm">Edit</a>
+                                    @endif
                                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#detailModal" data-nokk="{{ $keluarga->no_kk }}"
                                         data-kepala="{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}"

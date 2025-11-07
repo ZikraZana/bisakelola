@@ -15,10 +15,12 @@ class DataKeluargaController extends Controller
 {
     public function index()
     {
-        
-        $dataKeluarga = DataKeluarga::with('anggotaKeluarga', 'blok', 'desil')->get();
 
-        return view('data-warga.index', compact('dataKeluarga'));
+        $dataKeluarga = DataKeluarga::with('anggotaKeluarga', 'blok', 'desil')->get(); 
+        $totalBlok = Blok::withCount('dataKeluarga') 
+            ->pluck('data_keluarga_count', 'nama_blok');
+
+        return view('data-warga.index', compact('dataKeluarga', 'totalBlok'));
     }
 
 
@@ -176,10 +178,9 @@ class DataKeluargaController extends Controller
         // 1. Validasi Data
         $validator = Validator::make($request->all(), [
             'no_kk' => ['required', 'numeric', Rule::unique('data_keluarga', 'no_kk')->ignore($dataKeluarga->id_keluarga, 'id_keluarga')],
-            'blok' => 'required|string|max:255',
-            'desil' => 'required|numeric|exists:desil,tingkat_desil',
+            'blok' => 'required|exists:blok,nama_blok',
+            'desil' => 'nullable|exists:desil,tingkat_desil',
 
-            // --- INI PERBAIKAN UNTUK METHOD UPDATE ---
             'anggota_keluarga' => [
                 'required',
                 'array',
@@ -194,12 +195,11 @@ class DataKeluargaController extends Controller
                     }
                 },
             ],
-            // --- AKHIR PERBAIKAN ---
 
             'anggota_keluarga.*.nik' => [
                 'required',
                 'numeric',
-                'distinct', // Pastikan NIK unik di dalam form
+                'distinct',
                 Rule::unique('data_anggota_keluarga', 'nik_anggota')
                     ->where(function ($query) use ($dataKeluarga) {
                         // Cek NIK unik, TAPI abaikan NIK yang dimiliki oleh anggota keluarga ini
@@ -248,7 +248,7 @@ class DataKeluargaController extends Controller
         // 2. Mulai Transaksi Database
         DB::beginTransaction();
         try {
-            // 3. Handle Blok dan Desil (Logika sama seperti 'store')
+            // 3. Handle Blok dan Desil 
             $blok = Blok::firstOrCreate(
                 ['nama_blok' => $request->blok],
             );

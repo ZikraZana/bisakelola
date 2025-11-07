@@ -13,33 +13,33 @@
     <div class="row g-3 mb-4">
         <div class="col-md-6 col-lg-3">
             <div class="card border-2 rounded-3">
-                <div class="card-body text-center py-4">
+                <div class="card-body text-center py-4 text-utama1">
                     <p class="text-body-secondary mb-1">Total Blok Lrg. Duren</p>
-                    <h3 class="fw-bold mb-0">356</h3>
+                    <h3 class="fw-bold mb-0">{{ $totalBlok['Lrg. Duren'] ?? 0 }}</h3>
                 </div>
             </div>
         </div>
         <div class="col-md-6 col-lg-3">
             <div class="card border-2 rounded-3">
-                <div class="card-body text-center py-4">
-                    <p class="text-body-secondary mb-1">Total Blok Lrg. Duren</p>
-                    <h3 class="fw-bold mb-0">356</h3>
+                <div class="card-body text-center py-4 text-utama1">
+                    <p class="text-body-secondary mb-1">Total Blok Makakau</p>
+                    <h3 class="fw-bold mb-0">{{ $totalBlok['Makakau'] ?? 0 }}</h3>
                 </div>
             </div>
         </div>
         <div class="col-md-6 col-lg-3">
             <div class="card border-2 rounded-3">
-                <div class="card-body text-center py-4">
-                    <p class="text-body-secondary mb-1">Total Blok Lrg. Duren</p>
-                    <h3 class="fw-bold mb-0">356</h3>
+                <div class="card-body text-center py-4 text-utama1">
+                    <p class="text-body-secondary mb-1">Total Blok Matahari</p>
+                    <h3 class="fw-bold mb-0">{{ $totalBlok['Matahari'] ?? 0 }}</h3>
                 </div>
             </div>
         </div>
         <div class="col-md-6 col-lg-3">
             <div class="card border-2 rounded-3">
-                <div class="card-body text-center py-4">
-                    <p class="text-body-secondary mb-1">Total Blok Lrg. Duren</p>
-                    <h3 class="fw-bold mb-0">356</h3>
+                <div class="card-body text-center py-4 text-utama1">
+                    <p class="text-body-secondary mb-1">Total Blok Lrg. Gardu</p>
+                    <h3 class="fw-bold mb-0">{{ $totalBlok['Lrg. Gardu'] ?? 0 }}</h3>
                 </div>
             </div>
         </div>
@@ -214,7 +214,6 @@
             </div>
         </div>
     </div>
-
 @endsection
 
 @push('scripts')

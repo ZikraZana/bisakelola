@@ -10,12 +10,17 @@ class DataKeluarga extends Model
 
     protected $primaryKey = 'id_keluarga';
 
-    protected $fillable = ['no_kk', 'id_blok', 'id_desil'];
+    protected $fillable = ['no_kk', 'id_admin' ,'id_blok', 'id_desil'];
 
 
     public function anggotaKeluarga()
     {
         return $this->hasMany(AnggotaKeluarga::class, 'id_keluarga', 'id_keluarga');
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'id_admin', 'id_admin');
     }
 
     public function blok()

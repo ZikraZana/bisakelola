@@ -115,9 +115,12 @@ class DataKeluargaController extends Controller
             $desil = Desil::firstOrCreate(
                 ['tingkat_desil' => $request->desil]
             );
+            $admin = Auth::guard('admin')->user();
+
 
             // 4. Simpan DataKeluarga
             $dataKeluarga = DataKeluarga::create([
+                'id_admin' => $admin->id_admin,
                 'no_kk' => $request->no_kk,
                 'id_blok' => $blok->id_blok,
                 'id_desil' => $desil->id_desil,
@@ -273,9 +276,12 @@ class DataKeluargaController extends Controller
             $desil = Desil::firstOrCreate(
                 ['tingkat_desil' => $request->desil]
             );
+            $admin = Auth::guard('admin')->user();
+
 
             // 4. Update DataKeluarga
             $dataKeluarga->update([
+                'id_admin' => $admin->id_admin,
                 'no_kk' => $request->no_kk,
                 'id_blok' => $blok->id_blok,
                 'id_desil' => $desil->id_desil,

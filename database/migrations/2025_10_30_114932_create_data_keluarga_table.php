@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('no_kk')->unique();
 
             // foreign key
+            $table->foreignId('id_admin')->constrained('admins', 'id_admin');
             $table->foreignId('id_blok')->constrained('blok', 'id_blok');
             $table->foreignId('id_desil')->constrained('desil', 'id_desil');
 

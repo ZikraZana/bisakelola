@@ -84,7 +84,8 @@
                     <div class="col-md-6">
                         <label for="role" class="form-label">Role</label>
                         <select class="form-control @error('role') is-invalid @enderror" id="role" name="role"
-                            required>
+                            required
+                            {{ Auth::user()->role == 'Ketua Blok' || Auth::user()->role == 'Ketua Bagian' ? 'disabled' : '' }}>
                             <option value="">Pilih Role</option>
                             {{-- UBAH SELECTED LOGIC --}}
                             <option value="Ketua Blok" {{ old('role', $admin->role) == 'Ketua Blok' ? 'selected' : '' }}>
@@ -95,6 +96,9 @@
                                 Ketua Bagian
                             </option>
                         </select>
+                        @if (Auth::user()->role == 'Ketua Blok' || Auth::user()->role == 'Ketua Bagian')
+                            <input type="hidden" name="role" value="{{ $admin->role }}" />
+                        @endif
                         @error('role')
                             <i class="text-danger small">{{ $message }}</i>
                         @enderror
@@ -103,7 +107,8 @@
                     {{-- Input dinamis untuk Ketua Blok --}}
                     <div class="col-md-6" id="kolom-blok" style="display: none;">
                         <label for="blok_id" class="form-label">Pilih Blok</label>
-                        <select class="form-control @error('id_blok') is-invalid @enderror" id="blok_id" name="id_blok">
+                        <select class="form-control @error('id_blok') is-invalid @enderror" id="blok_id" name="id_blok"
+                            {{ Auth::user()->role == 'Ketua Blok' || Auth::user()->role == 'Ketua Bagian' ? 'disabled' : '' }}>
                             <option value="">Pilih Blok</option>
                             @foreach ($bloks as $blok)
                                 {{-- UBAH SELECTED LOGIC --}}
@@ -113,6 +118,11 @@
                                 </option>
                             @endforeach
                         </select>
+
+                        @if (Auth::user()->role == 'Ketua Blok' || Auth::user()->role == 'Ketua Bagian')
+                            <input type="hidden" name="id_blok" value="{{ $admin->id_blok }}" />
+                        @endif
+
                         @error('id_blok')
                             <i class="text-danger small">{{ $message }}</i>
                         @enderror
@@ -123,7 +133,8 @@
                         {{-- 
                             Nama input harus 'bagian' agar sesuai dengan controller
                         --}}
-                        <select class="form-control @error('bagian') is-invalid @enderror" id="bagian_id" name="bagian">
+                        <select class="form-control @error('bagian') is-invalid @enderror" id="bagian_id" name="bagian"
+                            {{ Auth::user()->role == 'Ketua Blok' || Auth::user()->role == 'Ketua Bagian' ? 'disabled' : '' }}>
                             <option value="">Pilih Bagian</option>
 
                             {{-- UBAH INI: Gunakan old('bagian') --}}
@@ -137,6 +148,10 @@
                                 Operasional
                             </option>
                         </select>
+
+                        @if (Auth::user()->role == 'Ketua Blok' || Auth::user()->role == 'Ketua Bagian')
+                            <input type="hidden" name="bagian" value="{{ $admin->bagian }}" />
+                        @endif
                         {{-- UBAH INI: @error('bagian') --}}
                         @error('bagian')
                             <i class="text-danger small">{{ $message }}</i>

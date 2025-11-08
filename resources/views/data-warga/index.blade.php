@@ -101,7 +101,8 @@
                                 <td class="px-3">{{ $keluarga->blok?->nama_blok ?? 'N/A' }}</td>
                                 <td class="px-3">{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}</td>
                                 <td class="px-3">
-                                    @if (Auth::user()->role === 'Ketua RT' || Auth::user()->role === 'Ketua Blok')
+                                    @if (Auth::user()->role === 'Ketua RT' ||
+                                            (Auth::user()->role === 'Ketua Blok' && Auth::user()->id_blok === $keluarga->blok->id_blok))
                                         <a href="{{ route('data-warga.formEdit', $keluarga->id_keluarga) }}"
                                             class="btn btn-warning btn-sm">Edit</a>
                                     @endif

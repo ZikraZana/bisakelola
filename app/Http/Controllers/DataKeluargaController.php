@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class DataKeluargaController extends Controller
@@ -16,8 +17,8 @@ class DataKeluargaController extends Controller
     public function index()
     {
 
-        $dataKeluarga = DataKeluarga::with('anggotaKeluarga', 'blok', 'desil')->get(); 
-        $totalBlok = Blok::withCount('dataKeluarga') 
+        $dataKeluarga = DataKeluarga::with('anggotaKeluarga', 'blok', 'desil')->get();
+        $totalBlok = Blok::withCount('dataKeluarga')
             ->pluck('data_keluarga_count', 'nama_blok');
 
         return view('data-warga.index', compact('dataKeluarga', 'totalBlok'));
@@ -163,8 +164,15 @@ class DataKeluargaController extends Controller
      */
     public function formEdit(DataKeluarga $dataKeluarga)
     {
-        // $dataKeluarga sudah otomatis didapatkan dari Route Model Binding
-        // Kita load relasinya agar bisa ditampilkan di form edit
+        $user = Auth::guard('admin')->user();
+
+        if (
+            $user->role !== 'Ketua RT' &&
+            !($user->role === 'Ketua Blok' && $user->id_blok === $dataKeluarga->id_blok)
+        ) {
+            abort(403, 'ANDA TIDAK MEMILIKI HAK AKSES UNTUK MENGEDIT DATA WARGA INI.');
+        }
+
         $dataKeluarga->load('anggotaKeluarga', 'blok', 'desil');
 
         return view('data-warga.form-edit', compact('dataKeluarga'));
@@ -175,6 +183,16 @@ class DataKeluargaController extends Controller
      */
     public function update(Request $request, DataKeluarga $dataKeluarga)
     {
+        $user = Auth::guard('admin')->user();
+
+        // ---- KODE SINGKAT ----
+        if (
+            $user->role !== 'Ketua RT' &&
+            !($user->role === 'Ketua Blok' && $user->id_blok === $dataKeluarga->id_blok)
+        ) {
+            abort(403, 'ANDA TIDAK MEMILIKI HAK AKSES UNTUK MENGEDIT DATA WARGA INI.');
+        }
+
         // 1. Validasi Data
         $validator = Validator::make($request->all(), [
             'no_kk' => ['required', 'numeric', Rule::unique('data_keluarga', 'no_kk')->ignore($dataKeluarga->id_keluarga, 'id_keluarga')],

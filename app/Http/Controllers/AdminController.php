@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Blok;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Admin; // Use the Admin model
@@ -104,6 +105,10 @@ class AdminController extends Controller
 
     public function formEdit(Admin $admin)
     {
+        $user = Auth::guard('admin')->user();
+        if ($user->role !== 'Ketua RT' && $user->id !== $admin->id) {
+            abort(403, 'ANDA TIDAK MEMILIKI HAK AKSES UNTUK MENGEDIT AKUN INI.');
+        }
         // $admin sudah didapat dari Route-Model Binding
         $bloks = Blok::all();
 
@@ -112,6 +117,11 @@ class AdminController extends Controller
 
     public function update(Request $request, Admin $admin)
     {
+        $user = Auth::guard('admin')->user();
+        if ($user->role !== 'Ketua RT' && $user->id !== $admin->id) {
+            abort(403, 'ANDA TIDAK MEMILIKI HAK AKSES UNTUK MENGEDIT AKUN INI.');
+        }
+
         $validator = Validator::make($request->all(), [
             'username' => [
                 'required',
@@ -206,6 +216,10 @@ class AdminController extends Controller
 
     public function destroy(Admin $admin)
     {
+        $user = Auth::guard('admin')->user();
+        if ($user->role !== 'Ketua RT') {
+            abort(403, 'ANDA TIDAK MEMILIKI HAK AKSES UNTUK MENGHAPUS AKUN INI.');
+        }
         try {
             $admin->delete();
             return redirect()->route('akun-admin.index')->with('success', 'Admin berhasil dihapus.');

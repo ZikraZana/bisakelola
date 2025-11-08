@@ -48,16 +48,25 @@
                     </div>
                     <div class="col-md-6">
                         <label for="blok" class="form-label">Blok Perumahan</label>
-                        <select class="form-select @error('blok') is-invalid @enderror" id="blok" name="blok"
-                            required>
-                            <option value="">Pilih Blok Perumahan</option>
-                            <option value="Lrg. Duren" @if (old('blok') == 'Lrg. Duren') selected @endif>Lrg. Duren</option>
-                            <option value="Makakau" @if (old('blok') == 'Makakau') selected @endif>Makakau</option>
-                            <option value="Matahari" @if (old('blok') == 'Matahari') selected @endif>Matahari</option>
-                            <option value="Lrg. Gardu" @if (old('blok') == 'Lrg. Gardu') selected @endif>Lrg. Gardu</option>
+                        <select class="form-select @error('blok') is-invalid @enderror" id="blok" name="blok" required
+                            @if (Auth::user()->role === 'Ketua Blok') disabled @endif>
+                            @if (Auth::user()->role === 'Ketua Blok')
+                                <option value="{{ Auth::user()->blok->nama_blok }}" selected>
+                                    {{ Auth::user()->blok->nama_blok }}
+                                </option>
+                            @else
+                                <option value="">Pilih Blok Perumahan</option>
+                                <option value="Lrg. Duren" @if (old('blok') == 'Lrg. Duren') selected @endif>Lrg. Duren</option>
+                                <option value="Makakau" @if (old('blok') == 'Makakau') selected @endif>Makakau</option>
+                                <option value="Matahari" @if (old('blok') == 'Matahari') selected @endif>Matahari</option>
+                                <option value="Lrg. Gardu" @if (old('blok') == 'Lrg. Gardu') selected @endif>Lrg. Gardu</option>
+                            @endif
                         </select>
                         @error('blok')
                             <i class="text-danger small">{{ $message }}</i>
+                        @enderror
+                        @if (Auth::user()->role === 'Ketua Blok')
+                            <input type="hidden" name="blok" value="{{ Auth::user()->blok->nama_blok }}">
                         @enderror
                     </div>
                     <div class="col-md-6">

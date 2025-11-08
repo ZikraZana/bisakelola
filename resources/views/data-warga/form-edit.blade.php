@@ -46,16 +46,27 @@
                     <div class="col-md-6">
                         <label for="blok" class="form-label">Blok Perumahan</label>
                         <select class="form-select @error('blok') is-invalid @enderror" id="blok" name="blok"
-                            required>
-                            <option value="">Pilih Blok Perumahan</option>
-                            <option value="Lrg. Duren" @if (old('blok', $dataKeluarga->blok->nama_blok) == 'Lrg. Duren') selected @endif>Lrg. Duren</option>
-                            <option value="Makakau" @if (old('blok', $dataKeluarga->blok->nama_blok) == 'Makakau') selected @endif>Makakau</option>
-                            <option value="Matahari" @if (old('blok', $dataKeluarga->blok->nama_blok) == 'Matahari') selected @endif>Matahari</option>
-                            <option value="Lrg. Gardu" @if (old('blok', $dataKeluarga->blok->nama_blok) == 'Lrg. Gardu') selected @endif>Lrg. Gardu</option>
+                            required @if (Auth::user()->role === 'Ketua Blok') disabled @endif>
+                            @if (Auth::user()->role === 'Ketua Blok')
+                                <option value="{{ Auth::user()->blok->nama_blok }}" selected>
+                                    {{ Auth::user()->blok->nama_blok }}
+                                </option>
+                            @else
+                                <option value="">Pilih Blok Perumahan</option>
+                                <option value="Lrg. Duren" @if (old('blok', $dataKeluarga->blok->nama_blok) == 'Lrg. Duren') selected @endif>Lrg. Duren
+                                </option>
+                                <option value="Makakau" @if (old('blok', $dataKeluarga->blok->nama_blok) == 'Makakau') selected @endif>Makakau</option>
+                                <option value="Matahari" @if (old('blok', $dataKeluarga->blok->nama_blok) == 'Matahari') selected @endif>Matahari</option>
+                                <option value="Lrg. Gardu" @if (old('blok', $dataKeluarga->blok->nama_blok) == 'Lrg. Gardu') selected @endif>Lrg. Gardu
+                                </option>
+                            @endif
                         </select>
                         @error('blok')
                             <i class="text-danger small">{{ $message }}</i>
                         @enderror
+                        @if (Auth::user()->role === 'Ketua Blok')
+                            <input type="hidden" name="blok" value="{{ Auth::user()->blok->nama_blok }}">
+                        @endif
                     </div>
                     <div class="col-md-6">
                         <label for="jumlah" class="form-label">Jumlah Anggota Keluarga</label>
@@ -79,7 +90,8 @@
                             <option value="4" @if (old('desil', $dataKeluarga->desil->tingkat_desil) == '4') selected @endif>Desil 4</option>
                             <option value="5" @if (old('desil', $dataKeluarga->desil->tingkat_desil) == '5') selected @endif>Desil 5</option>
                             <option value="6" @if (old('desil', $dataKeluarga->desil->tingkat_desil) == '6') selected @endif>Desil 6</option>
-                            <option value="" @if (old('desil', $dataKeluarga->desil->tingkat_desil) == null) selected @endif>Tidak ada desil</option>
+                            <option value="" @if (old('desil', $dataKeluarga->desil->tingkat_desil) == null) selected @endif>Tidak ada desil
+                            </option>
                         </select>
                         @error('desil')
                             <i class="text-danger small">{{ $message }}</i>
@@ -99,7 +111,7 @@
 
                 <div id="anggota-keluarga-container">
                     @php
-                        $anggota_list = []; 
+                        $anggota_list = [];
 
                         if (old('anggota_keluarga')) {
                             $anggota_list = old('anggota_keluarga');

@@ -48,84 +48,195 @@
 
     {{-- Toolbar Aksi (Cari, Filter, Tambah Data) --}}
     <div class="border border-2 p-3 rounded min-vh-50">
-        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-            {{-- Grup Tombol Kiri (Ikon) --}}
-            <div class="mb-2 mb-md-0">
-                <button class="btn btn-outline-secondary me-2" type="button" data-bs-toggle="tooltip" title="Cari">
-                    <i class="bi bi-search"></i>
-                </button>
-                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="tooltip" title="Filter">
-                    <i class="bi bi-funnel"></i>
-                </button>
-            </div>
-
-            {{-- button Tambah Data --}}
-
-            @if (Auth::user()->role === 'Ketua RT' || Auth::user()->role === 'Ketua Blok')
-                <div>
-                    <a href="{{ route('data-warga.formTambah') }}" class="btn btn-primary">
-                        Tambah Data
-                    </a>
+        <form action="{{ route('data-warga.index') }}" method="GET">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                {{-- Grup Tombol Kiri (Ikon) --}}
+                <div class="mb-2 mb-md-0">
+                    {{-- Tombol ini sekarang mengontrol collapse --}}
+                    <button class="btn btn-outline-secondary me-2" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#searchCollapse" aria-expanded="{{ $searchQuery ?? null ? 'true' : 'false' }}"
+                        aria-controls="searchCollapse" title="Cari">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filterCollapse"
+                        aria-expanded="{{ ($filterBlok ?? null) || ($filterDesil ?? null) ? 'true' : 'false' }}"
+                        aria-controls="filterCollapse" title="Filter">
+                        <i class="bi bi-funnel"></i>
+                    </button>
                 </div>
-            @endif
-        </div>
 
-        {{-- Table --}}
-        <div class="card shadow-sm border-0 rounded-3">
-            <div class="table-responsive">
-                <table class="table table-hover table-striped mb-0 align-middle text-putih">
-                    <thead class="aturlah disini warnanya">
-                        <tr>
-                            <th scope="col" class="py-3 px-3">No</th>
-                            <th scope="col" class="py-3 px-3">Nomor Kartu Keluarga</th>
-                            <th scope="col" class="py-3 px-3">Nama Kepala Keluarga</th>
-                            <th scope="col" class="py-3 px-3">NIK Kepala Keluarga</th>
-                            <th scope="col" class="py-3 px-3">Blok</th>
-                            <th scope="col" class="py-3 px-3">Desil</th>
-                            <th scope="col" class="py-3 px-3">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($dataKeluarga as $key => $keluarga)
-                            @php
-                                $kepalaKeluarga = $keluarga->anggotaKeluarga->firstWhere(
-                                    'status_dalam_keluarga',
-                                    'Kepala Keluarga',
-                                );
-                            @endphp
-                            <tr>
-                                <td class="px-3">{{ $key + 1 }}</td>
-                                <td class="px-3">{{ $keluarga->no_kk }}</td>
-                                <td class="px-3">{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}</td>
-                                <td class="px-3">{{ $kepalaKeluarga?->nik_anggota ?? 'N/A' }}</td>
-                                <td class="px-3">{{ $keluarga->blok?->nama_blok ?? 'N/A' }}</td>
-                                <td class="px-3">{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}</td>
-                                <td class="px-3">
-                                    @if (Auth::user()->role === 'Ketua RT' ||
-                                            (Auth::user()->role === 'Ketua Blok' && Auth::user()->id_blok === $keluarga->blok->id_blok))
-                                        <a href="{{ route('data-warga.formEdit', $keluarga->id_keluarga) }}"
-                                            class="btn btn-warning btn-sm">Edit</a>
-                                    @endif
-                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#detailModal" data-nokk="{{ $keluarga->no_kk }}"
-                                        data-kepala="{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}"
-                                        data-blok="{{ $keluarga->blok?->nama_blok ?? 'N/A' }}"
-                                        data-desil="{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}"
-                                        data-anggota="{{ $keluarga->anggotaKeluarga->toJson() }}">
-                                        Detail
-                                    </button>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center">Tidak ada data.</td>
-                            </tr>
-                        @endforelse
-
-                    </tbody>
-                </table>
+                {{-- button Tambah Data --}}
+                @if (Auth::user()->role === 'Ketua RT' || Auth::user()->role === 'Ketua Blok')
+                    <div>
+                        <a href="{{ route('data-warga.formTambah') }}" class="btn btn-primary">
+                            Tambah Data
+                        </a>
+                    </div>
+                @endif
             </div>
-        </div>
+
+            {{-- Wrapper untuk Efek Akordeon --}}
+            <div id="toolbarPanels">
+
+                {{-- Panel Input Search Bar --}}
+                {{-- BARU: Tambah class 'show' jika $searchQuery ada --}}
+                <div class="collapse mb-3 {{ $searchQuery ?? null ? 'show' : '' }}" id="searchCollapse"
+                    data-bs-parent="#toolbarPanels">
+
+                    {{-- BARU: Modifikasi Input Group --}}
+                    <div class="input-group">
+                        {{-- Input --}}
+                        <input type="text" class="form-control" name="search_query"
+                            placeholder="Cari berdasarkan NIK, Nama, atau No. KK..." aria-label="Cari data warga"
+                            value="{{ $searchQuery ?? '' }}">
+
+                        {{-- Tombol Submit Cari --}}
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search me-1"></i> Cari
+                        </button>
+
+                        {{-- ====================================== --}}
+                        {{-- ====== TOMBOL RESET (BARU) ======= --}}
+                        {{-- ====================================== --}}
+
+                        {{-- Tampilkan tombol ini HANYA JIKA $searchQuery ada isinya --}}
+                        @if ($searchQuery ?? null)
+                            {{-- 
+                      - Tombol ini me-load ulang halaman ke route 'data-warga.index'
+                      - request()->except('search_query') = Ambil SEMUA parameter
+                        URL yang ada SEKARANG (cth: filter_blok, filter_desil) 
+                        KECUALI 'search_query'.
+                    --}}
+                            <a href="{{ route('data-warga.index', request()->except('search_query')) }}"
+                                class="btn btn-outline-danger" title="Reset Pencarian">
+                                <i class="bi bi-x-lg"></i>
+                            </a>
+                        @endif
+                        {{-- ====================================== --}}
+                        {{-- ============ AKHIR BARU ============== --}}
+                        {{-- ====================================== --}}
+                    </div>
+                </div>
+
+                {{-- Panel Filter --}}
+                {{-- BARU: Tambah class 'show' jika filter ada --}}
+                <div class="collapse mb-3 {{ ($filterBlok ?? null) || ($filterDesil ?? null) ? 'show' : '' }}"
+                    id="filterCollapse" data-bs-parent="#toolbarPanels">
+                    <div class="card card-body bg-light border-0">
+                        <div class="row g-3">
+                            {{-- Filter berdasarkan Blok --}}
+                            <div class="col-md-6">
+                                <label for="filterBlok" class="form-label">Filter Blok</label>
+                                {{-- BARU: Tambah name="filter_blok" --}}
+                                <select id="filterBlok" name="filter_blok" class="form-select">
+                                    <option value="" selected>Semua Blok</option>
+                                    {{-- BARU: Tambah logika 'selected' --}}
+                                    <option value="Lrg. Duren" {{ ($filterBlok ?? '') == 'Lrg. Duren' ? 'selected' : '' }}>
+                                        Lrg. Duren</option>
+                                    <option value="Makakau" {{ ($filterBlok ?? '') == 'Makakau' ? 'selected' : '' }}>
+                                        Makakau</option>
+                                    <option value="Matahari" {{ ($filterBlok ?? '') == 'Matahari' ? 'selected' : '' }}>
+                                        Matahari</option>
+                                    <option value="Lrg. Gardu" {{ ($filterBlok ?? '') == 'Lrg. Gardu' ? 'selected' : '' }}>
+                                        Lrg. Gardu</option>
+                                </select>
+                            </div>
+                            {{-- Filter berdasarkan Desil --}}
+                            <div class="col-md-6">
+                                <label for="filterDesil" class="form-label">Filter Desil</label>
+                                {{-- BARU: Tambah name="filter_desil" --}}
+                                <select id="filterDesil" name="filter_desil" class="form-select">
+                                    <option value="" selected>Semua Desil</option>
+                                    {{-- BARU: Tambah logika 'selected' --}}
+                                    <option value="1" {{ ($filterDesil ?? '') == '1' ? 'selected' : '' }}>Desil 1
+                                    </option>
+                                    <option value="2" {{ ($filterDesil ?? '') == '2' ? 'selected' : '' }}>Desil 2
+                                    </option>
+                                    <option value="3" {{ ($filterDesil ?? '') == '3' ? 'selected' : '' }}>Desil 3
+                                    </option>
+                                    <option value="4" {{ ($filterDesil ?? '') == '4' ? 'selected' : '' }}>Desil 4
+                                    </option>
+                                    <option value="5" {{ ($filterDesil ?? '') == '5' ? 'selected' : '' }}>Desil 5
+                                    </option>
+                                    <option value="6" {{ ($filterDesil ?? '') == '6' ? 'selected' : '' }}>Desil 6
+                                    </option>
+                                    <option value="Tidak ada" {{ ($filterDesil ?? '') == 'Tidak ada' ? 'selected' : '' }}>
+                                        Tidak ada</option>
+                                    {{-- Sesuaikan desil lain jika ada --}}
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="text-end mt-3">
+                            {{-- BARU: Tombol Reset (opsional tapi disarankan) --}}
+                            <a href="{{ route('data-warga.index') }}" class="btn btn-outline-secondary me-2">Reset</a>
+                            {{-- BARU: Ubah type="button" menjadi type="submit" --}}
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-funnel me-1"></i> Terapkan Filter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div> {{-- Penutup #toolbarPanels --}}
+
+            {{-- Table --}}
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0 align-middle text-putih">
+                        <thead class="aturlah disini warnanya">
+                            <tr>
+                                <th scope="col" class="py-3 px-3">No</th>
+                                <th scope="col" class="py-3 px-3">Nomor Kartu Keluarga</th>
+                                <th scope="col" class="py-3 px-3">Nama Kepala Keluarga</th>
+                                <th scope="col" class="py-3 px-3">NIK Kepala Keluarga</th>
+                                <th scope="col" class="py-3 px-3">Blok</th>
+                                <th scope="col" class="py-3 px-3">Desil</th>
+                                <th scope="col" class="py-3 px-3">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($dataKeluarga as $key => $keluarga)
+                                @php
+                                    $kepalaKeluarga = $keluarga->anggotaKeluarga->firstWhere(
+                                        'status_dalam_keluarga',
+                                        'Kepala Keluarga',
+                                    );
+                                @endphp
+                                <tr>
+                                    <td class="px-3">{{ $key + 1 }}</td>
+                                    <td class="px-3">{{ $keluarga->no_kk }}</td>
+                                    <td class="px-3">{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}</td>
+                                    <td class="px-3">{{ $kepalaKeluarga?->nik_anggota ?? 'N/A' }}</td>
+                                    <td class="px-3">{{ $keluarga->blok?->nama_blok ?? 'N/A' }}</td>
+                                    <td class="px-3">{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}</td>
+                                    <td class="px-3">
+                                        @if (Auth::user()->role === 'Ketua RT' ||
+                                                (Auth::user()->role === 'Ketua Blok' && Auth::user()->id_blok === $keluarga->blok->id_blok))
+                                            <a href="{{ route('data-warga.formEdit', $keluarga->id_keluarga) }}"
+                                                class="btn btn-warning btn-sm">Edit</a>
+                                        @endif
+                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#detailModal" data-nokk="{{ $keluarga->no_kk }}"
+                                            data-kepala="{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}"
+                                            data-blok="{{ $keluarga->blok?->nama_blok ?? 'N/A' }}"
+                                            data-desil="{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}"
+                                            data-anggota="{{ $keluarga->anggotaKeluarga->toJson() }}">
+                                            Detail
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center">Tidak ada data.</td>
+                                </tr>
+                            @endforelse
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
     </div>
 
     {{-- Footer Paginasi --}}

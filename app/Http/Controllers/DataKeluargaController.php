@@ -14,14 +14,76 @@ use Illuminate\Support\Facades\Validator;
 
 class DataKeluargaController extends Controller
 {
-    public function index()
+    public function index(Request $request) // BARU: Tambahkan Request $request
     {
+        // 1. Ambil user yang login
+        $user = Auth::user();
 
-        $dataKeluarga = DataKeluarga::with('anggotaKeluarga', 'blok', 'desil')->get();
+        // 2. Ambil data total blok (Tidak berubah)
         $totalBlok = Blok::withCount('dataKeluarga')
             ->pluck('data_keluarga_count', 'nama_blok');
 
-        return view('data-warga.index', compact('dataKeluarga', 'totalBlok'));
+        // 3. Ambil input dari request (filter & search)
+        // Nama 'search_query', 'filter_blok', 'filter_desil' akan kita atur di Blade
+        $searchQuery = $request->input('search_query');
+        $filterBlok  = $request->input('filter_blok');
+        $filterDesil = $request->input('filter_desil');
+
+        // 4. Siapkan query dasar dengan eager loading (Tidak berubah)
+        $query = DataKeluarga::with(['anggotaKeluarga', 'blok', 'desil']);
+
+        // 5. BARU: Terapkan logika PENCARIAN
+        if ($searchQuery) {
+            $query->where(function ($q) use ($searchQuery) {
+                // Cari di No. KK (tabel data_keluarga)
+                $q->where('no_kk', 'like', "%{$searchQuery}%")
+                    // ATAU cari di NIK/Nama Anggota (tabel relasi)
+                    ->orWhereHas('anggotaKeluarga', function ($subQ) use ($searchQuery) {
+                        $subQ->where('nik_anggota', 'like', "%{$searchQuery}%")
+                            ->orWhere('nama_lengkap', 'like', "%{$searchQuery}%");
+                    });
+            });
+        }
+
+        // 6. BARU: Terapkan logika FILTER BLOK
+        if ($filterBlok) {
+            // Gunakan whereHas untuk filter berdasarkan relasi 'blok'
+            $query->whereHas('blok', function ($q) use ($filterBlok) {
+                $q->where('nama_blok', $filterBlok);
+            });
+        }
+
+        // 7. BARU: Terapkan logika FILTER DESIL
+        if ($filterDesil) {
+            // Gunakan whereHas untuk filter berdasarkan relasi 'desil'
+            $query->whereHas('desil', function ($q) use ($filterDesil) {
+                $q->where('tingkat_desil', $filterDesil);
+            });
+        }
+
+        // 8. Terapkan logika sorting (Tidak berubah)
+        if ($user && $user->role === 'Ketua Blok') {
+            $query->orderByRaw("CASE 
+                                WHEN id_blok = ? THEN 1 
+                                ELSE 2 
+                                END ASC", [$user->id_blok])
+                ->orderBy('created_at', 'DESC');
+        } else {
+            $query->orderBy('created_at', 'DESC');
+        }
+
+        // 9. Ambil data dengan paginasi
+        // BARU: Tambahkan withQueryString() agar paginasi tetap membawa filter
+        $dataKeluarga = $query->paginate(10)->withQueryString();
+
+        // 10. Kirim semua data ke view
+        return view('data-warga.index', [
+            'dataKeluarga' => $dataKeluarga,
+            'totalBlok'    => $totalBlok,
+            'searchQuery'  => $searchQuery,  // BARU: Kirim balik untuk 'sticky form'
+            'filterBlok'   => $filterBlok,   // BARU: Kirim balik untuk 'sticky form'
+            'filterDesil'  => $filterDesil,  // BARU: Kirim balik untuk 'sticky form'
+        ]);
     }
 
 
@@ -115,7 +177,7 @@ class DataKeluargaController extends Controller
             $desil = Desil::firstOrCreate(
                 ['tingkat_desil' => $request->desil]
             );
-            $admin = Auth::guard('admin')->user();
+            $admin = Auth::user();
 
 
             // 4. Simpan DataKeluarga
@@ -167,7 +229,7 @@ class DataKeluargaController extends Controller
      */
     public function formEdit(DataKeluarga $dataKeluarga)
     {
-        $user = Auth::guard('admin')->user();
+        $user = Auth::user();
 
         if (
             $user->role !== 'Ketua RT' &&
@@ -186,7 +248,7 @@ class DataKeluargaController extends Controller
      */
     public function update(Request $request, DataKeluarga $dataKeluarga)
     {
-        $user = Auth::guard('admin')->user();
+        $user = Auth::user();
 
         // ---- KODE SINGKAT ----
         if (
@@ -276,7 +338,7 @@ class DataKeluargaController extends Controller
             $desil = Desil::firstOrCreate(
                 ['tingkat_desil' => $request->desil]
             );
-            $admin = Auth::guard('admin')->user();
+            $admin = Auth::user();
 
 
             // 4. Update DataKeluarga

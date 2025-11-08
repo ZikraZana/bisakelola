@@ -240,39 +240,40 @@
     </div>
 
     {{-- Footer Paginasi --}}
+    {{-- BARU: Wrapper ini akan ada DI LUAR <form> --}}
     <div class="d-flex flex-wrap justify-content-between align-items-center mt-3">
-        {{-- Kiri: Info Halaman --}}
+
+        {{-- Kiri: Info Halaman & Hasil per Halaman --}}
         <div class="mb-2 mb-md-0">
-            <span class="me-1 text-body-secondary">Hasil per halaman</span>
-            <select class="form-select form-select-sm d-inline-block w-auto">
-                <option value="10" selected>10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-            </select>
-            <span class="ms-2 text-body-secondary">1 sampai 10 dari 356</span>
+            {{-- Kita perlu form baru di sini HANYA untuk "per_page" --}}
+            <form action="{{ route('data-warga.index') }}" method="GET" class="d-inline">
+                {{-- Bawa semua filter & search yang sedang aktif --}}
+                <input type="hidden" name="search_query" value="{{ $searchQuery ?? '' }}">
+                <input type="hidden" name="filter_blok" value="{{ $filterBlok ?? '' }}">
+                <input type="hidden" name="filter_desil" value="{{ $filterDesil ?? '' }}">
+
+                <span class="me-1 text-body-secondary">Hasil per halaman</span>
+                <select name="per_page" class="form-select form-select-sm d-inline-block w-auto"
+                    onchange="this.form.submit()">
+                    <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
+                    <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25</option>
+                    <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
+                </select>
+            </form>
+
+            <span class="ms-2 text-body-secondary">
+                Menampilkan {{ $dataKeluarga->firstItem() ?? 0 }}
+                sampai {{ $dataKeluarga->lastItem() ?? 0 }}
+                dari {{ $dataKeluarga->total() }} hasil
+            </span>
         </div>
 
         {{-- Kanan: Kontrol Paginasi --}}
         <div class="d-flex align-items-center">
-            <nav aria-label="Page navigation">
-                <ul class="pagination pagination-sm mb-0">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <i class="bi bi-chevron-left"></i>
-                        </a>
-                    </li>
-                    <li class="page-item active" aria-current="page">
-                        <a class="page-link" href="#">10</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <i class="bi bi-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <span class="ms-2 text-body-secondary">dari 36</span>
+            {{-- Ini akan otomatis rapi setelah fix di AppServiceProvider --}}
+            {{ $dataKeluarga->links() }}
         </div>
+
     </div>
 
     {{-- MODAL UNTUK DETAIL DATA --}}

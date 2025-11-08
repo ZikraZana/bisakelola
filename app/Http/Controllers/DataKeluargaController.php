@@ -73,16 +73,24 @@ class DataKeluargaController extends Controller
         }
 
         // 9. Ambil data dengan paginasi
-        // BARU: Tambahkan withQueryString() agar paginasi tetap membawa filter
-        $dataKeluarga = $query->paginate(10)->withQueryString();
+        $validPerPages = [10, 25, 50]; // Tentukan jumlah yang valid
+        $perPageInput = $request->input('per_page', 10); // Ambil input, default-nya 10
+
+        // Pastikan nilainya valid, jika tidak, kembalikan ke 10
+        $perPage = in_array($perPageInput, $validPerPages) ? $perPageInput : 10;
+
+        // 9B. Ambil data dengan paginasi
+        // BARU: Ganti '10' dengan variabel $perPage
+        $dataKeluarga = $query->paginate($perPage)->withQueryString();
 
         // 10. Kirim semua data ke view
         return view('data-warga.index', [
             'dataKeluarga' => $dataKeluarga,
             'totalBlok'    => $totalBlok,
-            'searchQuery'  => $searchQuery,  // BARU: Kirim balik untuk 'sticky form'
-            'filterBlok'   => $filterBlok,   // BARU: Kirim balik untuk 'sticky form'
-            'filterDesil'  => $filterDesil,  // BARU: Kirim balik untuk 'sticky form'
+            'searchQuery'  => $searchQuery,
+            'filterBlok'   => $filterBlok,
+            'filterDesil'  => $filterDesil,
+            'perPage'      => $perPage, // <-- BARU: Kirim nilai perPage ke view
         ]);
     }
 

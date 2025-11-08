@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('admins', function (Blueprint $table) {
@@ -18,15 +15,17 @@ return new class extends Migration
             $table->string('nama_lengkap');
             $table->string('no_handphone');
             $table->string('role');
-            $table->string('blok')->nullable();
+
+            // 1. Ganti dari 'blok' ke 'id_blok'
+            // 2. Tipe datanya HARUS sama dengan $table->id('id_blok') di tabel blok
+            // 3. Kita HAPUS foreign key dari sini.
+            $table->unsignedBigInteger('id_blok')->nullable(); 
+
             $table->string('bagian')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('admins');

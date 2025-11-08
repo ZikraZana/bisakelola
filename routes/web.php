@@ -42,6 +42,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('index');
         Route::get('/tambah-admin', [AdminController::class, 'formTambah'])->name('formTambah');
         Route::post('/', [AdminController::class, 'store'])->name('store');
+        Route::get('/{admin:id}/edit', [AdminController::class, 'formEdit'])->name('formEdit');
+        Route::put('/{admin:id}', [AdminController::class, 'update'])->name('update');
+        Route::delete('/{admin:id}', [AdminController::class, 'destroy'])->name('destroy');
     });
 
 

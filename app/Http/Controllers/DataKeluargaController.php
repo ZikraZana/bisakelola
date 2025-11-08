@@ -258,7 +258,7 @@ class DataKeluargaController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('data_warga.edit', $dataKeluarga->id_keluarga)
+            return redirect()->route('data-warga.formEdit', $dataKeluarga->id_keluarga)
                 ->withErrors($validator)
                 ->withInput();
         }

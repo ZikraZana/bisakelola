@@ -13,7 +13,7 @@
         <div class="card-body p-4 p-md-5">
 
             {{-- UBAH ACTION DAN TAMBAH @method('PUT') --}}
-            <form action="{{ route('akun-admin.update', $admin->id) }}" method="POST">
+            <form action="{{ route('akun-admin.update', $admin->id_admin) }}" method="POST">
                 @csrf
                 @method('PUT')
 

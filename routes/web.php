@@ -18,7 +18,7 @@ Route::middleware('guest')->group(function () {
 });
 
 //========================= AREA Admins =========================//
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:admin')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // Dashboard
@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('data-warga')->name('data-warga.')->group(function () {
         // GET /data-warga (Menampilkan semua data)
         Route::get('/', [DataKeluargaController::class, 'index'])->name('index');
-        Route::get('/tambah-data', [DataKeluargaController::class, 'formTambah'])->name('formTambah')->middleware('role:Ketua RT, Ketua Blok');
+        Route::get('/tambah-data', [DataKeluargaController::class, 'formTambah'])->name('formTambah')->middleware('role:Ketua RT,Ketua Blok');
         Route::post('/', [DataKeluargaController::class, 'store'])->name('store');
         Route::get('/{dataKeluarga:id_keluarga}/edit', [DataKeluargaController::class, 'formEdit'])->name('formEdit');
         Route::put('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'update'])->name('update');
@@ -42,8 +42,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('index');
         Route::get('/tambah-admin', [AdminController::class, 'formTambah'])->name('formTambah')->middleware('role:Ketua RT');
         Route::post('/', [AdminController::class, 'store'])->name('store')->middleware('role:Ketua RT');
-        Route::get('/{admin:id}/edit', [AdminController::class, 'formEdit'])->name('formEdit');
-        Route::put('/{admin:id}', [AdminController::class, 'update'])->name('update');
-        Route::delete('/{admin:id}', [AdminController::class, 'destroy'])->name('destroy');
+        Route::get('/{admin:id_admin}/edit', [AdminController::class, 'formEdit'])->name('formEdit');
+        Route::put('/{admin:id_admin}', [AdminController::class, 'update'])->name('update');
+        Route::delete('/{admin:id_admin}', [AdminController::class, 'destroy'])->name('destroy');
     });
 });

@@ -51,13 +51,13 @@
                                             <td>{{ $admin->blok ? $admin->blok->nama_blok : '-' }}</td>
                                             <td>{{ $admin->bagian == null ? '-' : $admin->bagian }}</td>
                                             <td class="text-right">
-                                                @if (Auth::user()->role === 'Ketua RT' || Auth::user()->id == $admin->id)
-                                                    <a href="{{ route('akun-admin.formEdit', $admin->id) }}"
+                                                @if (Auth::user()->role === 'Ketua RT' || Auth::user()->id_admin == $admin->id_admin)
+                                                    <a href="{{ route('akun-admin.formEdit', $admin->id_admin) }}"
                                                         class="btn btn-warning btn-sm">Edit</a>
                                                 @endif
                                                 @if (Auth::user()->role === 'Ketua RT')
-                                                    @if (Auth::user()->id !== $admin->id)
-                                                        <form action="{{ route('akun-admin.destroy', $admin->id) }}"
+                                                    @if (Auth::user()->id_admin !== $admin->id)
+                                                        <form action="{{ route('akun-admin.destroy', $admin->id_admin) }}"
                                                             method="POST" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')

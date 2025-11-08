@@ -106,7 +106,7 @@ class AdminController extends Controller
     public function formEdit(Admin $admin)
     {
         $user = Auth::guard('admin')->user();
-        if ($user->role !== 'Ketua RT' && $user->id !== $admin->id) {
+        if ($user->role !== 'Ketua RT' && $user->id_admin !== $admin->id_admin) {
             abort(403, 'ANDA TIDAK MEMILIKI HAK AKSES UNTUK MENGEDIT AKUN INI.');
         }
         // $admin sudah didapat dari Route-Model Binding
@@ -118,7 +118,7 @@ class AdminController extends Controller
     public function update(Request $request, Admin $admin)
     {
         $user = Auth::guard('admin')->user();
-        if ($user->role !== 'Ketua RT' && $user->id !== $admin->id) {
+        if ($user->role !== 'Ketua RT' && $user->id_admin !== $admin->id_admin) {
             abort(403, 'ANDA TIDAK MEMILIKI HAK AKSES UNTUK MENGEDIT AKUN INI.');
         }
 
@@ -127,7 +127,7 @@ class AdminController extends Controller
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('admins')->ignore($admin->id),
+                Rule::unique('admins')->ignore($admin->id_admin, 'id_admin'),
             ],
 
             // Password dibuat nullable (opsional)

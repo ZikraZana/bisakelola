@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('data_penerima_bansos', function (Blueprint $table) {
-            $table->id();
+        Schema::create('bansos', function (Blueprint $table) {
+            $table->id('id_bansos'); // Primary Key
+            $table->string('nama_bansos'); // Cth: "PKH", "BLT Desa"
+            $table->text('deskripsi')->nullable(); // Penjelasan (opsional)
             $table->timestamps();
         });
     }
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('data_penerima_bansos');
+        Schema::dropIfExists('bansos');
     }
 };

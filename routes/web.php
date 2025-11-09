@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DataKeluargaController;
+use App\Http\Controllers\DataPenerimaBansosController;
 
 //========================= AREA ALL =========================//
 Route::get('/', function () {
@@ -35,6 +36,28 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/', [DataKeluargaController::class, 'store'])->name('store');
         Route::get('/{dataKeluarga:id_keluarga}/edit', [DataKeluargaController::class, 'formEdit'])->name('formEdit');
         Route::put('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'update'])->name('update');
+    });
+
+    // Data Penerima Bansos
+    Route::prefix('data-penerima-bansos')->name('data-penerima-bansos.')->group(function () {
+        Route::get('/', [DataPenerimaBansosController::class, 'index'])->name('index');
+
+        // 2. Tampilkan form tambah data
+        Route::get('/tambah-data', [DataPenerimaBansosController::class, 'formTambah'])->name('formTambah')->middleware('role:Ketua RT,Ketua Blok');
+
+        // 3. Simpan data baru (dari form dinamis)
+        Route::post('/', [DataPenerimaBansosController::class, 'store'])->name('store');
+
+        // 4. Tampilkan form edit (nanti kita buat)
+        // Menggunakan route model binding dengan PK 'id_penerima_bansos'
+        Route::get('/{dataPenerimaBansos:id_penerima_bansos}/edit', [DataPenerimaBansosController::class, 'formEdit'])->name('formEdit');
+
+        // 5. Update data (nanti kita buat)
+        Route::put('/{dataPenerimaBansos:id_penerima_bansos}', [DataPenerimaBansosController::class, 'update'])->name('update');
+
+        // Catatan: Anda juga perlu route untuk Dinsos (Persetujuan),
+        // tapi kita bisa tambahkan itu di grup terpisah nanti.
+
     });
 
     // Akun Admin

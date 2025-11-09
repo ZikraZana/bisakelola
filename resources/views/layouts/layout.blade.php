@@ -50,7 +50,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/penerima-bansos" class="nav-link text-putih">
+                        <a href="{{ route('data-penerima-bansos.index') }}" class="nav-link text-putih {{ Request::routeIs('data-penerima-bansos.*') ? 'bg-utama2' : '' }}">
                             <i class="bi bi-gift-fill me-2"></i>
                             Penerima Bansos
                         </a>

@@ -120,18 +120,16 @@
                 </div>
 
                 {{-- Panel Filter --}}
-                {{-- BARU: Tambah class 'show' jika filter ada --}}
-                <div class="collapse mb-3 {{ ($filterBlok ?? null) || ($filterDesil ?? null) ? 'show' : '' }}"
+                {{-- FIX 2: Menambahkan logika pengecekan status !== null di class show --}}
+                <div class="collapse mb-3 {{ ($filterBlok ?? null) || ($filterDesil ?? null) || ($filterStatus ?? null) !== null ? 'show' : '' }}"
                     id="filterCollapse" data-bs-parent="#toolbarPanels">
                     <div class="card card-body bg-light border-0">
                         <div class="row g-3">
-                            {{-- Filter berdasarkan Blok --}}
-                            <div class="col-md-6">
+                            {{-- Filter Blok --}}
+                            <div class="col-md-4">
                                 <label for="filterBlok" class="form-label">Filter Blok</label>
-                                {{-- BARU: Tambah name="filter_blok" --}}
                                 <select id="filterBlok" name="filter_blok" class="form-select">
                                     <option value="" selected>Semua Blok</option>
-                                    {{-- BARU: Tambah logika 'selected' --}}
                                     <option value="Lrg. Duren" {{ ($filterBlok ?? '') == 'Lrg. Duren' ? 'selected' : '' }}>
                                         Lrg. Duren</option>
                                     <option value="Makakau" {{ ($filterBlok ?? '') == 'Makakau' ? 'selected' : '' }}>
@@ -142,13 +140,11 @@
                                         Lrg. Gardu</option>
                                 </select>
                             </div>
-                            {{-- Filter berdasarkan Desil --}}
-                            <div class="col-md-6">
+                            {{-- Filter Desil --}}
+                            <div class="col-md-4">
                                 <label for="filterDesil" class="form-label">Filter Desil</label>
-                                {{-- BARU: Tambah name="filter_desil" --}}
                                 <select id="filterDesil" name="filter_desil" class="form-select">
                                     <option value="" selected>Semua Desil</option>
-                                    {{-- BARU: Tambah logika 'selected' --}}
                                     <option value="1" {{ ($filterDesil ?? '') == '1' ? 'selected' : '' }}>Desil 1
                                     </option>
                                     <option value="2" {{ ($filterDesil ?? '') == '2' ? 'selected' : '' }}>Desil 2
@@ -163,11 +159,9 @@
                                     </option>
                                     <option value="Tidak ada" {{ ($filterDesil ?? '') == 'Tidak ada' ? 'selected' : '' }}>
                                         Tidak ada</option>
-                                    {{-- Sesuaikan desil lain jika ada --}}
                                 </select>
-
                             </div>
-                            {{-- 3. BARU: Filter Status --}}
+                            {{-- Filter Status --}}
                             <div class="col-md-4">
                                 <label for="filterStatus" class="form-label">Filter Status</label>
                                 <select id="filterStatus" name="filter_status" class="form-select">
@@ -180,9 +174,7 @@
                             </div>
                         </div>
                         <div class="text-end mt-3">
-                            {{-- BARU: Tombol Reset (opsional tapi disarankan) --}}
                             <a href="{{ route('data-warga.index') }}" class="btn btn-outline-secondary me-2">Reset</a>
-                            {{-- BARU: Ubah type="button" menjadi type="submit" --}}
                             <button class="btn btn-primary" type="submit">
                                 <i class="bi bi-funnel me-1"></i> Terapkan Filter
                             </button>

@@ -10,7 +10,7 @@ class DataKeluarga extends Model
 
     protected $primaryKey = 'id_keluarga';
 
-    protected $fillable = ['no_kk', 'id_admin' ,'id_blok', 'id_desil'];
+    protected $fillable = ['no_kk', 'id_admin', 'status' ,'id_blok', 'id_desil'];
 
 
     public function anggotaKeluarga()

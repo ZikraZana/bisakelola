@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('data_keluarga', function (Blueprint $table) {
             $table->id('id_keluarga');
             $table->string('no_kk')->unique();
+            $table->boolean('status')->default(true);
 
             // foreign key
             $table->foreignId('id_admin')->constrained('admins', 'id_admin');

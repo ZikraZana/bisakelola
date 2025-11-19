@@ -167,6 +167,17 @@
                                 </select>
 
                             </div>
+                            {{-- 3. BARU: Filter Status --}}
+                            <div class="col-md-4">
+                                <label for="filterStatus" class="form-label">Filter Status</label>
+                                <select id="filterStatus" name="filter_status" class="form-select">
+                                    <option value="" selected>Semua Status</option>
+                                    <option value="1" {{ ($filterStatus ?? '') === '1' ? 'selected' : '' }}>Aktif
+                                    </option>
+                                    <option value="0" {{ ($filterStatus ?? '') === '0' ? 'selected' : '' }}>Nonaktif
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                         <div class="text-end mt-3">
                             {{-- BARU: Tombol Reset (opsional tapi disarankan) --}}
@@ -179,64 +190,127 @@
                     </div>
                 </div>
             </div> {{-- Penutup #toolbarPanels --}}
-
-            {{-- Table --}}
-            <div class="card shadow-sm border-0 rounded-3">
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped mb-0 align-middle text-putih">
-                        <thead class="aturlah disini warnanya">
-                            <tr>
-                                <th scope="col" class="py-3 px-3">No</th>
-                                <th scope="col" class="py-3 px-3">Nomor Kartu Keluarga</th>
-                                <th scope="col" class="py-3 px-3">Nama Kepala Keluarga</th>
-                                <th scope="col" class="py-3 px-3">NIK Kepala Keluarga</th>
-                                <th scope="col" class="py-3 px-3">Blok</th>
-                                <th scope="col" class="py-3 px-3">Desil</th>
-                                <th scope="col" class="py-3 px-3">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($dataKeluarga as $key => $keluarga)
-                                @php
-                                    $kepalaKeluarga = $keluarga->anggotaKeluarga->firstWhere(
-                                        'status_dalam_keluarga',
-                                        'Kepala Keluarga',
-                                    );
-                                @endphp
-                                <tr>
-                                    <td class="px-3">{{ $key + 1 }}</td>
-                                    <td class="px-3">{{ $keluarga->no_kk }}</td>
-                                    <td class="px-3">{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}</td>
-                                    <td class="px-3">{{ $kepalaKeluarga?->nik_anggota ?? 'N/A' }}</td>
-                                    <td class="px-3">{{ $keluarga->blok?->nama_blok ?? 'N/A' }}</td>
-                                    <td class="px-3">{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}</td>
-                                    <td class="px-3">
-                                        @if (Auth::user()->role === 'Ketua RT' ||
-                                                (Auth::user()->role === 'Ketua Blok' && Auth::user()->id_blok === $keluarga->blok->id_blok))
-                                            <a href="{{ route('data-warga.formEdit', $keluarga->id_keluarga) }}"
-                                                class="btn btn-warning btn-sm">Edit</a>
-                                        @endif
-                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#detailModal" data-nokk="{{ $keluarga->no_kk }}"
-                                            data-kepala="{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}"
-                                            data-blok="{{ $keluarga->blok?->nama_blok ?? 'N/A' }}"
-                                            data-desil="{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}"
-                                            data-anggota="{{ $keluarga->anggotaKeluarga->toJson() }}">
-                                            Detail
-                                        </button>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="text-center">Tidak ada data.</td>
-                                </tr>
-                            @endforelse
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </form>
+
+        {{-- Table --}}
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0 align-middle text-putih">
+                    <thead class="aturlah disini warnanya">
+                        <tr>
+                            <th scope="col" class="py-3 px-3">No</th>
+                            <th scope="col" class="py-3 px-3">Nomor Kartu Keluarga</th>
+                            <th scope="col" class="py-3 px-3">Nama Kepala Keluarga</th>
+                            <th scope="col" class="py-3 px-3">NIK Kepala Keluarga</th>
+                            <th scope="col" class="py-3 px-3">Blok</th>
+                            <th scope="col" class="py-3 px-3">Desil</th>
+                            <th scope="col" class="py-3 px-3">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($dataKeluarga as $key => $keluarga)
+                            @php
+                                $kepalaKeluarga = $keluarga->anggotaKeluarga->firstWhere(
+                                    'status_dalam_keluarga',
+                                    'Kepala Keluarga',
+                                );
+                            @endphp
+                            <tr>
+                                <td class="px-3">{{ $key + 1 }}</td>
+                                <td class="px-3">{{ $keluarga->no_kk }}
+                                    @if ($keluarga->status == 0)
+                                        <span class="badge bg-danger ms-1" style="font-size: 0.6em;">Nonaktif</span>
+                                    @endif
+                                </td>
+                                <td class="px-3">{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}</td>
+                                <td class="px-3">{{ $kepalaKeluarga?->nik_anggota ?? 'N/A' }}</td>
+                                <td class="px-3">{{ $keluarga->blok?->nama_blok ?? 'N/A' }}</td>
+                                <td class="px-3">{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}</td>
+                                <td class="px-3">
+                                    @if (Auth::user()->role === 'Ketua RT' ||
+                                            (Auth::user()->role === 'Ketua Blok' && Auth::user()->id_blok === $keluarga->blok->id_blok))
+                                        <a href="{{ route('data-warga.formEdit', $keluarga->id_keluarga) }}"
+                                            class="btn btn-warning btn-sm">Edit</a>
+                                    @endif
+                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal" data-nokk="{{ $keluarga->no_kk }}"
+                                        data-kepala="{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}"
+                                        data-blok="{{ $keluarga->blok?->nama_blok ?? 'N/A' }}"
+                                        data-desil="{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}"
+                                        data-anggota="{{ $keluarga->anggotaKeluarga->toJson() }}">
+                                        Detail
+                                    </button>
+                                    {{-- Tombol Aksi Status --}}
+                                    {{-- Cek kondisi: Jika Status 1 (Aktif), tombol Merah (Nonaktifkan). Jika 0, tombol Hijau (Aktifkan) --}}
+                                    @if ($keluarga->status == 1)
+                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#statusModal-{{ $keluarga->id_keluarga }}">
+                                            Nonaktif
+                                        </button>
+                                    @else
+                                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#statusModal-{{ $keluarga->id_keluarga }}">
+                                            Aktifkan
+                                        </button>
+                                    @endif
+
+                                    {{-- Modal Status (ID dibuat UNIK menggunakan id_keluarga) --}}
+                                    <div class="modal fade" id="statusModal-{{ $keluarga->id_keluarga }}" tabindex="-1"
+                                        aria-labelledby="statusModalLabel-{{ $keluarga->id_keluarga }}"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content text-dark"> {{-- Tambah text-dark agar tulisan terbaca --}}
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title"
+                                                        id="statusModalLabel-{{ $keluarga->id_keluarga }}">
+                                                        Konfirmasi Status
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Apakah Anda yakin ingin mengubah status keluarga
+                                                    <strong>{{ $keluarga->no_kk }}</strong> menjadi
+                                                    <strong>{{ $keluarga->status == 1 ? 'Nonaktif' : 'Aktif' }}</strong>?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Batal</button>
+
+                                                    {{-- Form Update Status --}}
+                                                    <form
+                                                        action="{{ route('data-warga.status', $keluarga->id_keluarga) }}"
+                                                        method="POST">
+                                                        @csrf {{-- WAJIB ADA --}}
+                                                        @method('PUT') {{-- Disarankan pakai PUT/PATCH untuk update --}}
+
+                                                        {{-- Kirim status kebalikan. Jika skrg 1 kirim 0, jika skrg 0 kirim 1 --}}
+                                                        <input type="hidden" name="status"
+                                                            value="{{ $keluarga->status == 1 ? 0 : 1 }}">
+
+                                                        <button type="submit"
+                                                            class="btn {{ $keluarga->status == 1 ? 'btn-danger' : 'btn-success' }}">
+                                                            Ya,
+                                                            {{ $keluarga->status == 1 ? 'Nonaktifkan' : 'Aktifkan' }}
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center">Tidak ada data.</td>
+                            </tr>
+                        @endforelse
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
     {{-- Footer Paginasi --}}
@@ -251,6 +325,8 @@
                 <input type="hidden" name="search_query" value="{{ $searchQuery ?? '' }}">
                 <input type="hidden" name="filter_blok" value="{{ $filterBlok ?? '' }}">
                 <input type="hidden" name="filter_desil" value="{{ $filterDesil ?? '' }}">
+                {{-- BARU: Tambahkan ini --}}
+                <input type="hidden" name="filter_status" value="{{ $filterStatus ?? '' }}">
 
                 <span class="me-1 text-body-secondary">Hasil per halaman</span>
                 <select name="per_page" class="form-select form-select-sm d-inline-block w-auto"

@@ -36,6 +36,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/', [DataKeluargaController::class, 'store'])->name('store');
         Route::get('/{dataKeluarga:id_keluarga}/edit', [DataKeluargaController::class, 'formEdit'])->name('formEdit');
         Route::put('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'update'])->name('update');
+        Route::put('/{dataKeluarga:id_keluarga}/status', [DataKeluargaController::class, 'status'])->name('status');
     });
 
     // Data Penerima Bansos

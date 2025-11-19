@@ -28,6 +28,7 @@ class DataKeluargaController extends Controller
         $searchQuery = $request->input('search_query');
         $filterBlok  = $request->input('filter_blok');
         $filterDesil = $request->input('filter_desil');
+        $filterStatus = $request->input('filter_status');
 
         // 4. Siapkan query dasar dengan eager loading (Tidak berubah)
         $query = DataKeluarga::with(['anggotaKeluarga', 'blok', 'desil']);
@@ -61,15 +62,24 @@ class DataKeluargaController extends Controller
             });
         }
 
-        // 8. Terapkan logika sorting (Tidak berubah)
+        // 8. BARU: Logika FILTER STATUS
+        // Kita pakai !is_null agar nilai '0' (Nonaktif) tetap terbaca
+        if (!is_null($filterStatus) && $filterStatus !== '') {
+            $query->where('status', $filterStatus);
+        }
+
+        // 9. Terapkan logika sorting (UPDATED)
+        // Urutan: Blok User (jika ada) -> Status Aktif (1) ke Nonaktif (0) -> Tanggal Dibuat
         if ($user && $user->role === 'Ketua Blok') {
             $query->orderByRaw("CASE 
-                                WHEN id_blok = ? THEN 1 
-                                ELSE 2 
-                                END ASC", [$user->id_blok])
+                            WHEN id_blok = ? THEN 1 
+                            ELSE 2 
+                            END ASC", [$user->id_blok])
+                ->orderBy('status', 'DESC') // BARU: Aktif (1) di atas
                 ->orderBy('created_at', 'DESC');
         } else {
-            $query->orderBy('created_at', 'DESC');
+            $query->orderBy('status', 'DESC') // BARU: Aktif (1) di atas
+                ->orderBy('created_at', 'DESC');
         }
 
         // 9. Ambil data dengan paginasi
@@ -90,8 +100,28 @@ class DataKeluargaController extends Controller
             'searchQuery'  => $searchQuery,
             'filterBlok'   => $filterBlok,
             'filterDesil'  => $filterDesil,
+            'filterStatus' => $filterStatus,
             'perPage'      => $perPage, // <-- BARU: Kirim nilai perPage ke view
         ]);
+    }
+
+    public function status(Request $request, DataKeluarga $dataKeluarga)
+    {
+
+        // Validasi sedikit biar aman (0 atau 1)
+        $request->validate([
+            'status' => 'required|boolean'
+        ]);
+
+        // Update status
+        $dataKeluarga->update([
+            'status' => $request->status
+        ]);
+
+        // Pesan dinamis
+        $statusMsg = $request->status == 1 ? 'diaktifkan' : 'dinonaktifkan';
+
+        return redirect()->back()->with('success', "Status keluarga berhasil $statusMsg.");
     }
 
 

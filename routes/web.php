@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DataKeluargaController;
+use App\Http\Controllers\KelolaBansosController;
 use App\Http\Controllers\DataPenerimaBansosController;
 
 //========================= AREA ALL =========================//
@@ -70,4 +71,17 @@ Route::middleware('auth:admin')->group(function () {
         Route::put('/{admin:id_admin}', [AdminController::class, 'update'])->name('update');
         Route::delete('/{admin:id_admin}', [AdminController::class, 'destroy'])->name('destroy');
     });
+
+
+    // 2. AREA DINSOS (HANYA KETUA RT)
+    Route::prefix('kelola-bansos')
+        ->name('kelola-bansos.')
+        ->middleware('role:Ketua RT') // <-- Proteksi Keras di sini
+        ->group(function () {
+            Route::get('/', [KelolaBansosController::class, 'index'])->name('index');
+            Route::get('/{id}/proses', [KelolaBansosController::class, 'edit'])->name('edit'); // Form Keputusan
+            Route::put('/{id}', [KelolaBansosController::class, 'update'])->name('update'); // Simpan Keputusan
+
+            Route::patch('/{id}/penyaluran', [KelolaBansosController::class, 'updatePenyaluran'])->name('updatePenyaluran');
+        });
 });

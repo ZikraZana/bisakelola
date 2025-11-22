@@ -61,6 +61,12 @@
                             Akun Admin
                         </a>
                     </li>
+                    <li>
+                        <a href="{{route('kelola-bansos.index')}}" class="nav-link text-putih {{ Request::routeIs('kelola-bansos.*') ? 'bg-utama2' : '' }}">
+                            <i class="bi bi-clipboard-check-fill me-2"></i>
+                            Kelola Bansos
+                        </a>
+                    </li>
                 </ul>
                 <hr>
                 <ul class="nav nav-pills flex-column">

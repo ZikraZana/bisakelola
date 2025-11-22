@@ -219,73 +219,75 @@
                                 <td class="px-3">{{ $keluarga->blok?->nama_blok ?? 'N/A' }}</td>
                                 <td class="px-3">{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}</td>
                                 <td class="px-3">
-                                    @if (Auth::user()->role === 'Ketua RT' ||
-                                            (Auth::user()->role === 'Ketua Blok' && Auth::user()->id_blok === $keluarga->blok->id_blok))
-                                        <a href="{{ route('data-warga.formEdit', $keluarga->id_keluarga) }}"
-                                            class="btn btn-warning btn-sm">Edit</a>
-                                    @endif
-                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#detailModal" data-nokk="{{ $keluarga->no_kk }}"
-                                        data-kepala="{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}"
-                                        data-blok="{{ $keluarga->blok?->nama_blok ?? 'N/A' }}"
-                                        data-desil="{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}"
-                                        data-anggota="{{ $keluarga->anggotaKeluarga->toJson() }}">
-                                        Detail
-                                    </button>
-                                    {{-- Tombol Aksi Status --}}
-                                    {{-- Cek kondisi: Jika Status 1 (Aktif), tombol Merah (Nonaktifkan). Jika 0, tombol Hijau (Aktifkan) --}}
-                                    @if ($keluarga->status == 1)
-                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#statusModal-{{ $keluarga->id_keluarga }}">
-                                            Nonaktif
+                                    <div class="d-flex flex-nowrap gap-2">
+                                        @if (Auth::user()->role === 'Ketua RT' ||
+                                                (Auth::user()->role === 'Ketua Blok' && Auth::user()->id_blok === $keluarga->blok->id_blok))
+                                            <a href="{{ route('data-warga.formEdit', $keluarga->id_keluarga) }}"
+                                                class="btn btn-warning btn-sm">Edit</a>
+                                        @endif
+                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#detailModal" data-nokk="{{ $keluarga->no_kk }}"
+                                            data-kepala="{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}"
+                                            data-blok="{{ $keluarga->blok?->nama_blok ?? 'N/A' }}"
+                                            data-desil="{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}"
+                                            data-anggota="{{ $keluarga->anggotaKeluarga->toJson() }}">
+                                            Detail
                                         </button>
-                                    @else
-                                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#statusModal-{{ $keluarga->id_keluarga }}">
-                                            Aktifkan
-                                        </button>
-                                    @endif
+                                        {{-- Tombol Aksi Status --}}
+                                        {{-- Cek kondisi: Jika Status 1 (Aktif), tombol Merah (Nonaktifkan). Jika 0, tombol Hijau (Aktifkan) --}}
+                                        @if ($keluarga->status == 1)
+                                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#statusModal-{{ $keluarga->id_keluarga }}">
+                                                Nonaktif
+                                            </button>
+                                        @else
+                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#statusModal-{{ $keluarga->id_keluarga }}">
+                                                Aktifkan
+                                            </button>
+                                        @endif
 
-                                    {{-- Modal Status (ID dibuat UNIK menggunakan id_keluarga) --}}
-                                    <div class="modal fade" id="statusModal-{{ $keluarga->id_keluarga }}" tabindex="-1"
-                                        aria-labelledby="statusModalLabel-{{ $keluarga->id_keluarga }}"
-                                        aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content text-dark"> {{-- Tambah text-dark agar tulisan terbaca --}}
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title"
-                                                        id="statusModalLabel-{{ $keluarga->id_keluarga }}">
-                                                        Konfirmasi Status
-                                                    </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    Apakah Anda yakin ingin mengubah status keluarga
-                                                    <strong>{{ $keluarga->no_kk }}</strong> menjadi
-                                                    <strong>{{ $keluarga->status == 1 ? 'Nonaktif' : 'Aktif' }}</strong>?
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Batal</button>
+                                        {{-- Modal Status (ID dibuat UNIK menggunakan id_keluarga) --}}
+                                        <div class="modal fade" id="statusModal-{{ $keluarga->id_keluarga }}"
+                                            tabindex="-1" aria-labelledby="statusModalLabel-{{ $keluarga->id_keluarga }}"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content text-dark"> {{-- Tambah text-dark agar tulisan terbaca --}}
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"
+                                                            id="statusModalLabel-{{ $keluarga->id_keluarga }}">
+                                                            Konfirmasi Status
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Apakah Anda yakin ingin mengubah status keluarga
+                                                        <strong>{{ $keluarga->no_kk }}</strong> menjadi
+                                                        <strong>{{ $keluarga->status == 1 ? 'Nonaktif' : 'Aktif' }}</strong>?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Batal</button>
 
-                                                    {{-- Form Update Status --}}
-                                                    <form
-                                                        action="{{ route('data-warga.status', $keluarga->id_keluarga) }}"
-                                                        method="POST">
-                                                        @csrf {{-- WAJIB ADA --}}
-                                                        @method('PUT') {{-- Disarankan pakai PUT/PATCH untuk update --}}
+                                                        {{-- Form Update Status --}}
+                                                        <form
+                                                            action="{{ route('data-warga.status', $keluarga->id_keluarga) }}"
+                                                            method="POST">
+                                                            @csrf {{-- WAJIB ADA --}}
+                                                            @method('PUT') {{-- Disarankan pakai PUT/PATCH untuk update --}}
 
-                                                        {{-- Kirim status kebalikan. Jika skrg 1 kirim 0, jika skrg 0 kirim 1 --}}
-                                                        <input type="hidden" name="status"
-                                                            value="{{ $keluarga->status == 1 ? 0 : 1 }}">
+                                                            {{-- Kirim status kebalikan. Jika skrg 1 kirim 0, jika skrg 0 kirim 1 --}}
+                                                            <input type="hidden" name="status"
+                                                                value="{{ $keluarga->status == 1 ? 0 : 1 }}">
 
-                                                        <button type="submit"
-                                                            class="btn {{ $keluarga->status == 1 ? 'btn-danger' : 'btn-success' }}">
-                                                            Ya,
-                                                            {{ $keluarga->status == 1 ? 'Nonaktifkan' : 'Aktifkan' }}
-                                                        </button>
-                                                    </form>
+                                                            <button type="submit"
+                                                                class="btn {{ $keluarga->status == 1 ? 'btn-danger' : 'btn-success' }}">
+                                                                Ya,
+                                                                {{ $keluarga->status == 1 ? 'Nonaktifkan' : 'Aktifkan' }}
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -302,7 +304,6 @@
                 </table>
             </div>
         </div>
-
     </div>
 
     {{-- Footer Paginasi --}}

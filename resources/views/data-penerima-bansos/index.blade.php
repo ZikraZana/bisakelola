@@ -61,9 +61,11 @@
                     </button>
                 </div>
                 <div>
-                    <a href="{{ route('data-penerima-bansos.formTambah') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-1"></i> Ajukan Warga
-                    </a>
+                    @if (Auth::user()->role === 'Ketua RT')
+                        <a href="{{ route('data-penerima-bansos.formTambah') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-1"></i> Ajukan Warga
+                        </a>
+                    @endif
                 </div>
             </div>
 
@@ -298,11 +300,18 @@
 
                 // Isi Data
                 txt('m-status', p.status_acc);
-                txt('m-ket-acc', p.keterangan_acc); // <-- Catatan Dinsos
+                txt('m-ket-acc', p.keterangan_acc ? p.keterangan_acc : 'Belum catatan');
                 txt('m-jenis', p.bansos ? p.bansos.nama_bansos : 'Belum Ditentukan');
-                txt('m-periode', p.periode);
-                txt('m-terima', p.status_bansos_diterima);
 
+                // Atur jika status_acc adalah 'Ditolak'
+                if (p.status_acc === 'Ditolak') {
+                    txt('m-jenis', '-');
+                    txt('m-periode', '-');
+                    txt('m-terima', '-');
+                } else {
+                    txt('m-periode', p.periode);
+                    txt('m-terima', p.status_bansos_diterima);
+                }
                 txt('m-tgl', new Date(p.created_at).toLocaleDateString('id-ID'));
                 txt('m-kk', k.no_kk);
                 txt('m-kepala', kepala);

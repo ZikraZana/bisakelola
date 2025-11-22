@@ -41,11 +41,11 @@ Route::middleware('auth:admin')->group(function () {
     });
 
     // Data Penerima Bansos
-    Route::prefix('data-penerima-bansos')->name('data-penerima-bansos.')->group(function () {
+    Route::prefix('data-penerima-bansos')->name('data-penerima-bansos.')->middleware('role:Ketua RT,Ketua Blok')->group(function () {
         Route::get('/', [DataPenerimaBansosController::class, 'index'])->name('index');
 
         // 2. Tampilkan form tambah data
-        Route::get('/tambah-data', [DataPenerimaBansosController::class, 'formTambah'])->name('formTambah')->middleware('role:Ketua RT,Ketua Blok');
+        Route::get('/tambah-data', [DataPenerimaBansosController::class, 'formTambah'])->name('formTambah')->middleware('role:Ketua RT');
 
         // 3. Simpan data baru (dari form dinamis)
         Route::post('/', [DataPenerimaBansosController::class, 'store'])->name('store');

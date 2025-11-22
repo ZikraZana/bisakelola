@@ -49,24 +49,32 @@
                             Daftar Warga
                         </a>
                     </li>
+                    @if (Auth::user()->role === 'Ketua RT' ||
+                            (Auth::user()->role === 'Ketua Blok'))
+                        <li>
+                            <a href="{{ route('data-penerima-bansos.index') }}"
+                                class="nav-link text-putih {{ Request::routeIs('data-penerima-bansos.*') ? 'bg-utama2' : '' }}">
+                                <i class="bi bi-gift-fill me-2"></i>
+                                Penerima Bansos
+                            </a>
+                        </li>
+                    @endif
                     <li>
-                        <a href="{{ route('data-penerima-bansos.index') }}" class="nav-link text-putih {{ Request::routeIs('data-penerima-bansos.*') ? 'bg-utama2' : '' }}">
-                            <i class="bi bi-gift-fill me-2"></i>
-                            Penerima Bansos
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{route('akun-admin.index')}}" class="nav-link text-putih {{ Request::routeIs('akun-admin.*') ? 'bg-utama2' : '' }}">
+                        <a href="{{ route('akun-admin.index') }}"
+                            class="nav-link text-putih {{ Request::routeIs('akun-admin.*') ? 'bg-utama2' : '' }}">
                             <i class="bi bi-person-circle me-2"></i>
                             Akun Admin
                         </a>
                     </li>
-                    <li>
-                        <a href="{{route('kelola-bansos.index')}}" class="nav-link text-putih {{ Request::routeIs('kelola-bansos.*') ? 'bg-utama2' : '' }}">
-                            <i class="bi bi-clipboard-check-fill me-2"></i>
-                            Kelola Bansos
-                        </a>
-                    </li>
+                    @if (Auth::user()->role === 'Ketua RT')
+                        <li>
+                            <a href="{{ route('kelola-bansos.index') }}"
+                                class="nav-link text-putih {{ Request::routeIs('kelola-bansos.*') ? 'bg-utama2' : '' }}">
+                                <i class="bi bi-clipboard-check-fill me-2"></i>
+                                Kelola Bansos
+                            </a>
+                        </li>
+                    @endif
                 </ul>
                 <hr>
                 <ul class="nav nav-pills flex-column">

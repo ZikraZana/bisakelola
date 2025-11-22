@@ -233,23 +233,30 @@
                                             data-anggota="{{ $keluarga->anggotaKeluarga->toJson() }}">
                                             Detail
                                         </button>
-                                        {{-- Tombol Aksi Status --}}
-                                        {{-- Cek kondisi: Jika Status 1 (Aktif), tombol Merah (Nonaktifkan). Jika 0, tombol Hijau (Aktifkan) --}}
-                                        @if ($keluarga->status == 1)
-                                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#statusModal-{{ $keluarga->id_keluarga }}">
-                                                Nonaktif
-                                            </button>
-                                        @else
-                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#statusModal-{{ $keluarga->id_keluarga }}">
-                                                Aktifkan
-                                            </button>
+
+                                        @if (Auth::user()->role === 'Ketua RT' ||
+                                                (Auth::user()->role === 'Ketua Blok' && Auth::user()->id_blok === $keluarga->blok->id_blok))
+                                            {{-- Tombol Aksi Status --}}
+                                            {{-- Cek kondisi: Jika Status 1 (Aktif), tombol Merah (Nonaktifkan). Jika 0, tombol Hijau (Aktifkan) --}}
+                                            @if ($keluarga->status == 1)
+                                                <button type="button" class="btn btn-danger btn-sm"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#statusModal-{{ $keluarga->id_keluarga }}">
+                                                    Nonaktif
+                                                </button>
+                                            @else
+                                                <button type="button" class="btn btn-success btn-sm"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#statusModal-{{ $keluarga->id_keluarga }}">
+                                                    Aktifkan
+                                                </button>
+                                            @endif
                                         @endif
 
                                         {{-- Modal Status (ID dibuat UNIK menggunakan id_keluarga) --}}
                                         <div class="modal fade" id="statusModal-{{ $keluarga->id_keluarga }}"
-                                            tabindex="-1" aria-labelledby="statusModalLabel-{{ $keluarga->id_keluarga }}"
+                                            tabindex="-1"
+                                            aria-labelledby="statusModalLabel-{{ $keluarga->id_keluarga }}"
                                             aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content text-dark"> {{-- Tambah text-dark agar tulisan terbaca --}}

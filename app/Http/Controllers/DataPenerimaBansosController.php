@@ -33,11 +33,6 @@ class DataPenerimaBansosController extends Controller
             'adminPengaju'
         ]);
 
-        // FILTER: Ketua RT bisa lihat semua, Ketua Blok hanya lihat pengajuannya
-        if ($user->role !== 'Ketua RT') {
-            $query->where('id_admin_pengaju', $user->id_admin);
-        }
-
         if ($filterStatusAcc) {
             $query->where('status_acc', $filterStatusAcc);
         }

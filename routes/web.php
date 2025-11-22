@@ -11,7 +11,7 @@ use App\Http\Controllers\DataPenerimaBansosController;
 //========================= AREA ALL =========================//
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 //========================= AREA GUEST =========================//
 Route::middleware('guest')->group(function () {

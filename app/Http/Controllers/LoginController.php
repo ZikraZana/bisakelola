@@ -23,13 +23,14 @@ class LoginController extends Controller
         // Attempt to authenticate the user
         if (Auth::attempt($credentials)) {
             // Authentication passed, redirect to dashboard
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/dashboard')
+            ->with('success', 'Login berhasil! Selamat datang, ' . Auth::user()->nama_lengkap . '!');
         }
 
+        
+
         // Authentication failed, redirect back with error
-        return back()->withErrors([
-            'pesan_error' => 'Username atau password salah.',
-        ])->withInput();
+        return back()->with('error', 'Username atau Password salah!');
     }
 
     public function logout(Request $request)

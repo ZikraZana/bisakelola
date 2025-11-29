@@ -340,4 +340,23 @@
             });
         });
     </script>
+    
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                toast: true,
+                position: 'top-end', // Posisi di pojok kanan atas
+                icon: 'success',
+                title: '{{ session('success') }}',
+                showConfirmButton: false, // Hilangkan tombol OK
+                timer: 3000, // Tutup otomatis setelah 3 detik
+                timerProgressBar: true, // Tampilkan progress bar waktu
+                // Mencegah toast ditutup saat kursor mouse di atasnya
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        </script>
+    @endif
 @endpush

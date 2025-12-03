@@ -403,8 +403,11 @@
                                                 {{ ($anggota['status_perkawinan'] ?? '') == 'Kawin' ? 'selected' : '' }}>
                                                 Kawin</option>
                                             <option value="Cerai"
-                                                {{ ($anggota['status_perkawinan'] ?? '') == 'Cerai' ? 'selected' : '' }}>
-                                                Cerai</option>
+                                                {{ ($anggota['status_perkawinan'] ?? '') == 'Cerai Mati' ? 'selected' : '' }}>
+                                                Cerai Mati</option>
+                                             <option value="Cerai"
+                                                {{ ($anggota['status_perkawinan'] ?? '') == 'Cerai Hidup' ? 'selected' : '' }}>
+                                                Cerai Hidup</option>   
                                         </select>
                                         @error("anggota_keluarga.$index.status_perkawinan")
                                             <i class="text-danger small">{{ $message }}</i>

@@ -374,8 +374,10 @@
                                             @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Belum Kawin') selected @endif>Belum Kawin</option>
                                         <option value="Kawin" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Kawin') selected @endif>
                                             Kawin</option>
-                                        <option value="Cerai" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Cerai') selected @endif>
-                                            Cerai</option>
+                                        <option value="Cerai" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Cerai Mati') selected @endif>
+                                            Cerai Mati</option>
+                                        <option value="Cerai" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Cerai Hidup') selected @endif>
+                                            Cerai Hidup</option>
                                     </select>
                                     @error("anggota_keluarga.$index.status_perkawinan")
                                         <i class="text-danger small">{{ $message }}</i>

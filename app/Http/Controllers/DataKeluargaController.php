@@ -134,7 +134,7 @@ class DataKeluargaController extends Controller
     {
         // 1. Validasi Data
         $validator = Validator::make($request->all(), [
-            'no_kk' => 'required|numeric|unique:data_keluarga,no_kk',
+            'no_kk' => 'required|numeric|digits:16|unique:data_keluarga,no_kk',
             'blok' => 'required|string|exists:blok,nama_blok',
             'desil' => 'nullable|exists:desil,tingkat_desil',
 
@@ -156,19 +156,20 @@ class DataKeluargaController extends Controller
                 },
             ],
 
-            'anggota_keluarga.*.nik' => 'required|numeric|distinct|unique:data_anggota_keluarga,nik_anggota',
+            'anggota_keluarga.*.nik' => 'required|numeric|digits:16|distinct|unique:data_anggota_keluarga,nik_anggota',
             'anggota_keluarga.*.nama' => 'required|string|max:255',
             'anggota_keluarga.*.tempat_lahir' => 'required|string|max:100',
-            'anggota_keluarga.*.tanggal_lahir' => 'required|date',
+            'anggota_keluarga.*.tanggal_lahir' => 'required|date|before:today',
             'anggota_keluarga.*.jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'anggota_keluarga.*.agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghuchu',
-            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai',
+            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai Mati,Cerai Hidup',
             'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Istri,Anak',
             'anggota_keluarga.*.pendidikan' => 'required|string',
             'anggota_keluarga.*.pekerjaan' => 'required|string',
         ], [
             'no_kk.required' => 'Nomor Kartu Keluarga wajib diisi.',
             'no_kk.numeric' => 'Nomor Kartu Keluarga harus berupa angka.',
+            'no_kk.digits' => 'Nomor Kartu Keluarga harus terdiri dari 16 angka',
             'no_kk.unique' => 'Nomor Kartu Keluarga sudah terdaftar.',
             'blok.required' => 'Blok wajib diisi.',
             'blok.exists' => 'Blok tidak valid.',
@@ -179,6 +180,7 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.min' => 'Minimal harus ada satu anggota keluarga.',
             'anggota_keluarga.*.nik.required' => 'NIK anggota keluarga wajib diisi.',
             'anggota_keluarga.*.nik.numeric' => 'NIK anggota keluarga harus berupa angka.',
+            'anggota_keluarga.*.nik.digits' => 'NIK anggota keluarga harus terdiri dari 16 angka',
             'anggota_keluarga.*.nik.distinct' => 'NIK anggota keluarga tidak boleh sama dalam satu form.', // Pesan u/ distinct
             'anggota_keluarga.*.nik.unique' => 'NIK anggota keluarga sudah terdaftar.',
             'anggota_keluarga.*.nama.required' => 'Nama lengkap anggota keluarga wajib diisi.',
@@ -187,6 +189,7 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.*.tempat_lahir.max' => 'Tempat lahir anggota keluarga tidak boleh lebih dari :max karakter.',
             'anggota_keluarga.*.tanggal_lahir.required' => 'Tanggal lahir anggota keluarga wajib diisi.',
             'anggota_keluarga.*.tanggal_lahir.date' => 'Tanggal lahir anggota keluarga harus berupa tanggal yang valid.',
+            'anggota_keluarga.*.tanggal_lahir.before' => 'Tanggal lahir anggota keluarga tidak boleh melebihi tanggal hari ini.',
             'anggota_keluarga.*.jenis_kelamin.required' => 'Jenis kelamin anggota keluarga wajib dipilih.',
             'anggota_keluarga.*.jenis_kelamin.in' => 'Jenis kelamin anggota keluarga tidak valid.',
             'anggota_keluarga.*.agama.required' => 'Agama anggota keluarga wajib dipilih.',
@@ -298,7 +301,7 @@ class DataKeluargaController extends Controller
 
         // 1. Validasi Data
         $validator = Validator::make($request->all(), [
-            'no_kk' => ['required', 'numeric', Rule::unique('data_keluarga', 'no_kk')->ignore($dataKeluarga->id_keluarga, 'id_keluarga')],
+            'no_kk' => ['required', 'numeric', 'digits:16', Rule::unique('data_keluarga', 'no_kk')->ignore($dataKeluarga->id_keluarga, 'id_keluarga')],
             'blok' => 'required|exists:blok,nama_blok',
             'desil' => 'nullable|exists:desil,tingkat_desil',
 
@@ -320,6 +323,7 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.*.nik' => [
                 'required',
                 'numeric',
+                'digits:16',
                 'distinct',
                 Rule::unique('data_anggota_keluarga', 'nik_anggota')
                     ->where(function ($query) use ($dataKeluarga) {
@@ -329,16 +333,17 @@ class DataKeluargaController extends Controller
             ],
             'anggota_keluarga.*.nama' => 'required|string|max:255',
             'anggota_keluarga.*.tempat_lahir' => 'required|string|max:100',
-            'anggota_keluarga.*.tanggal_lahir' => 'required|date',
+            'anggota_keluarga.*.tanggal_lahir' => 'required|date|before:today',
             'anggota_keluarga.*.jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'anggota_keluarga.*.agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghuchu',
-            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai',
+            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai Mati, Cerai Hidup',
             'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Istri,Anak',
             'anggota_keluarga.*.pendidikan' => 'required|string',
             'anggota_keluarga.*.pekerjaan' => 'required|string',
         ], [
             'no_kk.required' => 'Nomor Kartu Keluarga wajib diisi.',
             'no_kk.numeric' => 'Nomor Kartu Keluarga harus berupa angka.',
+            'no_kk.digits' => 'Nomor Kartu Keluarga harus terdiri dari 16 angka',
             'no_kk.unique' => 'Nomor Kartu Keluarga sudah terdaftar untuk keluarga lain.',
             'blok.required' => 'Blok wajib diisi.',
             'blok.string' => 'Blok harus berupa teks.',
@@ -351,9 +356,13 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.min' => 'Minimal harus ada satu anggota keluarga.',
             'anggota_keluarga.*.nik.required' => 'NIK anggota keluarga wajib diisi.',
             'anggota_keluarga.*.nik.numeric' => 'NIK anggota keluarga harus berupa angka.',
+            'anggota_keluarga.*.nik.digits' => 'NIK anggota keluarga harus terdiri dari 16 angka',
             'anggota_keluarga.*.nik.distinct' => 'NIK anggota keluarga tidak boleh sama dalam satu form.',
             'anggota_keluarga.*.nik.unique' => 'NIK anggota keluarga sudah terdaftar untuk anggota keluarga lain.',
             'anggota_keluarga.*.nama.required' => 'Nama lengkap anggota keluarga wajib diisi.',
+            'anggota_keluarga.*.tanggal_lahir.required' => 'Tanggal lahir anggota keluarga wajib diisi.',
+            'anggota_keluarga.*.tanggal_lahir.date' => 'Tanggal lahir anggota keluarga harus berupa tanggal yang valid.',
+            'anggota_keluarga.*.tanggal_lahir.before' => 'Tanggal lahir anggota keluarga tidak boleh melebihi tanggal hari ini.',
             'anggota_keluarga.*.status_dalam_keluarga.required' => 'Status dalam keluarga wajib dipilih.',
             'anggota_keluarga.*.status_dalam_keluarga.in' => 'Status dalam keluarga tidak valid.',
             'anggota_keluarga.*.pendidikan.required' => 'Pendidikan anggota keluarga wajib diisi.',

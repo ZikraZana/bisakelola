@@ -392,7 +392,106 @@
             <button type="button" class="btn btn-success btn-sm mt-3" id="add-anggota-keluarga">Tambah Anggota
                 Keluarga</button>
 
+            <h4 class="fw-bold mb-3 mt-4">Berkas Pendukung</h4>
 
+            <div class="row g-3 mb-4">
+                {{-- Upload KTP --}}
+                <div class="col-md-6">
+                    <label for="foto_ktp" class="form-label">Upload Foto/Scan KTP</label>
+
+                    <div id="dropKTP"
+                        class="border border-2 border-dashed rounded p-4 text-center bg-light"
+                        style="cursor: pointer;">
+                        <input type="file" name="foto_ktp" id="foto_ktp"
+                            class="d-none @error('foto_ktp') is-invalid @enderror"
+                            accept="image/*,.pdf">
+
+                        <p class="text-muted m-0">
+                            <strong>Klik untuk mengunggah</strong> atau seret file<br>
+                            <small>Gambar atau PDF (Maks. 5MB)</small>
+                        </p>
+                    </div>
+
+                    @error('foto_ktp')
+                        <i class="text-danger small">{{ $message }}</i>
+                    @enderror
+
+                    <div id="previewKTP" class="small mt-1 text-success"></div>
+                </div>
+
+                <!-- Upload KK -->
+                <div class="col-md-6">
+                    <label for="foto_kk" class="form-label">Upload Foto/Scan KK</label>
+
+                    <div id="dropKK"
+                        class="border border-2 border-dashed rounded p-4 text-center bg-light"
+                        style="cursor: pointer;">
+                        <input type="file" name="foto_kk" id="foto_kk"
+                            class="d-none @error('foto_kk') is-invalid @enderror"
+                            accept="image/*,.pdf">
+
+                        <p class="text-muted m-0">
+                            <strong>Klik untuk mengunggah</strong> atau seret file<br>
+                            <small>Gambar atau PDF (Maks. 5MB)</small>
+                        </p>
+                    </div>
+
+                    @error('foto_kk')
+                        <i class="text-danger small">{{ $message }}</i>
+                    @enderror
+
+                    <div id="previewKK" class="small mt-1 text-success"></div>
+                </div>
+
+            </div>
+
+            <script>
+                function setupUpload(dropAreaId, inputId, previewId) {
+                    const drop = document.getElementById(dropAreaId);
+                    const input = document.getElementById(inputId);
+                    const preview = document.getElementById(previewId);
+
+                    drop.addEventListener("click", () => input.click());
+
+                    drop.addEventListener("dragover", (e) => {
+                        e.preventDefault();
+                        drop.classList.add("bg-secondary-subtle");
+                    });
+
+                    drop.addEventListener("dragleave", () => {
+                        drop.classList.remove("bg-secondary-subtle");
+                    });
+
+                    drop.addEventListener("drop", (e) => {
+                        e.preventDefault();
+                        drop.classList.remove("bg-secondary-subtle");
+                        input.files = e.dataTransfer.files;
+                        validate();
+                    });
+
+                    input.addEventListener("change", validate);
+
+                    function validate() {
+                        const file = input.files[0];
+                        if (!file) return;
+
+                        if (file.size > 5 * 1024 * 1024) {
+                            preview.classList.add("text-danger");
+                            preview.textContent = "❌ File melebihi 5MB!";
+                            input.value = "";
+                            return;
+                        }
+
+                        preview.classList.remove("text-danger");
+                        preview.textContent = "✔ " + file.name;
+                    }
+                }
+
+                setupUpload("dropKTP", "foto_ktp", "previewKTP");
+                setupUpload("dropKK", "foto_kk", "previewKK");
+            </script>
+
+            </div>
             {{-- Tombol Aksi --}}
             <div class="d-flex justify-content-end mt-4">
                 <a href="{{ route('data-warga.index') }}" class="btn btn-outline-secondary me-2">

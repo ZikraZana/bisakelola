@@ -400,8 +400,29 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-                <div class="modal-footer">
+                    <h5>Berkas Pendukung</h5>
+                    <table class="table table-sm table-bordered">
+                        <tr>
+                            <th style="width:30%">Foto KTP</th>
+                            <td>
+                                <img id="modal-foto-ktp" src="" 
+                                    class="img-fluid rounded shadow-sm" 
+                                    style="max-height:200px; display:none;">
+                                <a id="modal-link-ktp" href="#" target="_blank" class="d-none">Lihat Berkas KTP</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Foto KK</th>
+                            <td>
+                                <img id="modal-foto-kk" src="" 
+                                    class="img-fluid rounded shadow-sm" 
+                                    style="max-height:200px; display:none;">
+                                <a id="modal-link-kk" href="#" target="_blank" class="d-none">Lihat Berkas KK</a>
+                            </td>
+                        </tr>
+                    </table>
+                    </div>
+                    <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>

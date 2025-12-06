@@ -13,7 +13,7 @@
     <div class="card shadow-sm border-0 rounded-3">
         <div class="card-body p-4 p-md-5">
 
-            <form action="{{ route('data-warga.store') }}" method="POST"> {{-- Sesuaikan dengan route Anda --}}
+            <form action="{{ route('data-warga.store') }}" method="POST" enctype="multipart/form-data"> {{-- Sesuaikan dengan route Anda --}}
                 @csrf
 
                 {{-- TAMBAHAN: Menampilkan ringkasan error dari file dummy --}}
@@ -374,9 +374,9 @@
                                             @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Belum Kawin') selected @endif>Belum Kawin</option>
                                         <option value="Kawin" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Kawin') selected @endif>
                                             Kawin</option>
-                                        <option value="Cerai" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Cerai Mati') selected @endif>
+                                        <option value="Cerai Mati" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Cerai Mati') selected @endif>
                                             Cerai Mati</option>
-                                        <option value="Cerai" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Cerai Hidup') selected @endif>
+                                        <option value="Cerai Hidup" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Cerai Hidup') selected @endif>
                                             Cerai Hidup</option>
                                     </select>
                                     @error("anggota_keluarga.$index.status_perkawinan")
@@ -397,7 +397,7 @@
             <div class="row g-3 mb-4">
                 {{-- Upload KTP --}}
                 <div class="col-md-6">
-                    <label for="foto_ktp" class="form-label">Upload Foto/Scan KTP</label>
+                    <label for="foto_ktp" class="form-label">Upload Foto/Scan KTP Kepala Keluarga</label>
 
                     <div id="dropKTP"
                         class="border border-2 border-dashed rounded p-4 text-center bg-light"
@@ -477,7 +477,7 @@
 
                         if (file.size > 5 * 1024 * 1024) {
                             preview.classList.add("text-danger");
-                            preview.textContent = "❌ File melebihi 5MB!";
+                            preview.textContent = "File melebihi 5MB!";
                             input.value = "";
                             return;
                         }

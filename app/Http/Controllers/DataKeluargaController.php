@@ -166,6 +166,9 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Istri,Anak',
             'anggota_keluarga.*.pendidikan' => 'required|string',
             'anggota_keluarga.*.pekerjaan' => 'required|string',
+
+            'foto_ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'foto_kk' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ], [
             'no_kk.required' => 'Nomor Kartu Keluarga wajib diisi.',
             'no_kk.numeric' => 'Nomor Kartu Keluarga harus berupa angka.',
@@ -200,6 +203,12 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.*.status_dalam_keluarga.in' => 'Status dalam keluarga tidak valid.',
             'anggota_keluarga.*.pendidikan.required' => 'Pendidikan anggota keluarga wajib diisi.',
             'anggota_keluarga.*.pekerjaan.required' => 'Pekerjaan anggota keluarga wajib diisi.',
+            'foto_ktp.required' => 'Foto/Scan KTP wajib diunggah.',
+            'foto_kk.required'  => 'Foto/Scan KK wajib diunggah.',
+            'foto_ktp.mimes' => 'Format file KTP harus berupa JPG, JPEG, PNG, atau PDF.',
+            'foto_kk.mimes'  => 'Format file KK harus berupa JPG, JPEG, PNG, atau PDF.',
+            'foto_ktp.max' => 'Ukuran file KTP maksimal 5MB.',
+            'foto_kk.max'  => 'Ukuran file KK maksimal 5MB.',
         ]);
 
         if ($validator->fails()) {
@@ -227,6 +236,8 @@ class DataKeluargaController extends Controller
                 'no_kk' => $request->no_kk,
                 'id_blok' => $blok->id_blok,
                 'id_desil' => $desil->id_desil,
+                'foto_ktp' => $request->file('foto_ktp')->store('uploads/ktp', 'public'),
+                'foto_kk' => $request->file('foto_kk')->store('uploads/kk', 'public'),
             ]);
 
             // 5. Simpan AnggotaKeluarga

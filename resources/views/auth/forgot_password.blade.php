@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - BISAKELOLA</title>
+    <title>Lupa Password - BISAKELOLA</title>
 
     {{-- Bootstrap 5 CSS CDN --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,12 +20,11 @@
 
 <body>
 
-    {{-- PERBAIKAN DI SINI: Tambahkan class 'p-0' --}}
     <div class="container-fluid vh-100 p-0">
 
         <div class="row h-100 g-0">
 
-            {{-- BAGIAN KIRI: Branding Area --}}
+            {{-- BAGIAN KIRI: Branding Area (Sama Persis dengan Login) --}}
             <div
                 class="col-lg-6 d-none d-lg-flex flex-column justify-content-center align-items-center bg-utama2 bg-gradient text-white position-relative overflow-hidden">
 
@@ -46,64 +45,54 @@
                 </div>
             </div>
 
-            {{-- BAGIAN KANAN: Form Login --}}
+            {{-- BAGIAN KANAN: Form Lupa Password --}}
             <div class="col-lg-6 d-flex flex-column justify-content-center align-items-center bg-light">
 
                 <div class="w-100 px-4" style="max-width: 500px;">
 
                     <div class="text-center mb-5">
-                        <h2 class="fw-bold text-biru">Selamat Datang</h2>
-                        <p class="text-secondary">Silakan login dengan akun Anda</p>
+                        <h2 class="fw-bold text-biru">Lupa Password?</h2>
+                        <p class="text-secondary">
+                            Jangan khawatir. Masukkan email Anda dan kami akan mengirimkan petunjuk reset password.
+                        </p>
                     </div>
 
-                    <form action="{{ route('login') }}" method="POST">
+                    {{-- Form Action mengarah ke route password.email (Default Laravel) --}}
+                    <form action="" method="POST" class="mb-4">
                         @csrf
 
-                        <div class="mb-3 shadow-sm">
+                        <div class="mb-4">
                             <div class="input-group">
                                 <span class="input-group-text border-0 bg-white">
-                                    <i class="bi bi-person-fill text-secondary"></i>
+                                    {{-- Icon Envelope untuk Email --}}
+                                    <i class="bi bi-envelope-fill text-secondary"></i>
                                 </span>
-                                <input type="text"
-                                    class="form-control p-2 border-0 @error('username') is-invalid @enderror"
-                                    id="username" name="username" placeholder="Username" value="{{ old('username') }}">
+                                <input type="email"
+                                    class="form-control p-2 border-0 @error('email') is-invalid @enderror"
+                                    id="email" name="email" placeholder="Masukkan Email Terdaftar"
+                                    value="{{ old('email') }}" required>
                             </div>
-                            @error('username')
+                            @error('email')
                                 <div class="invalid-feedback text-start ps-2 d-block">{{ $message }}</div>
                             @enderror
-                        </div>
-
-                        <div class="mb-3 shadow-sm">
-                            <div class="input-group">
-                                <span class="input-group-text border-0 bg-white">
-                                    <i class="bi bi-lock-fill text-secondary"></i>
-                                </span>
-                                <input type="password"
-                                    class="form-control p-2 border-0 @error('password') is-invalid @enderror"
-                                    id="password" name="password" placeholder="Password">
-                            </div>
-                            @error('password')
-                                <div class="invalid-feedback text-start ps-2 d-block">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="remember" name="remember"
-                                    style="accent-color: var(--bs-primary);">
-                                <label class="form-check-label text-secondary small" for="remember">Ingat Saya</label>
-                            </div>
-                            <a href="{{route('forgot.password')}}" class="text-decoration-none small fw-semibold text-biru" style="transition: all 0.3s ease;" onmouseover="this.style.textDecoration='underline'; this.style.opacity='0.7'" onmouseout="this.style.textDecoration='none'; this.style.opacity='1'">Lupa
-                                Password?</a>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn bg-button-add-primary btn-lg shadow fw-bold py-2 fs-md-6"
-                                style="font-size: 17px;">
-                                LOGIN SEKARANG <i class="bi bi-arrow-right ms-2"></i>
+                            <button type="submit" class="btn bg-button-add-primary btn-lg shadow fw-bold py-2"
+                                style="font-size: 15px;">
+                                KIRIM LINK RESET <i class="bi bi-send-fill ms-2"></i>
                             </button>
                         </div>
                     </form>
+
+                    {{-- Tombol Kembali ke Login --}}
+                    <div class="mt-4 text-center">
+                        <a href="{{ route('login') }}"
+                            class="text-decoration-none small fw-bold text-biru d-inline-flex align-items-center icon-link-hover"
+                            style="transition: all 0.3s ease;">
+                            <i class="bi bi-arrow-left me-2" style="margin-bottom: -3px"></i> Kembali ke Login
+                        </a>
+                    </div>
 
                     <div class="mt-5 text-center text-secondary small opacity-50">
                         &copy; {{ date('Y') }} Bisakelola. All rights reserved.
@@ -117,12 +106,26 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        @if (session('error'))
+        // Notifikasi Sukses (Link terkirim)
+        @if (session('status'))
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('status') }}',
+                showConfirmButton: true,
+                confirmButtonColor: '#0d6efd' // Sesuaikan warna tombol OK
+            });
+        @endif
+
+        // Notifikasi Error (Email tidak ditemukan dll)
+        @if ($errors->any())
             Swal.fire({
                 toast: true,
                 position: 'top-end',
                 icon: 'error',
-                title: '{{ session('error') }}',
+                title: 'Terjadi Kesalahan',
+                text: 'Silakan periksa kembali email Anda.',
                 showConfirmButton: false,
                 timer: 4000,
                 timerProgressBar: true

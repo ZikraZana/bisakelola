@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <style>
         body { font-family: 'Roboto', sans-serif; }
@@ -22,7 +23,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
             <a class="navbar-brand fw-bold fs-3" href="#">
-                <span class="text-primary">Bisa</span><span class="text-dark">Kelola</span>
+                <span class="text-biru">Bisa</span><span class="text-dark">Kelola</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -37,7 +38,7 @@
                             </li>
                         @else
                             <li class="nav-item">
-                                <a href="{{ route('login') }}" class="btn btn-primary px-4 rounded-pill">
+                                <a href="{{ route('login') }}" class="btn bg-button-add-primary px-4 rounded-pill">
                                     Login Petugas
                                 </a>
                             </li>
@@ -53,14 +54,14 @@
             <div class="row align-items-center g-5">
                 <div class="col-lg-6 order-2 order-lg-1">
                     <h1 class="display-4 fw-bold text-dark mb-3">
-                        Kelola Data Warga & <span class="text-primary">Bansos Terpadu</span>
+                        Kelola Data Warga & <span class="text-biru">Bansos Terpadu</span>
                     </h1>
                     <p class="lead text-secondary mb-4">
                         Sistem informasi manajemen desa untuk pendataan penduduk dan penyaluran bantuan sosial yang transparan, akurat, dan akuntabel.
                     </p>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                        <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-4 me-md-2">Mulai Sekarang</a>
-                        <a href="#fitur" class="btn btn-outline-primary btn-lg px-4">Pelajari Fitur</a>
+                        <a href="{{ route('login') }}" class="btn bg-button-add-primary btn-lg px-4 me-md-2">Mulai Sekarang</a>
+                        <a href="#fitur" class="btn btn-outline-biru btn-lg px-4">Pelajari Fitur</a>
                     </div>
                 </div>
                 <div class="col-lg-6 order-1 order-lg-2 text-center">
@@ -84,7 +85,7 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm p-3">
                         <div class="card-body text-center">
-                            <div class="mb-3 text-primary">
+                            <div class="mb-3 text-biru">
                                 <i class="bi bi-database-fill display-4"></i>
                             </div>
                             <h4 class="card-title fw-bold">Database Warga</h4>
@@ -97,7 +98,7 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm p-3">
                         <div class="card-body text-center">
-                            <div class="mb-3 text-primary">
+                            <div class="mb-3 text-biru">
                                 <i class="bi bi-box2-heart-fill display-4"></i>
                             </div>
                             <h4 class="card-title fw-bold">Distribusi Bansos</h4>
@@ -110,7 +111,7 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm p-3">
                         <div class="card-body text-center">
-                            <div class="mb-3 text-primary">
+                            <div class="mb-3 text-biru">
                                 <i class="bi bi-file-earmark-bar-graph-fill display-4"></i>
                             </div>
                             <h4 class="card-title fw-bold">Laporan & Statistik</h4>

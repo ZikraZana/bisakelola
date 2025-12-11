@@ -15,6 +15,9 @@
 .text-putih{
     color: #fdfdfd !important;
 }
+.text-biru{
+    color: #1C88D3 !important;
+}
 
 .bg-button-add-primary{
     background-color: #1C88D3 !important;
@@ -50,4 +53,16 @@
 .bg-utama1 .nav-link.text-danger:hover {
     background-color: #dc3545 !important; /* Warna dari .bg-button-delete-primary */
     color: #ffffff !important; /* Ubah teksnya jadi putih */
+}
+
+.btn-outline-biru {
+    border: 2px solid #1C88D3 !important;
+    background-color: transparent !important;
+    color: #1C88D3 !important;
+}
+
+.btn-outline-biru:hover {
+    background-color: #1C88D3 !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease;
 }

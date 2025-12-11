@@ -407,7 +407,7 @@
                         <tr>
                             <th style="width:30%">Foto KTP</th>
                             <td>
-                                <img id="modal-foto-ktp" src="{{ $keluarga->foto_ktp ? asset('storage/' . $keluarga->foto_ktp) : '' }}" 
+                                <img id="modal-foto-ktp" src="" 
                                     class="img-fluid rounded shadow-sm" 
                                     style="max-height:200px; display:none;">
                                 <a id="modal-link-ktp" href="#" target="_blank" class="d-none">Lihat Berkas KTP</a>

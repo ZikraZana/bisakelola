@@ -21,6 +21,9 @@ return new class extends Migration
             $table->foreignId('id_blok')->constrained('blok', 'id_blok');
             $table->foreignId('id_desil')->constrained('desil', 'id_desil');
 
+            $table->string('foto_ktp');
+            $table->string('foto_kk');
+
             $table->timestamps();
         });
     }

@@ -559,7 +559,7 @@
 
                             if (file.size > 5 * 1024 * 1024) {
                                 preview.classList.add("text-danger");
-                                preview.textContent = "❌ File melebihi 5MB!";
+                                preview.textContent = "File melebihi 5MB!";
                                 input.value = "";
                                 return;
                             }

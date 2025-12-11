@@ -11,7 +11,7 @@
 @section('content')
     <div class="card shadow-sm border-0 rounded-3">
         <div class="card-body p-4 p-md-5">
-            <form action="{{ route('data-warga.update', $dataKeluarga->id_keluarga) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('data-warga.update', $dataKeluarga->id_keluarga) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -402,12 +402,9 @@
                                             <option value="Kawin"
                                                 {{ ($anggota['status_perkawinan'] ?? '') == 'Kawin' ? 'selected' : '' }}>
                                                 Kawin</option>
-                                            <option value="Cerai Mati"
-                                                {{ ($anggota['status_perkawinan'] ?? '') == 'Cerai Mati' ? 'selected' : '' }}>
-                                                Cerai Mati</option>
-                                             <option value="Cerai Hidup"
-                                                {{ ($anggota['status_perkawinan'] ?? '') == 'Cerai Hidup' ? 'selected' : '' }}>
-                                                Cerai Hidup</option>   
+                                            <option value="Cerai"
+                                                {{ ($anggota['status_perkawinan'] ?? '') == 'Cerai' ? 'selected' : '' }}>
+                                                Cerai</option>
                                         </select>
                                         @error("anggota_keluarga.$index.status_perkawinan")
                                             <i class="text-danger small">{{ $message }}</i>
@@ -422,167 +419,6 @@
                 <button type="button" class="btn btn-success btn-sm mt-3" id="add-anggota-keluarga">Tambah Anggota
                     Keluarga</button>
 
-                <h4 class="fw-bold mb-3 mt-4">Berkas Pendukung</h4>
-
-                <div class="row g-3 mb-4">
-
-    {{-- Upload KTP --}}
-    <div class="col-md-6 d-flex flex-column justify-content-center">
-    <label for="foto_ktp" class="form-label fw-bold">Upload Foto/Scan KTP</label>
-
-    <div id="dropKTP"
-        class="border border-2 border-dashed rounded p-4 text-center bg-light hover-shadow"
-        style="cursor: pointer;">
-        <input type="file" name="foto_ktp" id="foto_ktp"
-            class="d-none @error('foto_ktp') is-invalid @enderror"
-            accept="image/*,.pdf">
-
-        <p class="text-muted m-0">
-            <strong>Klik untuk mengunggah</strong> atau seret file<br>
-            <small>Gambar atau PDF (Maks. 5MB)</small>
-        </p>
-    </div>
-
-    @error('foto_ktp')
-        <i class="text-danger small">{{ $message }}</i>
-    @enderror
-
-    <div id="previewKTP" class="mt-2 w-100 d-flex flex-column align-items-center text-center">
-        @php
-            $existingKTP = old('foto_ktp') ?? ($dataKeluarga->foto_ktp ?? null);
-        @endphp
-
-        @if ($existingKTP)
-            @php
-                $ktpUrl = asset('storage/' . $existingKTP);
-            @endphp
-
-            @if (Str::endsWith(strtolower($existingKTP), ['.jpg', '.jpeg', '.png', '.gif']))
-                <div class="mt-2 d-flex justify-content-center w-100">
-                    <a href="{{ $ktpUrl }}" target="_blank">
-                        <img src="{{ $ktpUrl }}"
-                            class="img-fluid rounded shadow-sm"
-                            style="max-height: 220px; object-fit: contain;">
-                    </a>
-                </div>
-            @else
-                <a href="{{ $ktpUrl }}"
-                   target="_blank"
-                   class="mt-3 text-decoration-none text-center d-block"
-                   style="width: 100%;">
-                    Lihat berkas KTP
-                </a>
-            @endif
-        @endif
-    </div>
-</div>
-
-
-    {{-- Upload KK --}}
-    <div class="col-md-6">
-        <label for="foto_kk" class="form-label fw-bold">Upload Foto/Scan KK</label>
-
-        <div id="dropKK"
-            class="border border-2 border-dashed rounded p-4 text-center bg-light hover-shadow"
-            style="cursor: pointer;">
-            <input type="file" name="foto_kk" id="foto_kk"
-                class="d-none @error('foto_kk') is-invalid @enderror"
-                accept="image/*,.pdf">
-
-            <p class="text-muted m-0">
-                <strong>Klik untuk mengunggah</strong> atau seret file<br>
-                <small>Gambar atau PDF (Maks. 5MB)</small>
-            </p>
-        </div>
-
-        @error('foto_kk')
-            <i class="text-danger small">{{ $message }}</i>
-        @enderror
-
-        <div id="previewKK" class="mt-2 w-100 d-flex flex-column align-items-center text-center">
-            @php
-                $existingKK = old('foto_kk') ?? ($dataKeluarga->foto_kk ?? null);
-            @endphp
-
-            @if ($existingKK)
-                @php
-                    $kkUrl = asset('storage/' . $existingKK);
-                @endphp
-
-                @if (Str::endsWith(strtolower($existingKK), ['.jpg', '.jpeg', '.png', '.gif']))
-                    <div class="mt-2">
-                        <img src="{{ $kkUrl }}"
-                            class="img-fluid rounded shadow-sm"
-                            style="max-height: 220px; object-fit: contain;">
-                    </div>
-                @else
-                    <a href="{{ $kkUrl }}" target="_blank" class="d-flex mt-2 text-decoration-none">
-                        Lihat berkas KK
-                    </a>
-                @endif
-            @endif
-        </div>
-    </div>
-
-</div>
-
-
-                <script>
-                    function setupUpload(dropAreaId, inputId, previewId) {
-                        const drop = document.getElementById(dropAreaId);
-                        const input = document.getElementById(inputId);
-                        const preview = document.getElementById(previewId);
-
-                        drop.addEventListener("click", () => input.click());
-
-                        drop.addEventListener("dragover", (e) => {
-                            e.preventDefault();
-                            drop.classList.add("bg-secondary-subtle");
-                        });
-
-                        drop.addEventListener("dragleave", () => {
-                            drop.classList.remove("bg-secondary-subtle");
-                        });
-
-                        drop.addEventListener("drop", (e) => {
-                            e.preventDefault();
-                            drop.classList.remove("bg-secondary-subtle");
-                            input.files = e.dataTransfer.files;
-                            validate();
-                        });
-
-                        input.addEventListener("change", validate);
-
-                        function validate() {
-                            const file = input.files[0];
-                            if (!file) return;
-
-                            if (file.size > 5 * 1024 * 1024) {
-                                preview.classList.add("text-danger");
-                                preview.textContent = "File melebihi 5MB!";
-                                input.value = "";
-                                return;
-                            }
-
-                            preview.classList.remove("text-danger");
-
-                            // Jika file adalah gambar, tampilkan thumbnail
-                            if (file.type && file.type.startsWith('image/')) {
-                                const reader = new FileReader();
-                                reader.onload = function (e) {
-                                    preview.innerHTML = '<div class="d-flex align-items-center"><img src="' + e.target.result + '" alt="preview" style="max-height:60px; max-width:120px; object-fit:cover;" class="me-2 rounded" /><span>' + file.name + '</span></div>';
-                                };
-                                reader.readAsDataURL(file);
-                            } else {
-                                // Non-image: tampilkan nama file
-                                preview.textContent = '✔ ' + file.name;
-                            }
-                        }
-                    }
-
-                    setupUpload("dropKTP", "foto_ktp", "previewKTP");
-                    setupUpload("dropKK", "foto_kk", "previewKK");
-                </script>
 
                 <div class="d-flex justify-content-end mt-4">
                     {{-- FIX 3: Menggunakan route 'index' yang konsisten --}}

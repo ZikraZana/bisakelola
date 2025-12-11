@@ -97,11 +97,17 @@
                                 Password?</a>
                         </div>
 
-                        <div class="d-grid gap-2">
+                        <div class="d-grid gap-2 mb-2">
                             <button type="submit" class="btn bg-button-add-primary btn-lg shadow fw-bold py-2 fs-md-6"
-                                style="font-size: 17px;">
+                                style="font-size: 16px;">
                                 LOGIN SEKARANG <i class="bi bi-arrow-right ms-2"></i>
                             </button>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="{{route('welcome')}}" class="btn bg-secondary text-light btn-lg shadow fw-bold py-2 fs-md-6"
+                                style="font-size: 16px;">
+                                Kembali
+                            </a>
                         </div>
                     </form>
 

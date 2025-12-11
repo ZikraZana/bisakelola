@@ -230,9 +230,7 @@
                                             data-kepala="{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}"
                                             data-blok="{{ $keluarga->blok?->nama_blok ?? 'N/A' }}"
                                             data-desil="{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}"
-                                            data-anggota="{{ $keluarga->anggotaKeluarga->toJson() }}"
-                                            data-foto-ktp="{{ $keluarga->foto_ktp }}"
-                                            data-foto-kk="{{ $keluarga->foto_kk }}">
+                                            data-anggota="{{ $keluarga->anggotaKeluarga->toJson() }}">
                                             Detail
                                         </button>
 
@@ -402,29 +400,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <h5>Berkas Pendukung</h5>
-                    <table class="table table-sm table-bordered">
-                        <tr>
-                            <th style="width:30%">Foto KTP</th>
-                            <td>
-                                <img id="modal-foto-ktp" src="{{ $keluarga->foto_ktp ? asset('storage/' . $keluarga->foto_ktp) : '' }}" 
-                                    class="img-fluid rounded shadow-sm" 
-                                    style="max-height:200px; display:none;">
-                                <a id="modal-link-ktp" href="#" target="_blank" class="d-none">Lihat Berkas KTP</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Foto KK</th>
-                            <td>
-                                <img id="modal-foto-kk" src="" 
-                                    class="img-fluid rounded shadow-sm" 
-                                    style="max-height:200px; display:none;">
-                                <a id="modal-link-kk" href="#" target="_blank" class="d-none">Lihat Berkas KK</a>
-                            </td>
-                        </tr>
-                    </table>
-                    </div>
-                    <div class="modal-footer">
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
@@ -450,37 +427,6 @@
                 var modalKepala = detailModal.querySelector('#modal-kepala-keluarga');
                 var modalBlokDesil = detailModal.querySelector('#modal-blok-desil');
                 var anggotaTableBody = detailModal.querySelector('#modal-anggota-list');
-
-                var fotoKTP = button.getAttribute('data-foto-ktp');
-                var fotoKK = button.getAttribute('data-foto-kk');
-                var imgKTP = document.getElementById('modal-foto-ktp');
-                var linkKTP = document.getElementById('modal-link-ktp');
-                var imgKK = document.getElementById('modal-foto-kk');
-                var linkKK = document.getElementById('modal-link-kk');
-                
-                // FOTO KTP
-                if (fotoKTP) {
-                    var urlKTP = '/storage/' + fotoKTP;
-                    imgKTP.src = urlKTP;
-                    imgKTP.style.display = 'block';
-                    linkKTP.href = urlKTP;
-                    linkKTP.classList.remove('d-none');
-                } else {
-                    imgKTP.style.display = 'none';
-                    linkKTP.classList.add('d-none');
-                }
-
-                // FOTO KK
-                if (fotoKK) {
-                    var urlKK = '/storage/' + fotoKK;
-                    imgKK.src = urlKK;
-                    imgKK.style.display = 'block';
-                    linkKK.href = urlKK;
-                    linkKK.classList.remove('d-none');
-                } else {
-                    imgKK.style.display = 'none';
-                    linkKK.classList.add('d-none');
-                }
 
                 modalNoKk.textContent = no_kk;
                 modalKepala.textContent = kepala;

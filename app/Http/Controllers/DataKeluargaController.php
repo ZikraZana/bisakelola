@@ -10,6 +10,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class DataKeluargaController extends Controller
@@ -351,6 +352,9 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Istri,Anak',
             'anggota_keluarga.*.pendidikan' => 'required|string',
             'anggota_keluarga.*.pekerjaan' => 'required|string',
+            // Validasi Foto (Nullable: artinya boleh kosong jika tidak ingin diganti)
+            'foto_ktp' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+            'foto_kk' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
         ], [
             'no_kk.required' => 'Nomor Kartu Keluarga wajib diisi.',
             'no_kk.numeric' => 'Nomor Kartu Keluarga harus berupa angka.',
@@ -378,6 +382,10 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.*.status_dalam_keluarga.in' => 'Status dalam keluarga tidak valid.',
             'anggota_keluarga.*.pendidikan.required' => 'Pendidikan anggota keluarga wajib diisi.',
             'anggota_keluarga.*.pekerjaan.required' => 'Pekerjaan anggota keluarga wajib diisi.',
+            'foto_ktp.mimes' => 'Format file KTP harus berupa JPG, JPEG, atau PNG.',
+            'foto_kk.mimes'  => 'Format file KK harus berupa JPG, JPEG, atau PNG.',
+            'foto_ktp.max' => 'Ukuran file KTP maksimal 5MB.',
+            'foto_kk.max'  => 'Ukuran file KK maksimal 5MB.',
         ]);
 
         if ($validator->fails()) {
@@ -398,7 +406,35 @@ class DataKeluargaController extends Controller
             );
             $admin = Auth::user();
 
+            // --- LOGIKA UPDATE FOTO (BARU) ---
+            
+            // Siapkan data dasar untuk diupdate
+            $dataToUpdate = [
+                // 'id_admin' => $user->id_admin, // Opsional: update admin terakhir yang edit atau tidak
+                'no_kk' => $request->no_kk,
+                'id_blok' => $blok->id_blok,
+                'id_desil' => $desil->id_desil,
+            ];
 
+            // Cek Upload FOTO KTP Baru
+            if ($request->hasFile('foto_ktp')) {
+                // Hapus file lama jika ada
+                if ($dataKeluarga->foto_ktp && Storage::disk('public')->exists($dataKeluarga->foto_ktp)) {
+                    Storage::disk('public')->delete($dataKeluarga->foto_ktp);
+                }
+                // Upload file baru
+                $dataToUpdate['foto_ktp'] = $request->file('foto_ktp')->store('uploads/ktp', 'public');
+            }
+
+            // Cek Upload FOTO KK Baru
+            if ($request->hasFile('foto_kk')) {
+                // Hapus file lama jika ada
+                if ($dataKeluarga->foto_kk && Storage::disk('public')->exists($dataKeluarga->foto_kk)) {
+                    Storage::disk('public')->delete($dataKeluarga->foto_kk);
+                }
+                // Upload file baru
+                $dataToUpdate['foto_kk'] = $request->file('foto_kk')->store('uploads/kk', 'public');
+            }
             // 4. Update DataKeluarga
             $dataKeluarga->update([
                 'id_admin' => $admin->id_admin,
@@ -406,6 +442,8 @@ class DataKeluargaController extends Controller
                 'id_blok' => $blok->id_blok,
                 'id_desil' => $desil->id_desil,
             ]);
+
+            $dataKeluarga->update($dataToUpdate);
 
             // 5. Update AnggotaKeluarga (Metode: Hapus & Buat Ulang)
             $dataKeluarga->anggotaKeluarga()->delete();

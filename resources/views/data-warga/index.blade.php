@@ -355,77 +355,159 @@
     </div>
 
     {{-- MODAL UNTUK DETAIL DATA --}}
-    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detailModalLabel">Detail Data Warga</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h5>Data Keluarga</h5>
-                    <table class="table table-sm table-bordered">
-                        <tr>
-                            <th style="width: 30%;">Nomor KK</th>
-                            <td id="modal-no-kk"></td>
-                        </tr>
-                        <tr>
-                            <th>Kepala Keluarga</th>
-                            <td id="modal-kepala-keluarga"></td>
-                        </tr>
-                        <tr>
-                            <th>Blok / Desil</th>
-                            <td id="modal-blok-desil"></td>
-                        </tr>
-                    </table>
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable"> {{-- Tambah scrollable agar enak dilihat di layar kecil --}}
+            <div class="modal-content border-0 shadow-lg">
 
-                    <h5 class="mt-4">Anggota Keluarga</h5>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-striped table-bordered" style="font-size: 0.9em;">
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>NIK</th>
-                                    <th>Nama Lengkap</th>
-                                    <th>Status</th>
-                                    <th>Tempat Lahir</th>
-                                    <th>Tgl Lahir</th>
-                                    <th>L/P</th>
-                                    <th>Agama</th>
-                                    <th>Status Kawin</th>
-                                    <th>Pendidikan</th>
-                                    <th>Pekerjaan</th>
-                                </tr>
-                            </thead>
-                            <tbody id="modal-anggota-list">
-                            </tbody>
-                        </table>
+                {{-- Header Modal --}}
+                <div class="modal-header bg-utama2 text-white">
+                    <h5 class="modal-title fw-bold" id="detailModalLabel">
+                        <i class="bi bi-person-vcard me-2"></i>Detail Data Keluarga
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body bg-light">
+
+                    {{-- BAGIAN 1: INFO KARTU KELUARGA (Card Style) --}}
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <div class="row g-4 align-items-center">
+                                {{-- Info Utama: No KK --}}
+                                <div class="col-md-4 border-end border-light-subtle">
+                                    <small class="text-uppercase text-muted fw-bold ls-1">Nomor Kartu Keluarga</small>
+                                    <h2 class="text-biru fw-bold mb-0 mt-1" id="modal-no-kk">Loading...</h2>
+                                </div>
+
+                                {{-- Info Kepala Keluarga --}}
+                                <div class="col-md-4 border-end border-light-subtle">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <small class="text-muted d-block">Kepala Keluarga</small>
+                                            <h5 class="fw-bold mb-0 text-dark" id="modal-kepala-keluarga">Loading...</h5>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Info Lokasi & Ekonomi --}}
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <small class="text-muted d-block">Lokasi & Ekonomi</small>
+                                            <h5 class="fw-bold mb-0 text-dark" id="modal-blok-desil">Loading...</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h5>Berkas Pendukung</h5>
-                    <table class="table table-sm table-bordered">
-                        <tr>
-                            <th style="width:30%">Foto KTP</th>
-                            <td>
-                                <img id="modal-foto-ktp" src="" 
-                                    class="img-fluid rounded shadow-sm" 
-                                    style="max-height:200px; display:none;">
-                                <a id="modal-link-ktp" href="#" target="_blank" class="d-none">Lihat Berkas KTP</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Foto KK</th>
-                            <td>
-                                <img id="modal-foto-kk" src="" 
-                                    class="img-fluid rounded shadow-sm" 
-                                    style="max-height:200px; display:none;">
-                                <a id="modal-link-kk" href="#" target="_blank" class="d-none">Lihat Berkas KK</a>
-                            </td>
-                        </tr>
-                    </table>
+
+                    {{-- BAGIAN 2: DAFTAR ANGGOTA KELUARGA --}}
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3 border-bottom border-light">
+                            <h6 class="mb-0 fw-bold text-secondary">
+                                <i class="bi bi-people-fill me-2 text-primary"></i>Daftar Anggota Keluarga
+                            </h6>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0" style="font-size: 1rem;">
+                                    <thead class="bg-light text-secondary">
+                                        <tr>
+                                            <th class="py-3 ps-4">No</th>
+                                            <th class="py-3">NIK</th>
+                                            <th class="py-3">Nama Lengkap</th>
+                                            <th class="py-3">Status Dalam Keluarga</th>
+                                            <th class="py-3">L/P</th>
+                                            <th class="py-3">TTL</th>
+                                            <th class="py-3">Agama</th>
+                                            <th class="py-3">Pendidikan</th>
+                                            <th class="py-3 pe-4">Pekerjaan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="modal-anggota-list" class="bg-white">
+                                        {{-- Data diinject via JS --}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+
+                    {{-- BAGIAN 3: BERKAS PENDUKUNG (Grid Layout) --}}
+                    <h6 class="fw-bold text-secondary mb-3 ps-1">
+                        <i class="bi bi-folder-fill me-2 text-warning"></i>Berkas Pendukung
+                    </h6>
+                    <div class="row g-4">
+                        {{-- Card Foto KTP --}}
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center p-4">
+                                    <h6 class="card-title fw-bold text-muted mb-3">Foto KTP Kepala Keluarga</h6>
+
+                                    {{-- Area Gambar --}}
+                                    <div id="ktp-container"
+                                        class="rounded bg-light d-flex align-items-center justify-content-center overflow-hidden position-relative"
+                                        style="height: 250px; border: 2px dashed #dee2e6;">
+                                        {{-- Placeholder jika kosong --}}
+                                        <div id="ktp-placeholder" class="text-muted">
+                                            <i class="bi bi-image fs-1 d-block mb-2 opacity-25"></i>
+                                            <small>Tidak ada lampiran KTP</small>
+                                        </div>
+
+                                        {{-- Gambar Asli --}}
+                                        <img id="modal-foto-ktp" src=""
+                                            class="img-fluid w-100 h-100 object-fit-contain" style="display:none;">
+                                    </div>
+
+                                    {{-- Tombol Aksi --}}
+                                    <div class="mt-3">
+                                        <a id="modal-link-ktp" href="#" target="_blank"
+                                            class="btn btn-sm btn-outline-primary d-none">
+                                            <i class="bi bi-zoom-in me-1"></i> Lihat Ukuran Penuh
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Card Foto KK --}}
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center p-4">
+                                    <h6 class="card-title fw-bold text-muted mb-3">Foto Kartu Keluarga</h6>
+
+                                    {{-- Area Gambar --}}
+                                    <div id="kk-container"
+                                        class="rounded bg-light d-flex align-items-center justify-content-center overflow-hidden position-relative"
+                                        style="height: 250px; border: 2px dashed #dee2e6;">
+                                        {{-- Placeholder --}}
+                                        <div id="kk-placeholder" class="text-muted">
+                                            <i class="bi bi-file-earmark-image fs-1 d-block mb-2 opacity-25"></i>
+                                            <small>Tidak ada lampiran KK</small>
+                                        </div>
+
+                                        {{-- Gambar Asli --}}
+                                        <img id="modal-foto-kk" src=""
+                                            class="img-fluid w-100 h-100 object-fit-contain" style="display:none;">
+                                    </div>
+
+                                    {{-- Tombol Aksi --}}
+                                    <div class="mt-3">
+                                        <a id="modal-link-kk" href="#" target="_blank"
+                                            class="btn btn-sm btn-outline-primary d-none">
+                                            <i class="bi bi-zoom-in me-1"></i> Lihat Ukuran Penuh
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer border-top-0 bg-light">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
         </div>
@@ -439,92 +521,126 @@
 
             detailModal.addEventListener('show.bs.modal', function(event) {
                 var button = event.relatedTarget;
+
+                // Ambil Data
                 var no_kk = button.getAttribute('data-nokk');
                 var kepala = button.getAttribute('data-kepala');
                 var blok = button.getAttribute('data-blok');
                 var desil = button.getAttribute('data-desil');
                 var anggotaListJson = button.getAttribute('data-anggota');
                 var anggotaList = JSON.parse(anggotaListJson);
+                var fotoKTP = button.getAttribute('data-foto-ktp');
+                var fotoKK = button.getAttribute('data-foto-kk');
 
+                // Elemen DOM
                 var modalNoKk = detailModal.querySelector('#modal-no-kk');
                 var modalKepala = detailModal.querySelector('#modal-kepala-keluarga');
                 var modalBlokDesil = detailModal.querySelector('#modal-blok-desil');
                 var anggotaTableBody = detailModal.querySelector('#modal-anggota-list');
 
-                var fotoKTP = button.getAttribute('data-foto-ktp');
-                var fotoKK = button.getAttribute('data-foto-kk');
+                // --- ISI DATA TEKS ---
+                modalNoKk.textContent = no_kk;
+                modalKepala.textContent = kepala;
+
+                // Format Badge untuk Desil/Blok (Opsional, biar lebih cantik)
+                modalBlokDesil.innerHTML =
+                    `<span class="text-dark">${blok}</span> <span class="text-muted mx-1">|</span> <span class="badge bg-info text-dark">Desil ${desil}</span>`;
+
+
+                // --- LOGIKA GAMBAR KTP ---
                 var imgKTP = document.getElementById('modal-foto-ktp');
                 var linkKTP = document.getElementById('modal-link-ktp');
-                var imgKK = document.getElementById('modal-foto-kk');
-                var linkKK = document.getElementById('modal-link-kk');
-                
-                // FOTO KTP
+                var placeholderKTP = document.getElementById('ktp-placeholder');
+
                 if (fotoKTP) {
                     var urlKTP = '/storage/' + fotoKTP;
                     imgKTP.src = urlKTP;
                     imgKTP.style.display = 'block';
+                    placeholderKTP.style.display = 'none'; // Sembunyikan placeholder
+
                     linkKTP.href = urlKTP;
                     linkKTP.classList.remove('d-none');
                 } else {
                     imgKTP.style.display = 'none';
+                    placeholderKTP.style.display = 'block'; // Tampilkan placeholder
                     linkKTP.classList.add('d-none');
                 }
 
-                // FOTO KK
+                // --- LOGIKA GAMBAR KK ---
+                var imgKK = document.getElementById('modal-foto-kk');
+                var linkKK = document.getElementById('modal-link-kk');
+                var placeholderKK = document.getElementById('kk-placeholder');
+
                 if (fotoKK) {
                     var urlKK = '/storage/' + fotoKK;
                     imgKK.src = urlKK;
                     imgKK.style.display = 'block';
+                    placeholderKK.style.display = 'none';
+
                     linkKK.href = urlKK;
                     linkKK.classList.remove('d-none');
                 } else {
                     imgKK.style.display = 'none';
+                    placeholderKK.style.display = 'block';
                     linkKK.classList.add('d-none');
                 }
 
-                modalNoKk.textContent = no_kk;
-                modalKepala.textContent = kepala;
-                modalBlokDesil.textContent = blok + ' / ' + desil;
-
+                // --- TABEL ANGGOTA KELUARGA ---
                 anggotaTableBody.innerHTML = '';
 
                 if (anggotaList.length > 0) {
                     anggotaList.forEach(function(item, index) {
+                        // Helper Format Tanggal
                         function formatDate(dateString) {
-                            if (!dateString) return 'N/A';
+                            if (!dateString) return '-';
                             try {
                                 var date = new Date(dateString);
                                 var d = date.getDate().toString().padStart(2, '0');
-                                var m = (date.getMonth() + 1).toString().padStart(2,
-                                    '0'); // Bulan mulai dari 0
+                                var m = (date.getMonth() + 1).toString().padStart(2, '0');
                                 var y = date.getFullYear();
-                                return d + '-' + m + '-' + y;
+                                return d + '/' + m + '/' + y;
                             } catch (e) {
-                                return dateString; // Fallback jika format tidak valid
+                                return dateString;
                             }
                         }
 
-                        // Buat baris tabel dengan semua data
-                        var row = '<tr>' +
-                            '<td>' + (index + 1) + '</td>' +
-                            '<td>' + (item.nik_anggota || 'N/A') + '</td>' +
-                            '<td>' + (item.nama_lengkap || 'N/A') + '</td>' +
-                            '<td>' + (item.status_dalam_keluarga || 'N/A') + '</td>' +
-                            '<td>' + (item.tempat_lahir || 'N/A') + '</td>' +
-                            '<td>' + formatDate(item.tanggal_lahir) + '</td>' +
-                            '<td>' + (item.jenis_kelamin ? (item.jenis_kelamin.startsWith('L') ?
-                                'L' : 'P') : 'N/A') + '</td>' +
-                            '<td>' + (item.agama || 'N/A') + '</td>' +
-                            '<td>' + (item.status_perkawinan || 'N/A') + '</td>' +
-                            '<td>' + (item.pendidikan || 'N/A') + '</td>' +
-                            '<td>' + (item.pekerjaan || 'N/A') + '</td>' +
-                            '</tr>';
+                        // Helper Label Status
+                        let statusBadge = item.status_dalam_keluarga;
+                        if (item.status_dalam_keluarga === 'Kepala Keluarga') {
+                            statusBadge =
+                                `<span class="badge bg-primary-subtle text-dark border border-dark">Kepala Keluarga</span>`;
+                        }
+
+                        var row = `
+                        <tr>
+                            <td class="ps-4 fw-bold text-secondary">${index + 1}</td>
+                            <td class="fw-medium font-monospace">${item.nik_anggota || '-'}</td>
+                            <td class="fw-bold text-dark">${item.nama_lengkap || '-'}</td>
+                            <td>${statusBadge}</td>
+                            <td>${item.jenis_kelamin ? (item.jenis_kelamin.startsWith('L') ? '<span class="badge bg-info text-dark">L</span>' : '<span class="badge bg-danger-subtle text-danger">P</span>') : '-'}</td>
+                            <td>
+                                <div class="d-flex flex-column" style="line-height:1.2">
+                                    <small class="text-muted" style="font-size:0.75rem">${item.tempat_lahir || '-'}</small>
+                                    <span>${formatDate(item.tanggal_lahir)}</span>
+                                </div>
+                            </td>
+                            <td>${item.agama || '-'}</td>
+                            <td>${item.pendidikan || '-'}</td>
+                            <td class="pe-4">${item.pekerjaan || '-'}</td>
+                        </tr>
+                    `;
 
                         anggotaTableBody.insertAdjacentHTML('beforeend', row);
                     });
                 } else {
-                    anggotaTableBody.innerHTML =
-                        '<tr><td colspan="11" class="text-center">Tidak ada data anggota.</td></tr>';
+                    anggotaTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="text-center py-5 text-muted">
+                            <i class="bi bi-people fs-1 d-block mb-2 opacity-25"></i>
+                            Belum ada data anggota keluarga.
+                        </td>
+                    </tr>
+                `;
                 }
             });
         });

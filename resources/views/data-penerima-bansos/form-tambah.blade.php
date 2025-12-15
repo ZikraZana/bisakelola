@@ -16,26 +16,6 @@
             <form action="{{ route('data-penerima-bansos.store') }}" method="POST">
                 @csrf
 
-                {{-- Menampilkan ringkasan error (sesuai data-warga) --}}
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <strong>Whoops!</strong> Ada masalah dengan input Anda.<br><br>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                {{-- Pesan error sekarang lebih ramah (cth: "No. KK di baris 1 wajib diisi.") --}}
-                                <li>{{ str_replace('pengajuan.', 'baris ', str_replace('_', ' ', $error)) }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                {{-- DIUBAH: Menampilkan error 'session' --}}
-                @if (session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                @endif
-                {{-- AKHIR BLOK ERROR --}}
-
                 <h4 class="fw-bold mb-3">Data Pengajuan Warga</h4>
                 <p class="text-body-secondary">
                     Anda bisa mengajukan lebih dari satu keluarga sekaligus.

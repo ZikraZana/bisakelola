@@ -16,22 +16,6 @@
             <form action="{{ route('akun-admin.store') }}" method="POST">
                 @csrf
 
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <strong>Whoops!</strong> Ada masalah dengan input Anda.<br><br>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                @if (session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
                 <h4 class="fw-bold mb-3">Data Akun Sub Admin</h4>
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">

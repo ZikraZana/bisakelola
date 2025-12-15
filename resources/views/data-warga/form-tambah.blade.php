@@ -16,25 +16,6 @@
             <form action="{{ route('data-warga.store') }}" method="POST" enctype="multipart/form-data"> {{-- Sesuaikan dengan route Anda --}}
                 @csrf
 
-                {{-- TAMBAHAN: Menampilkan ringkasan error dari file dummy --}}
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <strong>Whoops!</strong> Ada masalah dengan input Anda.<br><br>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                @if (session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                @endif
-                {{-- AKHIR TAMBAHAN --}}
-
-
                 {{-- Bagian Data Keluarga (Disesuaikan dengan name & id dari dummy) --}}
                 <h4 class="fw-bold mb-3">Data Keluarga</h4>
                 <div class="row g-3 mb-4">

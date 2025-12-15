@@ -93,8 +93,8 @@
                                     style="accent-color: var(--bs-primary);">
                                 <label class="form-check-label text-secondary small" for="remember">Ingat Saya</label>
                             </div>
-                            <a href="{{route('forgot.password')}}" class="text-decoration-none small fw-semibold text-biru" style="transition: all 0.3s ease;" onmouseover="this.style.textDecoration='underline'; this.style.opacity='0.7'" onmouseout="this.style.textDecoration='none'; this.style.opacity='1'">Lupa
-                                Password?</a>
+                            {{-- <a href="{{route('forgot.password')}}" class="text-decoration-none small fw-semibold text-biru" style="transition: all 0.3s ease;" onmouseover="this.style.textDecoration='underline'; this.style.opacity='0.7'" onmouseout="this.style.textDecoration='none'; this.style.opacity='1'">Lupa
+                                Password?</a> --}}
                         </div>
 
                         <div class="d-grid gap-2 mb-2">

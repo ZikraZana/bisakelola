@@ -47,8 +47,11 @@
                 <ul class="navbar-nav ms-auto align-items-center">
                     @if (Route::has('login'))
                         @auth
-                            <li class="nav-item">
-                                <a href="{{ url('/dashboard') }}" class="nav-link fw-bold text-dark">Dashboard</a>
+                            <li class="nav-item me-2">
+                                <a href="{{ url('/dashboard') }}"
+                                    class="btn bg-button-add-primary px-4 rounded-pill fw-bold">
+                                    <i class="bi bi-house-fill me-2"></i>Dashboard
+                                </a>
                             </li>
                         @else
                             <li class="nav-item">
@@ -76,9 +79,8 @@
                         transparan, akurat, dan akuntabel.
                     </p>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                        <a href="{{ route('login') }}" class="btn bg-button-add-primary btn-lg px-4 me-md-2">Mulai
-                            Sekarang</a>
-                        <a href="#statistik" class="btn btn-outline-biru btn-lg px-4">Lihat Data</a>
+                        <a href="#fitur" class="btn bg-button-add-primary btn-lg px-4 me-md-2">Layanan Utama</a>
+                        <a href="#statistik-section" class="btn btn-outline-biru btn-lg px-4">Lihat Data</a>
                     </div>
                 </div>
                 <div class="col-lg-6 order-1 order-lg-2 text-center">
@@ -206,7 +208,7 @@
                         Platform manajemen desa digital untuk pendataan warga dan distribusi bantuan sosial yang
                         transparan dan akuntabel.
                     </p>
-                    
+
                 </div>
 
                 {{-- Quick Links --}}
@@ -227,7 +229,8 @@
                     <h6 class="fw-bold mb-3">Kontak</h6>
                     <ul class="list-unstyled small text-white-50">
                         <li class="mb-2"><i class="bi bi-telephone me-2"></i>(021) XXXX-XXXX</li>
-                        <li><i class="bi bi-geo-alt me-2"></i>Jl. Sunan Gunung Jati, RT 14, Kel. Kenali Asam, Kec. Kota Baru</li>
+                        <li><i class="bi bi-geo-alt me-2"></i>Jl. Sunan Gunung Jati, RT 14, Kel. Kenali Asam,
+                            Kec. Kota Baru</li>
                     </ul>
                 </div>
             </div>

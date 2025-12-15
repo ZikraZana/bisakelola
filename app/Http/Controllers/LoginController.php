@@ -14,22 +14,28 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        // Validate the request data
+        // 1. Validasi Input
         $credentials = $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        // Attempt to authenticate the user
-        if (Auth::attempt($credentials)) {
-            // Authentication passed, redirect to dashboard
+        // 2. Tangkap nilai checkbox 'remember' (True/False)
+        // name="remember" harus sesuai dengan yang ada di login_page.blade.php
+        $remember = $request->boolean('remember');
+
+        // 3. Proses Login dengan Remember Me
+        // Tambahkan variabel $remember sebagai argumen kedua
+        // Gunakan guard('admin') agar spesifik ke tabel admins
+        if (Auth::guard('admin')->attempt($credentials, $remember)) {
+
+            $request->session()->regenerate();
+
             return redirect()->intended('/dashboard')
-            ->with('success', 'Login berhasil! Selamat datang, ' . Auth::user()->nama_lengkap . '!');
+                ->with('success', 'Login berhasil! Selamat datang, ' . Auth::guard('admin')->user()->nama_lengkap . '!');
         }
 
-        
-
-        // Authentication failed, redirect back with error
+        // 4. Jika Gagal
         return back()->with('error', 'Username atau Password salah!');
     }
 

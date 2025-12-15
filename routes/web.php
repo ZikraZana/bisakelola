@@ -7,11 +7,10 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DataKeluargaController;
 use App\Http\Controllers\KelolaBansosController;
 use App\Http\Controllers\DataPenerimaBansosController;
+use App\Http\Controllers\WelcomeController;
 
 //========================= AREA ALL =========================//
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 //========================= AREA GUEST =========================//
 Route::middleware('guest')->group(function () {

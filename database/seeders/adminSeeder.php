@@ -18,7 +18,7 @@ class adminSeeder extends Seeder
             [
                 'username' => 'ketuart',
                 'password' => bcrypt('ketuart1234'),
-                'nama_lengkap' => 'MonoZikk',
+                'nama_lengkap' => 'Ketua RT',
                 'no_handphone' => '082372818489',
                 'role' => 'Ketua RT',
                 'id_blok' => null,

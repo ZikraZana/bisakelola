@@ -21,6 +21,20 @@ class adminSeeder extends Seeder
                 'no_handphone' => '082372818489',
                 'role' => 'Ketua RT',
             ],
+            [
+                'username' => 'ketuablok',
+                'password' => bcrypt('ketuablok1234'),
+                'nama_lengkap' => 'MonoBlokk',
+                'no_handphone' => '082372823589',
+                'role' => 'Ketua Blok',
+            ],
+            [
+                'username' => 'ketuabagian',
+                'password' => bcrypt('ketuabag1234'),
+                'nama_lengkap' => 'MonoBagg',
+                'no_handphone' => '082372234589',
+                'role' => 'Ketua Bagian',
+            ],
         ]);
     }
 }

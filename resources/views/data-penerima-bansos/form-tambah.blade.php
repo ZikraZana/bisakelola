@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('title')
-    Formulir Pengajuan Bansos
+    Pilih Warga untuk Pengajuan Bansos
 @endsection
 
 @section('title_nav')
@@ -9,188 +9,184 @@
 @endsection
 
 @section('content')
-    <div class="card shadow-sm border-0 rounded-3">
-        <div class="card-body p-4 p-md-5">
-
-            {{-- DIUBAH: Action ke route 'store' --}}
-            <form action="{{ route('data-penerima-bansos.store') }}" method="POST">
-                @csrf
-
-                {{-- Menampilkan ringkasan error (sesuai data-warga) --}}
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <strong>Whoops!</strong> Ada masalah dengan input Anda.<br><br>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                {{-- Pesan error sekarang lebih ramah (cth: "No. KK di baris 1 wajib diisi.") --}}
-                                <li>{{ str_replace('pengajuan.', 'baris ', str_replace('_', ' ', $error)) }}</li>
-                            @endforeach
-                        </ul>
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-body p-4">
+            
+            {{-- Header & Pencarian --}}
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold mb-1">Daftar Warga Potensial</h4>
+                    <p class="text-muted mb-0">Cari dan pilih warga yang ingin diajukan menerima bantuan.</p>
+                </div>
+                
+                {{-- Form Pencarian --}}
+                <form action="{{ route('data-penerima-bansos.formTambah') }}" method="GET" class="d-flex gap-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search_query" 
+                            placeholder="Cari No. KK / Nama Kepala..." 
+                            value="{{ $searchQuery ?? '' }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
                     </div>
-                @endif
-                {{-- DIUBAH: Menampilkan error 'session' --}}
-                @if (session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
+                    @if($searchQuery)
+                        <a href="{{ route('data-penerima-bansos.formTambah') }}" class="btn btn-outline-danger" title="Reset">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                    @endif
+                </form>
+            </div>
+
+            {{-- Pesan Error/Sukses Session --}}
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            {{-- Tabel Data --}}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle">
+                    <thead class="table-primary">
+                        <tr>
+                            <th class="py-3 px-3">No. KK</th>
+                            <th class="py-3 px-3">Kepala Keluarga</th>
+                            <th class="py-3 px-3">Blok / Lokasi</th>
+                            <th class="py-3 px-3 text-center">Desil</th>
+                            <th class="py-3 px-3 text-end">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($dataKeluarga as $keluarga)
+                            @php
+                                $kepala = $keluarga->anggotaKeluarga->firstWhere('status_dalam_keluarga', 'Kepala Keluarga');
+                            @endphp
+                            <tr>
+                                <td class="px-3 fw-bold font-monospace">{{ $keluarga->no_kk }}</td>
+                                <td class="px-3">
+                                    <div class="fw-bold">{{ $kepala->nama_lengkap ?? 'Tidak Ada Data' }}</div>
+                                    <small class="text-muted">NIK: {{ $kepala->nik_anggota ?? '-' }}</small>
+                                </td>
+                                <td class="px-3">{{ $keluarga->blok->nama_blok ?? '-' }}</td>
+                                <td class="px-3 text-center">
+                                    @if($keluarga->desil)
+                                        <span class="badge bg-warning text-dark">Desil {{ $keluarga->desil->tingkat_desil }}</span>
+                                    @else
+                                        <span class="badge bg-light text-secondary border">Non-Desil</span>
+                                    @endif
+                                </td>
+                                <td class="px-3 text-end">
+                                    {{-- Tombol Trigger Modal --}}
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modalAjukan"
+                                        data-nokk="{{ $keluarga->no_kk }}"
+                                        data-nama="{{ $kepala->nama_lengkap ?? 'Warga' }}">
+                                        <i class="bi bi-plus-circle me-1"></i> Ajukan
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-emoji-frown fs-1 d-block mb-2"></i>
+                                    Data warga tidak ditemukan.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            {{-- Pagination --}}
+            <div class="mt-4">
+                {{ $dataKeluarga->links() }}
+            </div>
+
+            <div class="mt-3">
+                <a href="{{ route('data-penerima-bansos.index') }}" class="btn btn-link text-secondary text-decoration-none">
+                    <i class="bi bi-arrow-left"></i> Kembali ke Data Penerima
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {{-- MODAL FORM PENGAJUAN --}}
+    <div class="modal fade" id="modalAjukan" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('data-penerima-bansos.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Formulir Pengajuan</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                @endif
-                {{-- AKHIR BLOK ERROR --}}
-
-                <h4 class="fw-bold mb-3">Data Pengajuan Warga</h4>
-                <p class="text-body-secondary">
-                    Anda bisa mengajukan lebih dari satu keluarga sekaligus.
-                </p>
-
-                {{-- Container untuk baris-baris pengajuan dinamis --}}
-                <div id="pengajuan-container">
-                    @php
-                        // Menangani data 'old' jika validasi gagal
-                        $pengajuan_list = old('pengajuan', [0 => []]);
-                    @endphp
-
-                    @foreach ($pengajuan_list as $index => $pengajuan)
-                        <div class="card mb-3 pengajuan-item">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="card-title pengajuan-title mb-0">Pengajuan {{ $index + 1 }}</h5>
-                                @if ($index > 0)
-                                    <button type="button" class="btn btn-danger btn-sm remove-pengajuan">Hapus</button>
-                                @endif
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    {{-- Kolom No. KK --}}
-                                    <div class="col-md-5">
-                                        <label for="no_kk_{{ $index }}" class="form-label">Nomor Kartu Keluarga
-                                            (KK)</label>
-                                        <input type="text" {{-- DIUBAH: Menampilkan error 'is-invalid' --}}
-                                            class="form-control @error("pengajuan.$index.no_kk") is-invalid @enderror"
-                                            id="no_kk_{{ $index }}" name="pengajuan[{{ $index }}][no_kk]"
-                                            placeholder="Masukkan No. KK..." value="{{ $pengajuan['no_kk'] ?? '' }}"
-                                            required>
-                                        {{-- DIUBAH: Menampilkan pesan error inline --}}
-                                        @error("pengajuan.$index.no_kk")
-                                            <i class="text-danger small">{{ $message }}</i>
-                                        @enderror
-                                    </div>
-
-                                    {{-- Kolom Keterangan --}}
-                                    <div class="col-md-7">
-                                        <label for="keterangan_pengajuan_{{ $index }}" class="form-label">Alasan /
-                                            Keterangan Pengajuan</label>
-                                        <textarea class="form-control @error("pengajuan.$index.keterangan_pengajuan") is-invalid @enderror"
-                                            id="keterangan_pengajuan_{{ $index }}" name="pengajuan[{{ $index }}][keterangan_pengajuan]"
-                                            rows="3" placeholder="Contoh: Kehilangan pekerjaan, rumah tidak layak huni..." required>{{ $pengajuan['keterangan_pengajuan'] ?? '' }}</textarea>
-                                        @error("pengajuan.$index.keterangan_pengajuan")
-                                            <i class="text-danger small">{{ $message }}</i>
-                                        @enderror
-                                    </div>
-                                </div>
+                    <div class="modal-body">
+                        {{-- Info Warga Terpilih --}}
+                        <div class="alert alert-info d-flex align-items-center mb-3">
+                            <i class="bi bi-info-circle-fill me-2 fs-4"></i>
+                            <div>
+                                Mengajukan Keluarga: <br>
+                                <strong id="modal-display-nama">Nama Kepala</strong> 
+                                (<span id="modal-display-nokk" class="font-monospace">NO KK</span>)
                             </div>
                         </div>
-                    @endforeach
-                </div>
 
-                <button type="button" class="btn btn-success btn-sm mt-3" id="add-pengajuan">
-                    <i class="bi bi-plus-circle me-1"></i> Tambah Pengajuan
-                </button>
+                        {{-- Hidden Input untuk No KK --}}
+                        {{-- Trik: Gunakan array index 0 agar cocok dengan validasi backend --}}
+                        <input type="hidden" name="pengajuan[0][no_kk]" id="modal-input-nokk">
 
-                <div class="d-flex justify-content-end mt-4">
-                    {{-- DIUBAH: Route ke 'index' --}}
-                    <a href="{{ route('data-penerima-bansos.index') }}" class="btn btn-outline-secondary me-2">
-                        Batal
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-send-fill me-1"></i> Kirim Semua Pengajuan
-                    </button>
-                </div>
-
-            </form>
-
+                        {{-- Input Keterangan --}}
+                        <div class="mb-3">
+                            <label for="keterangan" class="form-label fw-bold">Alasan / Keterangan Pengajuan <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="pengajuan[0][keterangan_pengajuan]" id="keterangan" rows="4" 
+                                placeholder="Contoh: Kondisi ekonomi menurun, kehilangan pekerjaan, lansia sebatang kara..." required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send-fill me-1"></i> Kirim Pengajuan
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 @endsection
 
 @push('scripts')
-    {{-- Script JS (tetap sama) --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const container = document.getElementById('pengajuan-container');
-            const addButton = document.getElementById('add-pengajuan');
-
-            // --- FUNGSI UNTUK MENAMBAH PENGAJUAN ---
-            addButton.addEventListener('click', function() {
-                const template = container.querySelector('.pengajuan-item');
-                if (!template) return;
-                const newForm = template.cloneNode(true);
-                const newIndex = container.querySelectorAll('.pengajuan-item').length;
-
-                newForm.querySelector('.pengajuan-title').textContent = 'Pengajuan ' + (newIndex + 1);
-
-                // Reset semua nilai input
-                newForm.querySelectorAll('input[type="text"], textarea').forEach(input => {
-                    input.value = '';
-                    input.classList.remove('is-invalid');
-                });
-                newForm.querySelectorAll('.text-danger.small').forEach(err => err.remove());
-
-                // Tambahkan tombol hapus
-                if (newIndex > 0 && !newForm.querySelector('.remove-pengajuan')) {
-                    const header = newForm.querySelector('.card-header');
-                    const removeButton = document.createElement('button');
-                    removeButton.type = 'button';
-                    removeButton.className = 'btn btn-danger btn-sm remove-pengajuan';
-                    removeButton.textContent = 'Hapus';
-                    header.appendChild(removeButton);
-                }
-
-                // Perbarui atribut 'name', 'id', 'for'
-                newForm.querySelectorAll('[name], [id], [for]').forEach(el => {
-                    ['name', 'id', 'for'].forEach(attr => {
-                        const value = el.getAttribute(attr);
-                        if (value) {
-                            const newValue = value.replace(/\[\d+\]/g, '[' + newIndex + ']')
-                                .replace(/_\d+$/, '_' + newIndex);
-                            el.setAttribute(attr, newValue);
-                        }
-                    });
-                });
-                container.appendChild(newForm);
-            });
-
-            // --- FUNGSI UNTUK MENGHAPUS PENGAJUAN ---
-            container.addEventListener('click', function(e) {
-                if (e.target && e.target.classList.contains('remove-pengajuan')) {
-                    const cardToRemove = e.target.closest('.pengajuan-item');
-                    if (cardToRemove) {
-                        cardToRemove.remove();
-                        updateAllIndexes();
-                    }
-                }
-            });
-
-            // --- FUNGSI UNTUK MEMPERBARUI SEMUA INDEX SETELAH HAPUS ---
-            function updateAllIndexes() {
-                const allForms = container.querySelectorAll('.pengajuan-item');
-                allForms.forEach((form, index) => {
-                    form.querySelector('.pengajuan-title').textContent = 'Pengajuan ' + (index + 1);
-                    const removeBtn = form.querySelector('.remove-pengajuan');
-                    if (removeBtn) {
-                        removeBtn.style.display = (index === 0) ? 'none' : 'block';
-                    }
-                    form.querySelectorAll('[name], [id], [for]').forEach(el => {
-                        ['name', 'id', 'for'].forEach(attr => {
-                            const value = el.getAttribute(attr);
-                            if (value) {
-                                const newValue = value.replace(/\[\d+\]/g, '[' + index +
-                                        ']')
-                                    .replace(/_\d+$/, '_' + index);
-                                el.setAttribute(attr, newValue);
-                            }
-                        });
-                    });
-                });
-            }
-            updateAllIndexes();
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var modalAjukan = document.getElementById('modalAjukan');
+        
+        modalAjukan.addEventListener('show.bs.modal', function (event) {
+            // Tombol yang memicu modal
+            var button = event.relatedTarget;
+            
+            // Ambil data dari atribut data-*
+            var nokk = button.getAttribute('data-nokk');
+            var nama = button.getAttribute('data-nama');
+            
+            // Isi elemen di dalam modal
+            modalAjukan.querySelector('#modal-display-nokk').textContent = nokk;
+            modalAjukan.querySelector('#modal-display-nama').textContent = nama;
+            modalAjukan.querySelector('#modal-input-nokk').value = nokk;
+            
+            // Reset textarea agar kosong setiap kali buka modal baru
+            modalAjukan.querySelector('textarea').value = '';
         });
-    </script>
+    });
+</script>
 @endpush

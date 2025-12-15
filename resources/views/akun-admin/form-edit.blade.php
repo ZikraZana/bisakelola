@@ -83,20 +83,36 @@
 
                     <div class="col-md-6">
                         <label for="role" class="form-label">Role</label>
+                        @php
+                            $isDisabled =
+                                Auth::user()->role == 'Ketua Blok' ||
+                                Auth::user()->role == 'Ketua Bagian' ||
+                                Auth::user()->id_admin == $admin->id_admin;
+                            $isKetuaRtEditingOther =
+                                Auth::user()->role == 'Ketua RT' && Auth::user()->id_admin != $admin->id_admin;
+                        @endphp
                         <select class="form-control @error('role') is-invalid @enderror" id="role" name="role"
-                            required
-                            {{ Auth::user()->role == 'Ketua Blok' || Auth::user()->role == 'Ketua Bagian' ? 'disabled' : '' }}>
-                            <option value="">Pilih Role</option>
-                            {{-- UBAH SELECTED LOGIC --}}
-                            <option value="Ketua Blok" {{ old('role', $admin->role) == 'Ketua Blok' ? 'selected' : '' }}>
-                                Ketua Blok
-                            </option>
-                            <option value="Ketua Bagian"
-                                {{ old('role', $admin->role) == 'Ketua Bagian' ? 'selected' : '' }}>
-                                Ketua Bagian
-                            </option>
+                            required {{ $isDisabled ? 'disabled' : '' }}>
+                            @if ($isKetuaRtEditingOther)
+                                {{-- Ketua RT mengedit orang lain: tampilkan hanya 2 opsi (tanpa Ketua RT) --}}
+                                <option value="Ketua Blok"
+                                    {{ old('role', $admin->role) == 'Ketua Blok' ? 'selected' : '' }}>Ketua Blok</option>
+                                <option value="Ketua Bagian"
+                                    {{ old('role', $admin->role) == 'Ketua Bagian' ? 'selected' : '' }}>Ketua Bagian
+                                </option>
+                            @else
+                                {{-- Default: semua opsi --}}
+                                <option value="Ketua RT" {{ old('role', $admin->role) == 'Ketua RT' ? 'selected' : '' }}>
+                                    Ketua RT</option>
+                                <option value="Ketua Blok"
+                                    {{ old('role', $admin->role) == 'Ketua Blok' ? 'selected' : '' }}>Ketua Blok</option>
+                                <option value="Ketua Bagian"
+                                    {{ old('role', $admin->role) == 'Ketua Bagian' ? 'selected' : '' }}>Ketua Bagian
+                                </option>
+                            @endif
                         </select>
-                        @if (Auth::user()->role == 'Ketua Blok' || Auth::user()->role == 'Ketua Bagian')
+
+                        @if ($isDisabled)
                             <input type="hidden" name="role" value="{{ $admin->role }}" />
                         @endif
                         @error('role')

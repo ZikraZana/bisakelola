@@ -78,9 +78,32 @@ class DataPenerimaBansosController extends Controller
     /**
      * Tampilkan form tambah data
      */
-    public function formTambah()
+    public function formTambah(Request $request)
     {
-        return view('data-penerima-bansos.form-tambah');
+        $searchQuery = $request->input('search_query');
+
+        // Query Dasar: Ambil Data Keluarga yang Aktif
+        // Opsional: Anda bisa menambahkan ->whereDoesntHave('penerimaBansos') jika ingin
+        // menyembunyikan warga yang sudah dapat bansos.
+        $query = DataKeluarga::with(['anggotaKeluarga', 'desil', 'blok'])
+            ->where('status', 1); // Hanya ambil warga aktif
+
+        // Logika Pencarian (Sama seperti di Index Warga)
+        if ($searchQuery) {
+            $query->where(function ($q) use ($searchQuery) {
+                $q->where('no_kk', 'like', "%{$searchQuery}%")
+                    ->orWhereHas('anggotaKeluarga', function ($subQ) use ($searchQuery) {
+                        $subQ->where('nama_lengkap', 'like', "%{$searchQuery}%")
+                            ->where('status_dalam_keluarga', 'Kepala Keluarga');
+                        // Fokus cari nama kepala keluarga agar lebih relevan
+                    });
+            });
+        }
+
+        // Pagination
+        $dataKeluarga = $query->orderBy('updated_at', 'desc')->paginate(10)->withQueryString();
+
+        return view('data-penerima-bansos.form-tambah', compact('dataKeluarga', 'searchQuery'));
     }
 
     /**

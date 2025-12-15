@@ -3,6 +3,18 @@
 @section('title', 'Dashboard Utama')
 @section('title_nav', 'Dashboard')
 
+@push('styles')
+    <style>
+        .hover-card {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+
+        .hover-card:hover {
+            box-shadow: 0 5px 5px rgba(0, 0, 0, 0.15) !important;
+        }
+    </style>
+@endpush
 @section('content')
     @php
         // Cek Permission di sini agar kode di bawah lebih bersih
@@ -18,7 +30,7 @@
     <div class="row g-3 mb-4">
         {{-- Kartu Total KK --}}
         <div class="col-md-6 {{ $cardColClass }}">
-            <div class="card border-0 shadow-sm h-100 rounded-3">
+            <div class="card border-0 hover-card shadow-sm h-100 rounded-3">
                 <div class="card-body p-4 d-flex align-items-center justify-content-between">
                     <div>
                         <p class="text-muted mb-1 text-uppercase fw-bold small">Kepala Keluarga</p>
@@ -34,7 +46,7 @@
 
         {{-- Kartu Total Warga --}}
         <div class="col-md-6 {{ $cardColClass }}">
-            <div class="card border-0 shadow-sm h-100 rounded-3">
+            <div class="card border-0 hover-card shadow-sm h-100 rounded-3">
                 <div class="card-body p-4 d-flex align-items-center justify-content-between">
                     <div>
                         <p class="text-muted mb-1 text-uppercase fw-bold small">Total Penduduk</p>
@@ -51,7 +63,7 @@
         @if ($canViewBansos)
             {{-- Kartu Penerima Bansos --}}
             <div class="col-md-6 {{ $cardColClass }}">
-                <div class="card border-0 shadow-sm h-100 rounded-3">
+                <div class="card border-0 hover-card shadow-sm h-100 rounded-3">
                     <div class="card-body p-4 d-flex align-items-center justify-content-between">
                         <div>
                             <p class="text-muted mb-1 text-uppercase fw-bold small">Penerima Bansos</p>
@@ -117,7 +129,7 @@
 
                                 {{-- Desil 1 --}}
                                 <div
-                                    class="p-3 mb-3 bg-white border border-light shadow-sm rounded-3 border-start border-5 border-danger position-relative overflow-hidden">
+                                    class="p-3 mb-3 hover-card bg-white border border-light shadow-sm rounded-3 border-start border-5 border-danger position-relative overflow-hidden">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <span class="badge bg-danger mb-1">Desil 1</span>
@@ -131,7 +143,7 @@
                                 </div>
 
                                 {{-- Desil 2 --}}
-                                <div class="p-3 mb-3 bg-white border border-light shadow-sm rounded-3 border-start border-5 position-relative overflow-hidden"
+                                <div class="p-3 mb-3 hover-card bg-white border border-light shadow-sm rounded-3 border-start border-5 position-relative overflow-hidden"
                                     style="">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
@@ -148,7 +160,7 @@
 
                                 {{-- Desil 3 --}}
                                 <div
-                                    class="p-3 bg-white border border-light shadow-sm rounded-3 border-start border-5 border-warning position-relative overflow-hidden">
+                                    class="p-3 hover-card bg-white border border-light shadow-sm rounded-3 border-start border-5 border-warning position-relative overflow-hidden">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <span class="badge bg-warning text-dark mb-1">Desil 3</span>
@@ -170,7 +182,7 @@
 
                                 {{-- Desil 4 --}}
                                 <div
-                                    class="p-3 mb-3 bg-white border border-light shadow-sm rounded-3 border-start border-5 border-info position-relative overflow-hidden">
+                                    class="p-3 mb-3 hover-card bg-white border border-light shadow-sm rounded-3 border-start border-5 border-info position-relative overflow-hidden">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <span class="badge bg-info text-dark mb-1">Desil 4</span>
@@ -185,7 +197,7 @@
 
                                 {{-- Desil 5 --}}
                                 <div
-                                    class="p-3 mb-3 bg-white border border-light shadow-sm rounded-3 border-start border-5 border-success position-relative overflow-hidden">
+                                    class="p-3 mb-3 hover-card bg-white border border-light shadow-sm rounded-3 border-start border-5 border-success position-relative overflow-hidden">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <span class="badge bg-success mb-1">Desil 5</span>
@@ -200,7 +212,7 @@
 
                                 {{-- Desil 6+ --}}
                                 <div
-                                    class="p-3 bg-white border border-light shadow-sm rounded-3 border-start border-5 position-relative overflow-hidden">
+                                    class="p-3 bg-white hover-card border border-light shadow-sm rounded-3 border-start border-5 position-relative overflow-hidden">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <span class="badge bg-dark mb-1">Desil 6 - 10</span>

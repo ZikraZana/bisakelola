@@ -81,6 +81,11 @@
                                 <input type="password"
                                     class="form-control p-2 border-0 @error('password') is-invalid @enderror"
                                     id="password" name="password" placeholder="Password">
+                                {{-- Ikon Mata (Kanan) - BARU --}}
+                                <span class="input-group-text border-0 bg-white" style="cursor: pointer;"
+                                    id="togglePassword">
+                                    <i class="bi bi-eye-slash-fill text-secondary" id="iconPassword"></i>
+                                </span>
                             </div>
                             @error('password')
                                 <div class="invalid-feedback text-start ps-2 d-block">{{ $message }}</div>
@@ -104,7 +109,8 @@
                             </button>
                         </div>
                         <div class="d-grid gap-2">
-                            <a href="{{route('welcome')}}" class="btn bg-secondary text-light btn-lg shadow fw-bold py-2 fs-md-6"
+                            <a href="{{ route('welcome') }}"
+                                class="btn bg-secondary text-light btn-lg shadow fw-bold py-2 fs-md-6"
                                 style="font-size: 16px;">
                                 Kembali
                             </a>
@@ -134,6 +140,30 @@
                 timerProgressBar: true
             });
         @endif
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.querySelector('#togglePassword');
+            const password = document.querySelector('#password');
+            const icon = document.querySelector('#iconPassword');
+
+            togglePassword.addEventListener('click', function() {
+                // 1. Cek tipe saat ini (password atau text)
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+
+                // 2. Ubah tipe inputnya
+                password.setAttribute('type', type);
+
+                // 3. Ubah ikon mata (Buka/Tutup)
+                if (type === 'password') {
+                    // Jika mode password (bintang2), pakai mata dicoret
+                    icon.classList.remove('bi-eye-fill');
+                    icon.classList.add('bi-eye-slash-fill');
+                } else {
+                    // Jika mode text (terbuka), pakai mata terbuka
+                    icon.classList.remove('bi-eye-slash-fill');
+                    icon.classList.add('bi-eye-fill');
+                }
+            });
+        });
     </script>
 </body>
 

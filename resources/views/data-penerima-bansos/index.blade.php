@@ -117,19 +117,19 @@
             </div>
 
             {{-- Tabel --}}
-            <div class="card shadow-sm border-0 rounded-3">
+            <div class="card shadow-sm border rounded-3 pt-2">
                 <div class="table-responsive">
                     <table class="table table-hover table-striped mb-0 align-middle text-putih">
                         <thead class="aturlah disini warnanya">
                             <tr>
                                 <th class="py-3 px-3">No</th>
-                                <th class="py-3 px-3">No. KK</th>
+                                <th class="py-3 px-3">Nomor Kartu Keluarga</th>
                                 <th class="py-3 px-3">Kepala Keluarga</th>
-                                <th class="py-3 px-3">Keterangan (RT)</th>
-                                <th class="py-3 px-3">Status & Catatan (Dinsos)</th> {{-- DIGABUNG --}}
+                                <th class="py-3 px-3">Keterangan</th>
                                 <th class="py-3 px-3">Jenis Bansos</th>
-                                <th class="py-3 px-3">Penyaluran</th>
-                                <th class="py-3 px-3">Aksi</th>
+                                <th class="py-3 px-3 text-center">Status</th> 
+                                <th class="py-3 px-3 text-center">Penyaluran</th>
+                                <th class="py-3 px-3 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -151,43 +151,35 @@
                                         </span>
                                     </td>
                                     <td class="px-3">
-                                        @if ($pengajuan->status_acc == 'Disetujui')
-                                            <span class="badge bg-success mb-1">Disetujui</span>
-                                        @elseif ($pengajuan->status_acc == 'Ditolak')
-                                            <span class="badge bg-danger mb-1">Ditolak</span>
-                                        @else
-                                            <span class="badge bg-warning text-dark mb-1">Diajukan</span>
-                                        @endif
-
-                                        {{-- MENAMPILKAN CATATAN DINSOS DI SINI --}}
-                                        @if ($pengajuan->keterangan_acc)
-                                            <br><small class="text-muted fst-italic" style="font-size: 0.8em;">
-                                                "{{ Str::limit($pengajuan->keterangan_acc, 30) }}"
-                                            </small>
-                                        @endif
-                                    </td>
-                                    <td class="px-3">
                                         {{ $pengajuan->bansos->nama_bansos ?? '-' }}
                                         @if ($pengajuan->periode)
                                             <br><small class="text-muted">{{ $pengajuan->periode }}</small>
                                         @endif
                                     </td>
-                                    <td class="px-3">
-                                        @if ($pengajuan->status_bansos_diterima == 'Sudah Diterima')
-                                            <span class="badge bg-primary">Sudah</span>
+                                    <td class="text-center">
+                                        @if ($pengajuan->status_acc == 'Disetujui')
+                                            <span class="badge bg-success mb-1 p-2">Disetujui</span>
+                                        @elseif ($pengajuan->status_acc == 'Ditolak')
+                                            <span class="badge bg-danger mb-1 p-2">Ditolak</span>
                                         @else
-                                            <span class="badge bg-secondary">Belum</span>
+                                            <span class="badge bg-warning text-dark mb-1 p-2">Diajukan</span>
                                         @endif
                                     </td>
-                                    <td class="px-3">
-                                        <div class="d-flex gap-1">
+                                    <td class="px-3 text-center">
+                                        @if ($pengajuan->status_bansos_diterima == 'Sudah Diterima')
+                                            <span class="badge bg-utama2 p-2">Sudah Diterima</span>
+                                        @else
+                                            <span class="badge bg-secondary p-2">Belum Diterima</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-3 text-center justify-content-center">
+                                        <div class="d-flex gap-1 text-center justify-content-center">
                                             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#detailModal" data-pengajuan="{{ $pengajuan->toJson() }}"
                                                 data-keluarga="{{ $pengajuan->keluarga->toJson() }}"
                                                 data-kepala="{{ $kepala ? $kepala->nama_lengkap : 'N/A' }}">
                                                 Detail
                                             </button>
-                                            {{-- Edit/Hapus logic here if needed --}}
                                         </div>
                                     </td>
                                 </tr>

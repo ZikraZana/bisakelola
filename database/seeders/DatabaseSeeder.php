@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             adminSeeder::class,
             DesilSeeder::class,
             BansosSeeder::class,
+            WargaSeeder::class,
         ]);
     }
 }

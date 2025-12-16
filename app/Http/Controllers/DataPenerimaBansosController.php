@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Js;
 
 class DataPenerimaBansosController extends Controller
 {
@@ -80,7 +81,32 @@ class DataPenerimaBansosController extends Controller
      */
     public function formTambah()
     {
-        return view('data-penerima-bansos.form-tambah');
+        // 1. Ambil SEMUA data warga aktif + relasinya
+        $rawWarga = DataKeluarga::with(['anggotaKeluarga', 'blok', 'desil'])
+            ->where('status', 1)
+            ->whereDoesntHave('penerimaBansos', function ($query) {
+                $query->whereIn('status_acc', ['Diajukan', 'Disetujui']);
+            })
+            ->get();
+
+        // 2. Mapping data agar formatnya rapi untuk JSON (Frontend)
+        // Kita pre-process di sini agar Alpine tidak berat melakukan loop cari kepala keluarga
+        $dataWarga = $rawWarga->map(function ($item) {
+            $kepala = $item->anggotaKeluarga->firstWhere('status_dalam_keluarga', 'Kepala Keluarga');
+
+            return [
+                'no_kk' => $item->no_kk,
+                'nama_kepala' => $kepala ? $kepala->nama_lengkap : 'Tidak Ada Data',
+                'nik_kepala' => $kepala ? $kepala->nik_anggota : '-',
+                'blok' => $item->blok ? $item->blok->nama_blok : '-',
+                'desil' => $item->desil ? $item->desil->tingkat_desil : null,
+                // Kolom pencarian gabungan (biar search di Alpine gampang)
+                'searchable' => strtolower($item->no_kk . ' ' . ($kepala->nama_lengkap ?? '')),
+            ];
+        });
+
+        // 3. Kirim ke view
+        return view('data-penerima-bansos.form-tambah', compact('dataWarga'));
     }
 
     /**

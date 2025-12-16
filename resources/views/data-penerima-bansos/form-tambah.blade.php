@@ -1,176 +1,185 @@
 @extends('layouts.layout')
 
-@section('title')
-    Formulir Pengajuan Bansos
-@endsection
-
-@section('title_nav')
-    Pengajuan Bansos
-@endsection
+@section('title', 'Pengajuan Bansos')
+@section('title_nav', 'Pengajuan Bansos')
 
 @section('content')
-    <div class="card shadow-sm border-0 rounded-3">
-        <div class="card-body p-4 p-md-5">
+    {{-- Inisialisasi Alpine Data --}}
+    <div x-data="bansosApp({{ Js::from($dataWarga) }})" class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-body bg-light p-4 shadow-sm">
 
-            {{-- DIUBAH: Action ke route 'store' --}}
-            <form action="{{ route('data-penerima-bansos.store') }}" method="POST">
-                @csrf
+            {{-- Header & Search Bar --}}
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold mb-1">Daftar Warga Potensial</h4>
+                    <p class="text-muted mb-0">Cari warga secara realtime untuk diajukan.</p>
+                </div>
 
-                <h4 class="fw-bold mb-3">Data Pengajuan Warga</h4>
-                <p class="text-body-secondary">
-                    Anda bisa mengajukan lebih dari satu keluarga sekaligus.
-                </p>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white text-muted"><i class="bi bi-search"></i></span>
+                        {{-- INPUT PENCARIAN ALPINE --}}
+                        <input type="text" class="form-control" placeholder="Ketik No. KK atau Nama..."
+                            x-model="searchQuery">
+                    </div>
+                </div>
+            </div>
 
-                {{-- Container untuk baris-baris pengajuan dinamis --}}
-                <div id="pengajuan-container">
-                    @php
-                        // Menangani data 'old' jika validasi gagal
-                        $pengajuan_list = old('pengajuan', [0 => []]);
-                    @endphp
+            {{-- Pesan Error/Sukses Session (Blade) --}}
+            @if (session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-                    @foreach ($pengajuan_list as $index => $pengajuan)
-                        <div class="card mb-3 pengajuan-item">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="card-title pengajuan-title mb-0">Pengajuan {{ $index + 1 }}</h5>
-                                @if ($index > 0)
-                                    <button type="button" class="btn btn-danger btn-sm remove-pengajuan">Hapus</button>
-                                @endif
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    {{-- Kolom No. KK --}}
-                                    <div class="col-md-5">
-                                        <label for="no_kk_{{ $index }}" class="form-label">Nomor Kartu Keluarga
-                                            (KK)</label>
-                                        <input type="text" {{-- DIUBAH: Menampilkan error 'is-invalid' --}}
-                                            class="form-control @error("pengajuan.$index.no_kk") is-invalid @enderror"
-                                            id="no_kk_{{ $index }}" name="pengajuan[{{ $index }}][no_kk]"
-                                            placeholder="Masukkan No. KK..." value="{{ $pengajuan['no_kk'] ?? '' }}"
-                                            required>
-                                        {{-- DIUBAH: Menampilkan pesan error inline --}}
-                                        @error("pengajuan.$index.no_kk")
-                                            <i class="text-danger small">{{ $message }}</i>
-                                        @enderror
-                                    </div>
+            {{-- Tabel Data --}}
+            <div class="card shadow-sm border rounded-3 pt-2">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0 align-middle text-putih">
+                        <thead>
+                            <tr>
+                                <th class="py-3 pl-3">Nomor Kartu Keluarga</th>
+                                <th class="py-3 px-3">Kepala Keluarga</th>
+                                <th class="py-3 px-3">Blok / Lokasi</th>
+                                <th class="py-3 px-3 text-center">Desil</th>
+                                <th class="py-3 px-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{-- LOOPING ALPINE JS --}}
+                            <template x-for="warga in filteredWarga" :key="warga.no_kk">
+                                <tr>
+                                    <td class="px-3 fw-bold font-monospace" x-text="warga.no_kk"></td>
+                                    <td class="px-3">
+                                        <div class="fw-bold" x-text="warga.nama_kepala"></div>
+                                        <small class="text-muted">NIK: <span x-text="warga.nik_kepala"></span></small>
+                                    </td>
+                                    <td class="px-3" x-text="warga.blok"></td>
+                                    <td class="px-3 text-center">
+                                        {{-- Logic Alpine: Gunakan :class untuk warna dinamis --}}
+                                        <span class="badge py-2 px-2" :class="getBadgeColor(warga.desil)"
+                                            x-text="warga.desil ? 'Desil ' + warga.desil : 'Desil 6+'">
+                                        </span>
+                                    </td>
+                                    <td class="px-3 text-center">
+                                        {{-- Tombol Aksi Alpine --}}
+                                        <button type="button" class="btn btn-sm btn-primary" @click="openModal(warga)">
+                                            <i class="bi bi-plus-circle me-1"></i> Ajukan
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
 
-                                    {{-- Kolom Keterangan --}}
-                                    <div class="col-md-7">
-                                        <label for="keterangan_pengajuan_{{ $index }}" class="form-label">Alasan /
-                                            Keterangan Pengajuan</label>
-                                        <textarea class="form-control @error("pengajuan.$index.keterangan_pengajuan") is-invalid @enderror"
-                                            id="keterangan_pengajuan_{{ $index }}" name="pengajuan[{{ $index }}][keterangan_pengajuan]"
-                                            rows="3" placeholder="Contoh: Kehilangan pekerjaan, rumah tidak layak huni..." required>{{ $pengajuan['keterangan_pengajuan'] ?? '' }}</textarea>
-                                        @error("pengajuan.$index.keterangan_pengajuan")
-                                            <i class="text-danger small">{{ $message }}</i>
-                                        @enderror
-                                    </div>
-                                </div>
+                            {{-- Jika Hasil Pencarian Kosong --}}
+                            <tr x-show="filteredWarga.length === 0">
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-search fs-1 d-block mb-2 opacity-50"></i>
+                                    Tidak ada data yang cocok dengan pencarian "<span x-text="searchQuery"></span>".
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <small class="text-muted">Menampilkan <span x-text="filteredWarga.length"></span> dari <span
+                        x-text="allWarga.length"></span> data.</small>
+            </div>
+        </div>
+    </div>
+
+    {{-- MODAL FORM PENGAJUAN (Di-trigger via Alpine) --}}
+    <div class="modal fade" id="modalAjukan" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('data-penerima-bansos.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Formulir Pengajuan</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{-- Info Warga Terpilih (Diisi Alpine) --}}
+                        <div class="alert alert-info d-flex align-items-center mb-3">
+                            <i class="bi bi-info-circle-fill me-2 fs-4"></i>
+                            <div>
+                                Mengajukan Keluarga:<br>
+                                <strong id="modal-nama-display"></strong>
+                                (<span id="modal-nokk-display" class="font-monospace"></span>)
                             </div>
                         </div>
-                    @endforeach
-                </div>
 
-                <button type="button" class="btn btn-success btn-sm mt-3" id="add-pengajuan">
-                    <i class="bi bi-plus-circle me-1"></i> Tambah Pengajuan
-                </button>
+                        {{-- Input Hidden No KK --}}
+                        <input type="hidden" name="pengajuan[0][no_kk]" id="modal-nokk-input">
 
-                <div class="d-flex justify-content-end mt-4">
-                    {{-- DIUBAH: Route ke 'index' --}}
-                    <a href="{{ route('data-penerima-bansos.index') }}" class="btn btn-outline-secondary me-2">
-                        Batal
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-send-fill me-1"></i> Kirim Semua Pengajuan
-                    </button>
-                </div>
-
-            </form>
-
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Alasan / Keterangan <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="pengajuan[0][keterangan_pengajuan]" rows="4" required
+                                placeholder="Contoh: Kondisi ekonomi menurun..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Kirim Pengajuan</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 @endsection
 
 @push('scripts')
-    {{-- Script JS (tetap sama) --}}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const container = document.getElementById('pengajuan-container');
-            const addButton = document.getElementById('add-pengajuan');
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('bansosApp', (initialData) => ({
+                searchQuery: '',
+                allWarga: initialData,
 
-            // --- FUNGSI UNTUK MENAMBAH PENGAJUAN ---
-            addButton.addEventListener('click', function() {
-                const template = container.querySelector('.pengajuan-item');
-                if (!template) return;
-                const newForm = template.cloneNode(true);
-                const newIndex = container.querySelectorAll('.pengajuan-item').length;
-
-                newForm.querySelector('.pengajuan-title').textContent = 'Pengajuan ' + (newIndex + 1);
-
-                // Reset semua nilai input
-                newForm.querySelectorAll('input[type="text"], textarea').forEach(input => {
-                    input.value = '';
-                    input.classList.remove('is-invalid');
-                });
-                newForm.querySelectorAll('.text-danger.small').forEach(err => err.remove());
-
-                // Tambahkan tombol hapus
-                if (newIndex > 0 && !newForm.querySelector('.remove-pengajuan')) {
-                    const header = newForm.querySelector('.card-header');
-                    const removeButton = document.createElement('button');
-                    removeButton.type = 'button';
-                    removeButton.className = 'btn btn-danger btn-sm remove-pengajuan';
-                    removeButton.textContent = 'Hapus';
-                    header.appendChild(removeButton);
-                }
-
-                // Perbarui atribut 'name', 'id', 'for'
-                newForm.querySelectorAll('[name], [id], [for]').forEach(el => {
-                    ['name', 'id', 'for'].forEach(attr => {
-                        const value = el.getAttribute(attr);
-                        if (value) {
-                            const newValue = value.replace(/\[\d+\]/g, '[' + newIndex + ']')
-                                .replace(/_\d+$/, '_' + newIndex);
-                            el.setAttribute(attr, newValue);
-                        }
-                    });
-                });
-                container.appendChild(newForm);
-            });
-
-            // --- FUNGSI UNTUK MENGHAPUS PENGAJUAN ---
-            container.addEventListener('click', function(e) {
-                if (e.target && e.target.classList.contains('remove-pengajuan')) {
-                    const cardToRemove = e.target.closest('.pengajuan-item');
-                    if (cardToRemove) {
-                        cardToRemove.remove();
-                        updateAllIndexes();
+                // Logika Filter (Getter)
+                get filteredWarga() {
+                    if (this.searchQuery === '') {
+                        return this.allWarga;
                     }
-                }
-            });
-
-            // --- FUNGSI UNTUK MEMPERBARUI SEMUA INDEX SETELAH HAPUS ---
-            function updateAllIndexes() {
-                const allForms = container.querySelectorAll('.pengajuan-item');
-                allForms.forEach((form, index) => {
-                    form.querySelector('.pengajuan-title').textContent = 'Pengajuan ' + (index + 1);
-                    const removeBtn = form.querySelector('.remove-pengajuan');
-                    if (removeBtn) {
-                        removeBtn.style.display = (index === 0) ? 'none' : 'block';
-                    }
-                    form.querySelectorAll('[name], [id], [for]').forEach(el => {
-                        ['name', 'id', 'for'].forEach(attr => {
-                            const value = el.getAttribute(attr);
-                            if (value) {
-                                const newValue = value.replace(/\[\d+\]/g, '[' + index +
-                                        ']')
-                                    .replace(/_\d+$/, '_' + index);
-                                el.setAttribute(attr, newValue);
-                            }
-                        });
+                    const lowerSearch = this.searchQuery.toLowerCase();
+                    return this.allWarga.filter(item => {
+                        return item.searchable.includes(lowerSearch);
                     });
-                });
-            }
-            updateAllIndexes();
+                },
+
+                getBadgeColor(desil) {
+                    // Pastikan desil dianggap angka
+                    const d = parseInt(desil);
+
+                    if (d === 1) return 'bg-danger text-white border'; // Merah (Sangat Miskin)
+                    if (d === 2) return 'bg-warning text-dark'; // Kuning (Miskin)
+                    if (d === 3) return 'bg-primary text-white'; // Biru (Hampir Miskin)
+                    if (d >= 4) return 'bg-success text-white'; // Hijau (Rentan/Aman)
+
+                    // Default (Jika null/tidak ada desil)
+                    return 'bg-light text-secondary border border-secondary-subtle';
+                },
+
+                // Fungsi Buka Modal
+                openModal(warga) {
+                    // Isi tampilan modal menggunakan Vanilla JS DOM manipulation (agar aman dengan form submit)
+                    document.getElementById('modal-nama-display').textContent = warga.nama_kepala;
+                    document.getElementById('modal-nokk-display').textContent = warga.no_kk;
+                    document.getElementById('modal-nokk-input').value = warga.no_kk;
+
+                    // Tampilkan Modal Bootstrap
+                    var myModal = new bootstrap.Modal(document.getElementById('modalAjukan'));
+                    myModal.show();
+                }
+            }));
         });
     </script>
 @endpush

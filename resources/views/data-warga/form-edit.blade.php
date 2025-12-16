@@ -11,7 +11,8 @@
 @section('content')
     <div class="card shadow-sm border-0 rounded-3">
         <div class="card-body p-4 p-md-5">
-            <form action="{{ route('data-warga.update', $dataKeluarga->id_keluarga) }}" method="POST">
+            <form action="{{ route('data-warga.update', $dataKeluarga->id_keluarga) }}" method="POST"
+                enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -402,9 +403,12 @@
                                             <option value="Kawin"
                                                 {{ ($anggota['status_perkawinan'] ?? '') == 'Kawin' ? 'selected' : '' }}>
                                                 Kawin</option>
-                                            <option value="Cerai"
-                                                {{ ($anggota['status_perkawinan'] ?? '') == 'Cerai' ? 'selected' : '' }}>
-                                                Cerai</option>
+                                            <option value="Cerai Mati"
+                                                {{ ($anggota['status_perkawinan'] ?? '') == 'Cerai Mati' ? 'selected' : '' }}>
+                                                Cerai Mati</option>
+                                            <option value="Cerai Hidup"
+                                                {{ ($anggota['status_perkawinan'] ?? '') == 'Cerai Hidup' ? 'selected' : '' }}>
+                                                Cerai Hidup</option>
                                         </select>
                                         @error("anggota_keluarga.$index.status_perkawinan")
                                             <i class="text-danger small">{{ $message }}</i>
@@ -419,6 +423,140 @@
                 <button type="button" class="btn btn-success btn-sm mt-3" id="add-anggota-keluarga">Tambah Anggota
                     Keluarga</button>
 
+                <h4 class="fw-bold mb-3 mt-5">Berkas Pendukung</h4>
+
+                {{-- --- BAGIAN 3: BERKAS PENDUKUNG (SWAP UI) --- --}}
+                {{-- Kita siapkan logika PHP di sini untuk cek file existing --}}
+                @php
+                    // Helper function/logic lokal untuk path
+                    $ktpPath = $dataKeluarga->foto_ktp;
+                    $kkPath = $dataKeluarga->foto_kk;
+
+                    $ktpUrl = $ktpPath ? asset('storage/' . $ktpPath) : null;
+                    $kkUrl = $kkPath ? asset('storage/' . $kkPath) : null;
+
+                    // Cek apakah file adalah PDF
+                    $isKtpPdf = $ktpPath && Str::endsWith(strtolower($ktpPath), '.pdf');
+                    $isKkPdf = $kkPath && Str::endsWith(strtolower($kkPath), '.pdf');
+                @endphp
+
+                <div class="row g-4 mb-4">
+
+                    {{-- === UPLOAD KTP === --}}
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Foto/Scan KTP Kepala Keluarga</label>
+                        <div class="position-relative">
+
+                            {{-- 1. Dropzone (Tampil jika TIDAK ada file lama) --}}
+                            <div id="drop-area-ktp"
+                                class="border border-2 border-dashed rounded-3 p-4 text-center bg-light position-relative hover-effect {{ $ktpPath ? 'd-none' : '' }}"
+                                style="cursor: pointer; transition: all 0.2s;">
+                                <input type="file" name="foto_ktp" id="foto_ktp" class="d-none"
+                                    accept="image/*,.pdf">
+                                <div class="py-3">
+                                    <i class="bi bi-cloud-arrow-up text-primary" style="font-size: 3rem;"></i>
+                                    <h6 class="mt-3 text-dark fw-bold">Klik / Seret File KTP</h6>
+                                    <p class="text-muted small mb-0">Format: JPG, PNG, PDF (Maks. 5MB)</p>
+                                </div>
+                            </div>
+
+                            {{-- 2. Preview (Tampil jika ADA file lama) --}}
+                            <div id="preview-area-ktp" class="card border-0 shadow-sm {{ $ktpPath ? '' : 'd-none' }}">
+                                <div class="card-body p-3 border rounded">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="text-truncate fw-bold text-success me-auto" id="filename-ktp">
+                                            {{ $ktpPath ? 'File Tersimpan' : 'Filename.jpg' }}
+                                        </div>
+                                        {{-- Tombol Hapus/Ganti --}}
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                            onclick="resetFile('ktp')">
+                                            <i class="bi bi-trash me-1"></i> Ganti
+                                        </button>
+                                    </div>
+
+                                    <div class="bg-dark rounded d-flex justify-content-center align-items-center overflow-hidden"
+                                        style="height: 200px;">
+                                        {{-- Image Preview --}}
+                                        <img id="img-preview-ktp" src="{{ $ktpUrl ?? '' }}" class="img-fluid"
+                                            style="max-height: 100%; display: {{ $ktpPath && !$isKtpPdf ? 'block' : 'none' }};">
+
+                                        {{-- PDF Icon --}}
+                                        <div id="pdf-preview-ktp" class="text-white text-center"
+                                            style="display: {{ $isKtpPdf ? 'block' : 'none' }};">
+                                            <i class="bi bi-file-pdf fs-1"></i><br>
+                                            Dokumen PDF<br>
+                                            @if ($ktpUrl)
+                                                <a href="{{ $ktpUrl }}" target="_blank"
+                                                    class="text-white small text-decoration-underline">Lihat File</a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @error('foto_ktp')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    {{-- === UPLOAD KK === --}}
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Foto/Scan Kartu Keluarga</label>
+                        <div class="position-relative">
+
+                            {{-- 1. Dropzone --}}
+                            <div id="drop-area-kk"
+                                class="border border-2 border-dashed rounded-3 p-4 text-center bg-light position-relative hover-effect {{ $kkPath ? 'd-none' : '' }}"
+                                style="cursor: pointer; transition: all 0.2s;">
+                                <input type="file" name="foto_kk" id="foto_kk" class="d-none"
+                                    accept="image/*,.pdf">
+                                <div class="py-3">
+                                    <i class="bi bi-file-earmark-image text-primary" style="font-size: 3rem;"></i>
+                                    <h6 class="mt-3 text-dark fw-bold">Klik / Seret File KK</h6>
+                                    <p class="text-muted small mb-0">Format: JPG, PNG, PDF (Maks. 5MB)</p>
+                                </div>
+                            </div>
+
+                            {{-- 2. Preview --}}
+                            <div id="preview-area-kk" class="card border-0 shadow-sm {{ $kkPath ? '' : 'd-none' }}">
+                                <div class="card-body p-3 border rounded">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="text-truncate fw-bold text-success me-auto" id="filename-kk">
+                                            {{ $kkPath ? 'File Tersimpan' : 'Filename.jpg' }}
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                            onclick="resetFile('kk')">
+                                            <i class="bi bi-trash me-1"></i> Ganti
+                                        </button>
+                                    </div>
+
+                                    <div class="bg-dark rounded d-flex justify-content-center align-items-center overflow-hidden"
+                                        style="height: 200px;">
+                                        <img id="img-preview-kk" src="{{ $kkUrl ?? '' }}" class="img-fluid"
+                                            style="max-height: 100%; display: {{ $kkPath && !$isKkPdf ? 'block' : 'none' }};">
+
+                                        <div id="pdf-preview-kk" class="text-white text-center"
+                                            style="display: {{ $isKkPdf ? 'block' : 'none' }};">
+                                            <i class="bi bi-file-pdf fs-1"></i><br>
+                                            Dokumen PDF<br>
+                                            @if ($kkUrl)
+                                                <a href="{{ $kkUrl }}" target="_blank"
+                                                    class="text-white small text-decoration-underline">Lihat File</a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @error('foto_kk')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                </div>
+
+
+                
 
                 <div class="d-flex justify-content-end mt-4">
                     {{-- FIX 3: Menggunakan route 'index' yang konsisten --}}
@@ -439,142 +577,170 @@
 @push('scripts')
     {{-- JavaScript Anda sudah benar dan tidak perlu diubah. --}}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const container = document.getElementById('anggota-keluarga-container');
-            const addButton = document.getElementById('add-anggota-keluarga');
-            const jumlahInput = document.getElementById('jumlah');
+    // ==========================================
+    // 1. FUNGSI FILE UPLOAD (RESET & PREVIEW)
+    // ==========================================
+    window.resetFile = function(type) {
+        const input = document.getElementById('foto_' + type);
+        const dropArea = document.getElementById('drop-area-' + type);
+        const previewArea = document.getElementById('preview-area-' + type);
+        
+        // Reset Input Value (artinya user ingin menghapus file baru/lama untuk diganti)
+        input.value = '';
+        
+        // Tampilkan Dropzone, Sembunyikan Preview
+        dropArea.classList.remove('d-none');
+        previewArea.classList.add('d-none');
+    }
 
-            // Inisialisasi jumlah anggota keluarga saat halaman dimuat
-            updateJumlahInput();
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // --- SETUP UPLOAD LOGIC ---
+        function setupFileUpload(type) {
+            const dropArea = document.getElementById('drop-area-' + type);
+            const input = document.getElementById('foto_' + type);
+            const previewArea = document.getElementById('preview-area-' + type);
+            const filenameLabel = document.getElementById('filename-' + type);
+            const imgPreview = document.getElementById('img-preview-' + type);
+            const pdfPreview = document.getElementById('pdf-preview-' + type);
 
-            // --- FUNGSI UNTUK MENAMBAH ANGGOTA KELUARGA ---
-            addButton.addEventListener('click', function() {
-                const template = container.querySelector('.anggota-keluarga-item');
-                if (!template) {
-                    console.error('Template anggota keluarga tidak ditemukan!');
-                    return;
-                }
-                const newForm = template.cloneNode(true);
-                const newIndex = container.querySelectorAll('.anggota-keluarga-item').length;
-                newForm.querySelector('.anggota-keluarga-title').textContent = 'Anggota Keluarga ' + (
-                    newIndex + 1);
+            dropArea.addEventListener('click', () => input.click());
 
-                newForm.querySelectorAll(
-                    'input[type="text"], input[type="date"], input[type="number"], select').forEach(
-                    input => {
-                        if (input.tagName.toLowerCase() === 'select') {
-                            input.selectedIndex = 0;
-                        } else {
-                            input.value = '';
-                        }
-                        input.classList.remove('is-invalid');
-                    });
-
-                newForm.querySelectorAll('.text-danger.small').forEach(err => err.remove());
-
-                if (newIndex > 0 && !newForm.querySelector('.remove-anggota-keluarga')) {
-                    const header = newForm.querySelector('.card-header');
-                    const removeButton = document.createElement('button');
-                    removeButton.type = 'button';
-                    removeButton.className = 'btn btn-danger btn-sm remove-anggota-keluarga';
-                    removeButton.textContent = 'Hapus';
-                    header.appendChild(removeButton);
-                }
-
-                newForm.querySelectorAll('[name], [id], [for]').forEach(el => {
-                    ['name', 'id', 'for'].forEach(attr => {
-                        const value = el.getAttribute(attr);
-                        if (value) {
-                            const newValue = value.replace(/\[\d+\]/g, '[' + newIndex + ']')
-                                .replace(/_\d+$/, '_' + newIndex);
-                            el.setAttribute(attr, newValue);
-                        }
-                    });
-                });
-                container.appendChild(newForm);
-                updateJumlahInput();
+            input.addEventListener('change', function() {
+                handleFiles(this.files);
             });
 
-            // --- FUNGSI UNTUK MENGHAPUS ANGGOTA KELUARGA ---
-            container.addEventListener('click', function(e) {
-                if (e.target && e.target.classList.contains('remove-anggota-keluarga')) {
-                    if (container.querySelectorAll('.anggota-keluarga-item').length <= 1) {
-                        console.warn('Minimal harus ada satu anggota keluarga.');
+            // Drag & Drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
+            });
+
+            dropArea.addEventListener('dragover', () => dropArea.classList.add('bg-secondary-subtle'));
+            dropArea.addEventListener('dragleave', () => dropArea.classList.remove('bg-secondary-subtle'));
+            dropArea.addEventListener('drop', (e) => {
+                dropArea.classList.remove('bg-secondary-subtle');
+                input.files = e.dataTransfer.files;
+                handleFiles(input.files);
+            });
+
+            function handleFiles(files) {
+                if (files.length > 0) {
+                    const file = files[0];
+                    if(file.size > 5 * 1024 * 1024) {
+                        alert('Ukuran file terlalu besar! Maksimal 5MB.');
+                        input.value = '';
                         return;
                     }
-                    const cardToRemove = e.target.closest('.anggota-keluarga-item');
-                    if (cardToRemove) {
-                        cardToRemove.remove();
-                        updateAllIndexes();
-                        updateJumlahInput();
+
+                    filenameLabel.textContent = file.name;
+                    dropArea.classList.add('d-none');
+                    previewArea.classList.remove('d-none');
+
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            imgPreview.src = e.target.result;
+                            imgPreview.style.display = 'block';
+                            pdfPreview.style.display = 'none';
+                        }
+                        reader.readAsDataURL(file);
+                    } else if (file.type === 'application/pdf') {
+                        imgPreview.style.display = 'none';
+                        pdfPreview.style.display = 'block';
+                        // Sembunyikan link "Lihat File" lama jika ada, karena ini file baru
+                        const oldLink = pdfPreview.querySelector('a');
+                        if(oldLink) oldLink.style.display = 'none';
                     }
+                }
+            }
+        }
+
+        setupFileUpload('ktp');
+        setupFileUpload('kk');
+
+
+        // ==========================================
+        // 2. DYNAMIC FORM LOGIC (SAMA SEPERTI CREATE)
+        // ==========================================
+        const container = document.getElementById('anggota-keluarga-container');
+        const addButton = document.getElementById('add-anggota-keluarga');
+        const jumlahInput = document.getElementById('jumlah');
+
+        function updateJumlahInput() {
+            const count = container.querySelectorAll('.anggota-keluarga-item').length;
+            jumlahInput.value = count;
+        }
+        updateJumlahInput(); // Init
+
+        addButton.addEventListener('click', function() {
+            const template = container.querySelector('.anggota-keluarga-item');
+            const newForm = template.cloneNode(true);
+            const newIndex = container.querySelectorAll('.anggota-keluarga-item').length;
+
+            newForm.querySelector('.anggota-keluarga-title').textContent = 'Anggota Keluarga ' + (newIndex + 1);
+
+            // Reset Inputs
+            newForm.querySelectorAll('input, select').forEach(input => {
+                if (input.tagName.toLowerCase() === 'select') {
+                    input.selectedIndex = 0;
+                    input.removeAttribute('disabled');
+                    input.style.backgroundColor = '';
+                } else {
+                    if(input.type !== 'hidden') input.value = '';
+                }
+                input.classList.remove('is-invalid');
+            });
+
+            // Hapus Hidden Input (Kepala Keluarga)
+            const hiddenInput = newForm.querySelector('.status-hidden-input');
+            if(hiddenInput) hiddenInput.remove();
+
+            // Tambah Tombol Hapus jika belum ada
+            if (!newForm.querySelector('.remove-anggota-keluarga')) {
+                const header = newForm.querySelector('.card-header');
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn btn-danger btn-sm remove-anggota-keluarga';
+                btn.innerHTML = '<i class="bi bi-trash"></i> Hapus';
+                header.appendChild(btn);
+            } else {
+                newForm.querySelector('.remove-anggota-keluarga').style.display = 'block';
+            }
+
+            // Update Name Attributes
+            newForm.querySelectorAll('[name]').forEach(el => {
+                const name = el.getAttribute('name');
+                if (name) {
+                    const newName = name.replace(/\[\d+\]/g, '[' + newIndex + ']');
+                    el.setAttribute('name', newName);
                 }
             });
 
-            // --- FUNGSI UNTUK MEMPERBARUI SEMUA INDEX SETELAH PENGHAPUSAN ---
-            function updateAllIndexes() {
-                const allForms = container.querySelectorAll('.anggota-keluarga-item');
-                allForms.forEach((form, index) => {
-                    form.querySelector('.anggota-keluarga-title').textContent = 'Anggota Keluarga ' + (
-                        index + 1);
+            container.appendChild(newForm);
+            updateJumlahInput();
+        });
 
-                    const removeBtn = form.querySelector('.remove-anggota-keluarga');
-                    if (removeBtn) {
-                        if (index === 0) {
-                            removeBtn.style.display = 'none';
-                        } else {
-                            removeBtn.style.display = 'block';
-                        }
-                    }
-
-                    form.querySelectorAll('[name], [id], [for]').forEach(el => {
-                        ['name', 'id', 'for'].forEach(attr => {
-                            const value = el.getAttribute(attr);
-                            if (value) {
-                                const newValue = value.replace(/\[\d+\]/g, '[' + index +
-                                    ']').replace(/_\d+$/, '_' + index);
-                                el.setAttribute(attr, newValue);
-                            }
-                        });
-                    });
-                });
-            }
-
-            // --- FUNGSI UNTUK SINKRONISASI INPUT JUMLAH ANGGOTA ---
-            function updateJumlahInput() {
-                const count = container.querySelectorAll('.anggota-keluarga-item').length;
-                jumlahInput.value = count;
-            }
-
-            // --- (OPSIONAL) SINKRONISASI JIKA USER MENGUBAH MANUAL INPUT JUMLAH ---
-            jumlahInput.addEventListener('change', function() {
-                const desiredCount = parseInt(this.value, 10);
-                const currentCount = container.querySelectorAll('.anggota-keluarga-item').length;
-
-                if (isNaN(desiredCount) || desiredCount <= 0) {
-                    this.value = currentCount;
+        container.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-anggota-keluarga')) {
+                if (container.querySelectorAll('.anggota-keluarga-item').length <= 1) {
+                    alert('Minimal satu anggota keluarga.');
                     return;
                 }
-
-                if (desiredCount > currentCount) {
-                    for (let i = 0; i < desiredCount - currentCount; i++) {
-                        addButton.click();
-                    }
-                } else if (desiredCount < currentCount) {
-                    for (let i = 0; i < currentCount - desiredCount; i++) {
-                        const lastItem = container.querySelector(
-                            '.anggota-keluarga-item:last-child');
-                        if (lastItem && container.querySelectorAll('.anggota-keluarga-item')
-                            .length > 1) {
-                            lastItem.remove();
+                e.target.closest('.anggota-keluarga-item').remove();
+                
+                // Re-Index
+                container.querySelectorAll('.anggota-keluarga-item').forEach((form, index) => {
+                    form.querySelector('.anggota-keluarga-title').textContent = 'Anggota Keluarga ' + (index + 1);
+                    form.querySelectorAll('[name]').forEach(el => {
+                        const name = el.getAttribute('name');
+                        if (name) {
+                            el.setAttribute('name', name.replace(/\[\d+\]/g, '[' + index + ']'));
                         }
-                    }
-                    updateAllIndexes();
-                }
-            });
-
-            // Panggil updateAllIndexes saat load untuk memastikan tombol hapus pertama disembunyikan
-            updateAllIndexes();
+                    });
+                });
+                updateJumlahInput();
+            }
         });
-    </script>
+    });
+</script>
 @endpush

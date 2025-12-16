@@ -95,63 +95,121 @@
                     {{-- Area Keterangan (Legend) Sesuai Gambar Infografis --}}
                     <div id="infoDesil" class="collapse show">
 
-                        {{-- Kesimpulan Singkat --}}
-                        <div class="alert alert-light border-start border-primary border-4 py-2 px-3 mb-3">
-                            <small class="text-muted fst-italic">
-                                <strong>Info:</strong> Desil 1 s/d 4 adalah kelompok yang paling berpeluang menerima semua
-                                jenis bansos (PKH, BPNT, PBI-JK).
-                            </small>
+                        {{-- Definisi Singkat --}}
+                        <div class="alert alert-primary bg-primary-subtle border-0 d-flex align-items-center mb-4"
+                            role="alert">
+                            <i class="bi bi-info-circle-fill text-primary fs-4 me-3"></i>
+                            <div>
+                                <span class="fw-bold text-primary">Apa itu Desil?</span>
+                                <small class="d-block text-muted">
+                                    Pengelompokan kesejahteraan rumah tangga menjadi 10 bagian (10%). Semakin rendah
+                                    angkanya (1), semakin membutuhkan bantuan.
+                                </small>
+                            </div>
                         </div>
 
-                        <div class="row g-3">
-                            {{-- Kolom Kiri: Kelompok Miskin (1-3) --}}
+                        <div class="row g-4">
+                            {{-- KOLOM KIRI: PRIORITAS BANSOS (1-3) --}}
                             <div class="col-md-6">
-                                <div class="d-flex align-items-center mb-2">
-                                    <span class="badge bg-danger me-2 shadow-sm" style="min-width: 80px;">Desil 1</span>
-                                    <div>
-                                        <strong class="d-block text-danger">Sangat Miskin</strong>
+                                <h6 class="text-uppercase text-muted fw-bold small mb-3 ls-1">
+                                    <i class="bi bi-exclamation-circle-fill text-danger me-1"></i> Prioritas Tinggi
+                                </h6>
+
+                                {{-- Desil 1 --}}
+                                <div
+                                    class="p-3 mb-3 bg-white border border-light shadow-sm rounded-3 border-start border-5 border-danger position-relative overflow-hidden">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge bg-danger mb-1">Desil 1</span>
+                                            <h6 class="fw-bold mb-0 text-dark">Sangat Miskin</h6>
+                                            <small class="text-secondary" style="font-size: 0.75rem;">Target utama PKH &
+                                                Sembako</small>
+                                        </div>
+                                        <i
+                                            class="bi bi-graph-down-arrow text-danger opacity-25 fs-1 position-absolute end-0 me-3"></i>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-center mb-2">
-                                    {{-- Warna Oranye Custom --}}
-                                    <span class="badge me-2 shadow-sm"
-                                        style="min-width: 80px; background-color: #fd7e14; color: white;">Desil 2</span>
-                                    <div>
-                                        <strong class="d-block" style="color: #fd7e14;">Miskin</strong>
+
+                                {{-- Desil 2 --}}
+                                <div class="p-3 mb-3 bg-white border border-light shadow-sm rounded-3 border-start border-5 position-relative overflow-hidden"
+                                    style="">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge mb-1 text-white" style="background-color: #fd7e14;">Desil
+                                                2</span>
+                                            <h6 class="fw-bold mb-0 text-dark">Miskin</h6>
+                                            <small class="text-secondary" style="font-size: 0.75rem;">Prioritas tinggi
+                                                bantuan</small>
+                                        </div>
+                                        <i class="bi bi-house-dash text-warning opacity-25 fs-1 position-absolute end-0 me-3"
+                                            style="color: #fd7e14 !important;"></i>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-center">
-                                    <span class="badge bg-warning text-dark me-2 shadow-sm" style="min-width: 80px;">Desil
-                                        3</span>
-                                    <div>
-                                        <strong class="d-block text-warning-emphasis">Hampir Miskin</strong>
+
+                                {{-- Desil 3 --}}
+                                <div
+                                    class="p-3 bg-white border border-light shadow-sm rounded-3 border-start border-5 border-warning position-relative overflow-hidden">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge bg-warning text-dark mb-1">Desil 3</span>
+                                            <h6 class="fw-bold mb-0 text-dark">Hampir Miskin</h6>
+                                            <small class="text-secondary" style="font-size: 0.75rem;">Rentan guncangan
+                                                ekonomi</small>
+                                        </div>
+                                        <i
+                                            class="bi bi-cone-striped text-warning opacity-25 fs-1 position-absolute end-0 me-3"></i>
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- Kolom Kanan: Kelompok Rentan s/d Mampu (4-10) --}}
+                            {{-- KOLOM KANAN: MENENGAH - MAMPU (4-10) --}}
                             <div class="col-md-6">
-                                <div class="d-flex align-items-center mb-2">
-                                    {{-- Hijau Muda/Cyan --}}
-                                    <span class="badge bg-info text-dark me-2 shadow-sm" style="min-width: 80px;">Desil
-                                        4</span>
-                                    <div>
-                                        <strong class="d-block text-info-emphasis">Rentan Miskin</strong>
-                                        <small class="text-muted" style="font-size: 0.7rem;">(Batas Prioritas)</small>
+                                <h6 class="text-uppercase text-muted fw-bold small mb-3 ls-1">
+                                    <i class="bi bi-shield-check text-success me-1"></i> Perbatasan & Mandiri
+                                </h6>
+
+                                {{-- Desil 4 --}}
+                                <div
+                                    class="p-3 mb-3 bg-white border border-light shadow-sm rounded-3 border-start border-5 border-info position-relative overflow-hidden">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge bg-info text-dark mb-1">Desil 4</span>
+                                            <h6 class="fw-bold mb-0 text-dark">Rentan Miskin</h6>
+                                            <small class="text-secondary" style="font-size: 0.75rem;">Batas bawah penerima
+                                                subsidi</small>
+                                        </div>
+                                        <i
+                                            class="bi bi-activity text-info opacity-25 fs-1 position-absolute end-0 me-3"></i>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-center mb-2">
-                                    <span class="badge bg-success me-2 shadow-sm" style="min-width: 80px;">Desil 5</span>
-                                    <div>
-                                        <strong class="d-block text-success">Pas-pasan</strong>
-                                        <small class="text-muted" style="font-size: 0.7rem;">(Bantuan Terbatas)</small>
+
+                                {{-- Desil 5 --}}
+                                <div
+                                    class="p-3 mb-3 bg-white border border-light shadow-sm rounded-3 border-start border-5 border-success position-relative overflow-hidden">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge bg-success mb-1">Desil 5</span>
+                                            <h6 class="fw-bold mb-0 text-dark">Menengah Bawah</h6>
+                                            <small class="text-secondary" style="font-size: 0.75rem;">Ekonomi mulai
+                                                stabil</small>
+                                        </div>
+                                        <i
+                                            class="bi bi-flower1 text-success opacity-25 fs-1 position-absolute end-0 me-3"></i>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-center">
-                                    <span class="badge bg-dark me-2 shadow-sm" style="min-width: 80px;">Desil 6+</span>
-                                    <div>
-                                        <strong class="d-block text-dark">Menengah ke Atas</strong>
-                                        <small class="text-muted" style="font-size: 0.7rem;">(Tidak Prioritas)</small>
+
+                                {{-- Desil 6+ --}}
+                                <div
+                                    class="p-3 bg-white border border-light shadow-sm rounded-3 border-start border-5 position-relative overflow-hidden">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge bg-dark mb-1">Desil 6 - 10</span>
+                                            <h6 class="fw-bold mb-0 text-dark">Mampu / Kaya</h6>
+                                            <small class="text-secondary" style="font-size: 0.75rem;">Tidak diprioritaskan
+                                                bansos</small>
+                                        </div>
+                                        <i
+                                            class="bi bi-building text-dark opacity-25 fs-1 position-absolute end-0 me-3"></i>
                                     </div>
                                 </div>
                             </div>
@@ -167,7 +225,8 @@
             <div class="col-lg-4">
                 <div class="card border-0 shadow-sm rounded-3 h-100">
                     <div class="card-header bg-white py-3">
-                        <h6 class="mb-0 fw-bold text-secondary"><i class="bi bi-pie-chart-fill me-2 text-success"></i>Jenis
+                        <h6 class="mb-0 fw-bold text-secondary"><i
+                                class="bi bi-pie-chart-fill me-2 text-success"></i>Jenis
                             Bantuan Tersalurkan</h6>
                     </div>
                     <div class="card-body d-flex align-items-center justify-content-center">
@@ -340,7 +399,7 @@
             });
         });
     </script>
-    
+
     @if (session('success'))
         <script>
             Swal.fire({

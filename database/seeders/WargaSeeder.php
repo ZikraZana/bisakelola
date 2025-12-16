@@ -50,8 +50,8 @@ class WargaSeeder extends Seeder
                     'status'     => 1, // 1 = Aktif
                     'id_blok'    => $bloks->random()->id_blok, // Pilih blok acak
                     'id_desil'   => $desil->id_desil,          // Sesuai loop saat ini
-                    // 'foto_ktp'   => 'placeholder_ktp.jpg',     
-                    // 'foto_kk'    => 'placeholder_kk.jpg',      
+                    'foto_ktp'   => 'placeholder_ktp.jpg',     
+                    'foto_kk'    => 'placeholder_kk.jpg',      
                 ]);
 
                 // Sekarang kita punya '$keluarga->id_keluarga' yang bisa dipakai di bawah

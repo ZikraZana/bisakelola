@@ -17,6 +17,9 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login.form');
     Route::post('/login', [LoginController::class, 'login'])->name('login');
+    Route::get('/forgot-password', function () {
+        return view('auth.forgot_password');
+    })->name('forgot.password');
 });
 
 //========================= AREA Admins =========================//

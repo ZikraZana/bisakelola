@@ -13,7 +13,7 @@
     <div class="card shadow-sm border-0 rounded-3">
         <div class="card-body p-4 p-md-5">
 
-            <form action="{{ route('data-warga.store') }}" method="POST"> {{-- Sesuaikan dengan route Anda --}}
+            <form action="{{ route('data-warga.store') }}" method="POST" enctype="multipart/form-data"> {{-- Sesuaikan dengan route Anda --}}
                 @csrf
 
                 {{-- TAMBAHAN: Menampilkan ringkasan error dari file dummy --}}
@@ -374,8 +374,11 @@
                                             @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Belum Kawin') selected @endif>Belum Kawin</option>
                                         <option value="Kawin" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Kawin') selected @endif>
                                             Kawin</option>
-                                        <option value="Cerai" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Cerai') selected @endif>
-                                            Cerai</option>
+                                        <option value="Cerai Mati" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Cerai Mati') selected @endif>
+                                            Cerai Mati</option>
+                                        <option value="Cerai Hidup"
+                                            @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Cerai Hidup') selected @endif>
+                                            Cerai Hidup</option>
                                     </select>
                                     @error("anggota_keluarga.$index.status_perkawinan")
                                         <i class="text-danger small">{{ $message }}</i>
@@ -390,6 +393,165 @@
             <button type="button" class="btn btn-success btn-sm mt-3" id="add-anggota-keluarga">Tambah Anggota
                 Keluarga</button>
 
+            <h4 class="fw-bold mb-3 mt-4">Berkas Pendukung</h4>
+
+            <div class="row g-4 mb-4">
+                {{-- Upload KTP --}}
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Upload Foto/Scan KTP Kepala Keluarga</label>
+
+                    {{-- Area Error Message --}}
+                    @error('foto_ktp')
+                        <div class="alert alert-danger py-2 small mb-2">
+                            <i class="bi bi-exclamation-circle me-1"></i> {{ $message }}
+                        </div>
+                    @enderror
+
+                    {{-- 1. DROPZONE (Tampil jika belum ada file) --}}
+                    <div id="drop-area-ktp"
+                        class="border border-2 border-dashed rounded-3 p-4 text-center bg-light position-relative hover-effect"
+                        style="cursor: pointer; transition: all 0.2s;">
+                        <input type="file" name="foto_ktp" id="foto_ktp" class="d-none" accept="image/*,.pdf">
+
+                        <div class="py-4">
+                            <i class="bi bi-cloud-arrow-up text-primary" style="font-size: 3rem;"></i>
+                            <h6 class="mt-3 text-dark fw-bold">Klik atau Seret File KTP ke Sini</h6>
+                            <p class="text-muted small mb-0">Format: JPG, PNG, PDF (Maks. 5MB)</p>
+                        </div>
+                    </div>
+
+                    {{-- 2. PREVIEW ZONE (Tampil setelah file dipilih) --}}
+                    <div id="preview-area-ktp" class="card border-0 shadow-sm d-none">
+                        <div class="card-body p-3">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-check-circle-fill text-success fs-4 me-2"></i>
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-success">File Terpilih</h6>
+                                    <small id="filename-ktp" class="text-muted text-truncate d-block"
+                                        style="max-width: 250px;">-</small>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger ms-auto"
+                                    onclick="resetFile('ktp')">
+                                    <i class="bi bi-trash"></i> Hapus
+                                </button>
+                            </div>
+
+                            {{-- Container Gambar --}}
+                            <div class="bg-light rounded text-center overflow-hidden d-flex align-items-center justify-content-center"
+                                style="height: 200px; border: 1px solid #dee2e6;">
+                                <img id="img-preview-ktp" src="" alt="Preview KTP" class="img-fluid"
+                                    style="max-height: 100%; display: none;">
+                                {{-- Icon untuk PDF --}}
+                                <div id="pdf-preview-ktp" class="text-center" style="display: none;">
+                                    <i class="bi bi-file-earmark-pdf text-danger" style="font-size: 4rem;"></i>
+                                    <p class="mb-0 fw-bold">Dokumen PDF</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Upload KK --}}
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Upload Foto/Scan Kartu Keluarga</label>
+
+                    {{-- Area Error Message --}}
+                    @error('foto_kk')
+                        <div class="alert alert-danger py-2 small mb-2">
+                            <i class="bi bi-exclamation-circle me-1"></i> {{ $message }}
+                        </div>
+                    @enderror
+
+                    {{-- 1. DROPZONE --}}
+                    <div id="drop-area-kk"
+                        class="border border-2 border-dashed rounded-3 p-4 text-center bg-light position-relative hover-effect"
+                        style="cursor: pointer; transition: all 0.2s;">
+                        <input type="file" name="foto_kk" id="foto_kk" class="d-none" accept="image/*,.pdf">
+
+                        <div class="py-4">
+                            <i class="bi bi-file-earmark-image text-primary" style="font-size: 3rem;"></i>
+                            <h6 class="mt-3 text-dark fw-bold">Klik atau Seret File KK ke Sini</h6>
+                            <p class="text-muted small mb-0">Format: JPG, PNG, PDF (Maks. 5MB)</p>
+                        </div>
+                    </div>
+
+                    {{-- 2. PREVIEW ZONE --}}
+                    <div id="preview-area-kk" class="card border-0 shadow-sm d-none">
+                        <div class="card-body p-3">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-check-circle-fill text-success fs-4 me-2"></i>
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-success">File Terpilih</h6>
+                                    <small id="filename-kk" class="text-muted text-truncate d-block"
+                                        style="max-width: 250px;">-</small>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger ms-auto"
+                                    onclick="resetFile('kk')">
+                                    <i class="bi bi-trash"></i> Hapus
+                                </button>
+                            </div>
+
+                            {{-- Container Gambar --}}
+                            <div class="bg-light rounded text-center overflow-hidden d-flex align-items-center justify-content-center"
+                                style="height: 200px; border: 1px solid #dee2e6;">
+                                <img id="img-preview-kk" src="" alt="Preview KK" class="img-fluid"
+                                    style="max-height: 100%; display: none;">
+                                {{-- Icon untuk PDF --}}
+                                <div id="pdf-preview-kk" class="text-center" style="display: none;">
+                                    <i class="bi bi-file-earmark-pdf text-danger" style="font-size: 4rem;"></i>
+                                    <p class="mb-0 fw-bold">Dokumen PDF</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function setupUpload(dropAreaId, inputId, previewId) {
+                    const drop = document.getElementById(dropAreaId);
+                    const input = document.getElementById(inputId);
+                    const preview = document.getElementById(previewId);
+
+                    drop.addEventListener("click", () => input.click());
+
+                    drop.addEventListener("dragover", (e) => {
+                        e.preventDefault();
+                        drop.classList.add("bg-secondary-subtle");
+                    });
+
+                    drop.addEventListener("dragleave", () => {
+                        drop.classList.remove("bg-secondary-subtle");
+                    });
+
+                    drop.addEventListener("drop", (e) => {
+                        e.preventDefault();
+                        drop.classList.remove("bg-secondary-subtle");
+                        input.files = e.dataTransfer.files;
+                        validate();
+                    });
+
+                    input.addEventListener("change", validate);
+
+                    function validate() {
+                        const file = input.files[0];
+                        if (!file) return;
+
+                        if (file.size > 5 * 1024 * 1024) {
+                            preview.classList.add("text-danger");
+                            preview.textContent = "File melebihi 5MB!";
+                            input.value = "";
+                            return;
+                        }
+
+                        preview.classList.remove("text-danger");
+                        preview.textContent = "✔ " + file.name;
+                    }
+                }
+
+                setupUpload("dropKTP", "foto_ktp", "previewKTP");
+                setupUpload("dropKK", "foto_kk", "previewKK");
+            </script>
 
             {{-- Tombol Aksi --}}
             <div class="d-flex justify-content-end mt-4">
@@ -400,69 +562,181 @@
                     Simpan Data
                 </button>
             </div>
-
-        </form>
-
     </div>
+
+    </form>
+
+</div>
 </div>
 @endsection
 
 @push('scripts')
 {{-- Kode JavaScript dari file dummy Anda --}}
 <script>
+    // ==========================================
+    // 1. FUNGSI GLOBAL (Untuk File Upload)
+    // ==========================================
+
+    // Fungsi ini ditaruh di luar DOMContentLoaded agar bisa dipanggil via onclick="resetFile(...)" di HTML
+    window.resetFile = function(type) {
+        const input = document.getElementById('foto_' + type);
+        const dropArea = document.getElementById('drop-area-' + type);
+        const previewArea = document.getElementById('preview-area-' + type);
+
+        // Reset Value Input
+        input.value = '';
+
+        // Tampilkan Dropzone, Sembunyikan Preview
+        dropArea.classList.remove('d-none');
+        previewArea.classList.add('d-none');
+    }
+
+    // ==========================================
+    // 2. LOGIKA UTAMA (Jalan saat Load)
+    // ==========================================
     document.addEventListener('DOMContentLoaded', function() {
+
+        // ------------------------------------------
+        // A. SETUP FILE UPLOAD (KTP & KK)
+        // ------------------------------------------
+        function setupFileUpload(type) {
+            const dropArea = document.getElementById('drop-area-' + type);
+            const input = document.getElementById('foto_' + type);
+            const previewArea = document.getElementById('preview-area-' + type);
+            const filenameLabel = document.getElementById('filename-' + type);
+            const imgPreview = document.getElementById('img-preview-' + type);
+            const pdfPreview = document.getElementById('pdf-preview-' + type);
+
+            // 1. Klik Dropzone memicu Input File
+            dropArea.addEventListener('click', () => input.click());
+
+            // 2. Handle File Selected (Change Event)
+            input.addEventListener('change', function() {
+                handleFiles(this.files);
+            });
+
+            // 3. Handle Drag & Drop Events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            dropArea.addEventListener('dragover', () => {
+                dropArea.classList.add('bg-secondary-subtle'); // Efek visual
+            });
+
+            dropArea.addEventListener('dragleave', () => {
+                dropArea.classList.remove('bg-secondary-subtle');
+            });
+
+            dropArea.addEventListener('drop', (e) => {
+                dropArea.classList.remove('bg-secondary-subtle');
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                input.files = files; // Assign file ke input
+                handleFiles(files);
+            });
+
+            // 4. Proses Preview
+            function handleFiles(files) {
+                if (files.length > 0) {
+                    const file = files[0];
+
+                    // Validasi ukuran (Max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('Ukuran file terlalu besar! Maksimal 5MB.');
+                        input.value = '';
+                        return;
+                    }
+
+                    // Update Label Nama File
+                    filenameLabel.textContent = file.name;
+
+                    // Tampilkan Preview Area, Sembunyikan Dropzone
+                    dropArea.classList.add('d-none');
+                    previewArea.classList.remove('d-none');
+
+                    // Cek Tipe File
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            imgPreview.src = e.target.result;
+                            imgPreview.style.display = 'block';
+                            pdfPreview.style.display = 'none';
+                        }
+                        reader.readAsDataURL(file);
+                    } else if (file.type === 'application/pdf') {
+                        imgPreview.style.display = 'none';
+                        pdfPreview.style.display = 'block';
+                    } else {
+                        imgPreview.style.display = 'none';
+                        pdfPreview.style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        // Jalankan Setup untuk KTP dan KK
+        setupFileUpload('ktp');
+        setupFileUpload('kk');
+
+
+        // ------------------------------------------
+        // B. SETUP DYNAMIC FORM (ANGGOTA KELUARGA)
+        // ------------------------------------------
         const container = document.getElementById('anggota-keluarga-container');
         const addButton = document.getElementById('add-anggota-keluarga');
         const jumlahInput = document.getElementById('jumlah');
 
-        // Inisialisasi jumlah anggota keluarga saat halaman dimuat
+        // Update input jumlah saat halaman pertama dimuat
         updateJumlahInput();
 
-        // --- FUNGSI UNTUK MENAMBAH ANGGOTA KELUARGA ---
-        // --- FUNGSI UNTUK MENAMBAH ANGGOTA KELUARGA ---
+        // 1. Fungsi Tambah Anggota
         addButton.addEventListener('click', function() {
             // Ambil card pertama sebagai template
             const template = container.querySelector('.anggota-keluarga-item');
             const newForm = template.cloneNode(true);
             const newIndex = container.querySelectorAll('.anggota-keluarga-item').length;
 
-            // Update Judul
+            // Update Judul Card
             newForm.querySelector('.anggota-keluarga-title').textContent = 'Anggota Keluarga ' + (
                 newIndex + 1);
 
-            // --- MODIFIKASI DIMULAI DARI SINI ---
-
-            // 1. Reset semua input standard (text, date, number)
+            // --- Reset Input Standard (Text, Date, Number) ---
             newForm.querySelectorAll('input[type="text"], input[type="date"], input[type="number"]')
                 .forEach(input => {
                     input.value = '';
-                    input.classList.remove('is-invalid');
+                    input.classList.remove('is-invalid'); // Hapus style error merah jika ada
                 });
 
-            // 2. Reset Select Box & Hapus Atribut Disabled
+            // --- Reset Select Box & Atur Ulang ---
             newForm.querySelectorAll('select').forEach(select => {
-                select.selectedIndex = 0; // Reset pilihan ke paling atas
+                select.selectedIndex = 0; // Reset ke pilihan pertama
                 select.classList.remove('is-invalid');
 
-                // Hapus disabled dan style background abu-abu (jika itu hasil clone dari Kepala Keluarga)
+                // Pastikan select tidak disabled (karena template index 0 mungkin disabled)
                 select.removeAttribute('disabled');
                 select.style.backgroundColor = '';
             });
 
-            // 3. HAPUS Input Hidden 'Kepala Keluarga' pada element baru
-            // Karena anggota ke-2 dst harus dipilih manual, tidak boleh ada input hidden ini
+            // --- Hapus Input Hidden 'Kepala Keluarga' ---
+            // (Agar anggota baru tidak terdeteksi sebagai kepala keluarga)
             const hiddenStatusInput = newForm.querySelector('.status-hidden-input');
             if (hiddenStatusInput) {
                 hiddenStatusInput.remove();
             }
 
-            // --- AKHIR MODIFIKASI ---
-
-            // Hapus pesan error validasi yang ikut ter-clone
+            // --- Hapus Pesan Error Laravel ---
             newForm.querySelectorAll('.text-danger.small').forEach(err => err.remove());
+            newForm.querySelectorAll('.alert').forEach(alert => alert.remove());
 
-            // Tambahkan tombol hapus (kode lama Anda)
-            if (newIndex > 0 && !newForm.querySelector('.remove-anggota-keluarga')) {
+            // --- Tambahkan Tombol Hapus ---
+            // Cek apakah tombol hapus sudah ada (untuk jaga-jaga), jika belum, tambahkan
+            if (!newForm.querySelector('.remove-anggota-keluarga')) {
                 const header = newForm.querySelector('.card-header');
                 const removeButton = document.createElement('button');
                 removeButton.type = 'button';
@@ -471,12 +745,12 @@
                 header.appendChild(removeButton);
             }
 
-            // Update atribut name/id (kode lama Anda)
+            // --- Update Attribute name, id, dan for ---
+            // Mengubah array index, misal anggota_keluarga[0] menjadi anggota_keluarga[1]
             newForm.querySelectorAll('[name], [id], [for]').forEach(el => {
                 ['name', 'id', 'for'].forEach(attr => {
                     const value = el.getAttribute(attr);
                     if (value) {
-                        // Update index array, misal [0] jadi [1]
                         const newValue = value.replace(/\[\d+\]/g, '[' + newIndex + ']')
                             .replace(/_\d+$/, '_' + newIndex);
                         el.setAttribute(attr, newValue);
@@ -484,44 +758,49 @@
                 });
             });
 
+            // Masukkan ke Container
             container.appendChild(newForm);
+
+            // Update input total jumlah
             updateJumlahInput();
         });
 
-        // --- FUNGSI UNTUK MENGHAPUS ANGGOTA KELUARGA ---
+        // 2. Fungsi Hapus Anggota (Event Delegation)
         container.addEventListener('click', function(e) {
             if (e.target && e.target.classList.contains('remove-anggota-keluarga')) {
+                // Cegah penghapusan jika hanya tinggal 1
                 if (container.querySelectorAll('.anggota-keluarga-item').length <= 1) {
-                    // Di form baru, kita tidak menggunakan alert
-                    console.warn('Minimal harus ada satu anggota keluarga.');
+                    alert('Minimal harus ada satu anggota keluarga.');
                     return;
                 }
+
+                // Hapus elemen
                 const cardToRemove = e.target.closest('.anggota-keluarga-item');
                 if (cardToRemove) {
                     cardToRemove.remove();
+
+                    // Rapikan ulang nomor urut dan index array
                     updateAllIndexes();
                     updateJumlahInput();
                 }
             }
         });
 
-        // --- FUNGSI UNTUK MEMPERBARUI SEMUA INDEX SETELAH PENGHAPUSAN ---
+        // 3. Fungsi Re-Index (Merapikan Nomor & Array setelah dihapus)
         function updateAllIndexes() {
             const allForms = container.querySelectorAll('.anggota-keluarga-item');
             allForms.forEach((form, index) => {
+                // Update Judul
                 form.querySelector('.anggota-keluarga-title').textContent = 'Anggota Keluarga ' + (
                     index + 1);
 
-                // Sembunyikan tombol hapus untuk item pertama
+                // Sembunyikan tombol hapus untuk item PERTAMA (Kepala Keluarga tidak boleh dihapus)
                 const removeBtn = form.querySelector('.remove-anggota-keluarga');
                 if (removeBtn) {
-                    if (index === 0) {
-                        removeBtn.style.display = 'none';
-                    } else {
-                        removeBtn.style.display = 'block';
-                    }
+                    removeBtn.style.display = (index === 0) ? 'none' : 'block';
                 }
 
+                // Update attribut name/id/for
                 form.querySelectorAll('[name], [id], [for]').forEach(el => {
                     ['name', 'id', 'for'].forEach(attr => {
                         const value = el.getAttribute(attr);
@@ -535,39 +814,38 @@
             });
         }
 
-        // --- FUNGSI UNTUK SINKRONISASI INPUT JUMLAH ANGGOTA ---
+        // 4. Fungsi Sinkronisasi Input Jumlah
         function updateJumlahInput() {
             const count = container.querySelectorAll('.anggota-keluarga-item').length;
             jumlahInput.value = count;
         }
 
-        // --- (OPSIONAL) SINKRONISASI JIKA USER MENGUBAH MANUAL INPUT JUMLAH ---
+        // 5. (Opsional) Handle jika user mengetik manual di input jumlah
         jumlahInput.addEventListener('change', function() {
             const desiredCount = parseInt(this.value, 10);
             const currentCount = container.querySelectorAll('.anggota-keluarga-item').length;
 
             if (isNaN(desiredCount) || desiredCount <= 0) {
-                this.value = 1; // Minimal 1
+                this.value = 1;
                 return;
             }
 
             if (desiredCount > currentCount) {
+                // Tambah form
                 for (let i = 0; i < desiredCount - currentCount; i++) {
                     addButton.click();
                 }
             } else if (desiredCount < currentCount) {
+                // Hapus form dari yang paling bawah
                 for (let i = 0; i < currentCount - desiredCount; i++) {
-                    const lastItem = container.querySelector(
-                        '.anggota-keluarga-item:last-child');
-                    if (lastItem) {
-                        lastItem.remove();
-                    }
+                    const lastItem = container.querySelector('.anggota-keluarga-item:last-child');
+                    if (lastItem) lastItem.remove();
                 }
                 updateAllIndexes();
             }
         });
 
-        // Panggil updateAllIndexes saat load untuk memastikan tombol hapus pertama disembunyikan
+        // Jalankan sekali saat load untuk memastikan tombol hapus index 0 hilang
         updateAllIndexes();
     });
 </script>

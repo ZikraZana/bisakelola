@@ -14,7 +14,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title">Daftar Akun Sub Admin</h4>
+                        <h4 class="card-title mb-0">Daftar Akun Sub Admin</h4>
                         @if (Auth::user()->role === 'Ketua RT')
                             <a href="{{ route('akun-admin.formTambah') }}" class="btn btn-primary">Tambah Akun Sub
                                 Admin</a>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BisaKelola - Sistem Data Warga & Bansos</title>
+    <title>BISAKELOLA - Sistem Data Warga & Bansos</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -37,7 +37,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
             <a class="navbar-brand fw-bold fs-3" href="#">
-                <span class="text-biru">Bisa</span><span class="text-dark">Kelola</span>
+                <span class="text-biru">BISA</span><span class="text-dark">KELOLA</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -202,7 +202,7 @@
                 {{-- About Section --}}
                 <div class="col-md-4">
                     <h5 class="fw-bold mb-3">
-                        <span class="text-white">BisaKelola</span>
+                        <span class="text-white">BISAKELOLA</span>
                     </h5>
                     <p class="text-white-50 small">
                         Platform manajemen desa digital untuk pendataan warga dan distribusi bantuan sosial yang

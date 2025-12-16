@@ -266,7 +266,7 @@
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                 <h6 class="mb-0 fw-bold text-secondary"><i class="bi bi-clock-history me-2"></i>Pengajuan Bansos Terbaru
                 </h6>
-                <a href="{{ route('kelola-bansos.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+                <a href="{{ route('data-penerima-bansos.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
             </div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">

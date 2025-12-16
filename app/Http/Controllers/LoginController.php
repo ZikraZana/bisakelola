@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,9 +42,20 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        // 1. Ambil ID admin yang sedang login SEBELUM logout
+        $adminId = Auth::guard('admin')->id();
+
+        // 2. Lakukan Logout (Sesi server dihapus)
+        Auth::guard('admin')->logout();
+
+        // 3. Update Database Manual: Set remember_token jadi NULL
+        if ($adminId) {
+            Admin::where('id_admin', $adminId)->update(['remember_token' => null]);
+        }
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        
         return redirect()->route('welcome');
     }
 }

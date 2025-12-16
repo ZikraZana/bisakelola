@@ -163,8 +163,8 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.*.tanggal_lahir' => 'required|date|before:today',
             'anggota_keluarga.*.jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'anggota_keluarga.*.agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghuchu',
-            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai Mati,Cerai Hidup',
-            'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Istri,Anak',
+            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin Belum Tercatat,Kawin Tercatat,Cerai Mati,Cerai Hidup',
+            'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Suami,Istri,Anak,Menantu,Cucu,Orangtua,Mertua,Famili Lain,Pembantu,Lainnya',
             'anggota_keluarga.*.pendidikan' => 'required|string',
             'anggota_keluarga.*.pekerjaan' => 'required|string',
 
@@ -348,8 +348,8 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.*.tanggal_lahir' => 'required|date|before:today',
             'anggota_keluarga.*.jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'anggota_keluarga.*.agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghuchu',
-            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai Mati, Cerai Hidup',
-            'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Istri,Anak',
+            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin Belum Tercatat,Kawin Tercatat,Cerai Mati,Cerai Hidup',
+            'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Suami,Istri,Anak,Menantu,Cucu,Orangtua,Mertua,Famili Lain,Pembantu,Lainnya',
             'anggota_keluarga.*.pendidikan' => 'required|string',
             'anggota_keluarga.*.pekerjaan' => 'required|string',
             // Validasi Foto (Nullable: artinya boleh kosong jika tidak ingin diganti)

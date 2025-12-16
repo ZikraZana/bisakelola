@@ -56,11 +56,18 @@ class DataKeluargaController extends Controller
         }
 
         // 7. BARU: Terapkan logika FILTER DESIL
-        if ($filterDesil) {
-            // Gunakan whereHas untuk filter berdasarkan relasi 'desil'
-            $query->whereHas('desil', function ($q) use ($filterDesil) {
-                $q->where('tingkat_desil', $filterDesil);
-            });
+        if ($request->has('filter_desil') && $request->filter_desil != '') {
+            if ($request->filter_desil == 'null') {
+                // Jika user pilih "Non-Desil", cari yang desil-nya NULL atau tidak punya desil
+                $query->whereHas('desil', function ($q) {
+                    $q->whereNull('tingkat_desil');
+                })->orWhereDoesntHave('desil'); // Opsional: jika keluarga belum diset relasinya
+            } else {
+                // Jika user pilih angka 1-5
+                $query->whereHas('desil', function ($q) use ($request) {
+                    $q->where('tingkat_desil', $request->filter_desil);
+                });
+            }
         }
 
         // 8. BARU: Logika FILTER STATUS
@@ -407,7 +414,7 @@ class DataKeluargaController extends Controller
             $admin = Auth::user();
 
             // --- LOGIKA UPDATE FOTO (BARU) ---
-            
+
             // Siapkan data dasar untuk diupdate
             $dataToUpdate = [
                 // 'id_admin' => $user->id_admin, // Opsional: update admin terakhir yang edit atau tidak

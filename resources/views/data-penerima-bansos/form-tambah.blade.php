@@ -1,12 +1,12 @@
 @extends('layouts.layout')
 
-@section('title', 'Pilih Warga (Realtime)')
+@section('title', 'Pengajuan Bansos')
 @section('title_nav', 'Pengajuan Bansos')
 
 @section('content')
     {{-- Inisialisasi Alpine Data --}}
     <div x-data="bansosApp({{ Js::from($dataWarga) }})" class="card shadow-sm border-0 rounded-3 mb-4">
-        <div class="card-body p-4">
+        <div class="card-body bg-light p-4 shadow-sm">
 
             {{-- Header & Search Bar --}}
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
@@ -40,53 +40,53 @@
             @endif
 
             {{-- Tabel Data --}}
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-primary">
-                        <tr>
-                            <th class="py-3 px-3">No. KK</th>
-                            <th class="py-3 px-3">Kepala Keluarga</th>
-                            <th class="py-3 px-3">Blok / Lokasi</th>
-                            <th class="py-3 px-3 text-center">Desil</th>
-                            <th class="py-3 px-3 text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{-- LOOPING ALPINE JS --}}
-                        <template x-for="warga in filteredWarga" :key="warga.no_kk">
+            <div class="card shadow-sm border rounded-3 pt-2">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0 align-middle text-putih">
+                        <thead>
                             <tr>
-                                <td class="px-3 fw-bold font-monospace" x-text="warga.no_kk"></td>
-                                <td class="px-3">
-                                    <div class="fw-bold" x-text="warga.nama_kepala"></div>
-                                    <small class="text-muted">NIK: <span x-text="warga.nik_kepala"></span></small>
-                                </td>
-                                <td class="px-3" x-text="warga.blok"></td>
-                                <td class="px-3 text-center">
-                                    <template x-if="warga.desil">
-                                        <span class="badge bg-warning text-dark" x-text="'Desil ' + warga.desil"></span>
-                                    </template>
-                                    <template x-if="!warga.desil">
-                                        <span class="badge bg-light text-secondary border">Non-Desil</span>
-                                    </template>
-                                </td>
-                                <td class="px-3 text-center">
-                                    {{-- Tombol Aksi Alpine --}}
-                                    <button type="button" class="btn btn-sm btn-primary" @click="openModal(warga)">
-                                        <i class="bi bi-plus-circle me-1"></i> Ajukan
-                                    </button>
+                                <th class="py-3 pl-3">Nomor Kartu Keluarga</th>
+                                <th class="py-3 px-3">Kepala Keluarga</th>
+                                <th class="py-3 px-3">Blok / Lokasi</th>
+                                <th class="py-3 px-3 text-center">Desil</th>
+                                <th class="py-3 px-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{-- LOOPING ALPINE JS --}}
+                            <template x-for="warga in filteredWarga" :key="warga.no_kk">
+                                <tr>
+                                    <td class="px-3 fw-bold font-monospace" x-text="warga.no_kk"></td>
+                                    <td class="px-3">
+                                        <div class="fw-bold" x-text="warga.nama_kepala"></div>
+                                        <small class="text-muted">NIK: <span x-text="warga.nik_kepala"></span></small>
+                                    </td>
+                                    <td class="px-3" x-text="warga.blok"></td>
+                                    <td class="px-3 text-center">
+                                        {{-- Logic Alpine: Gunakan :class untuk warna dinamis --}}
+                                        <span class="badge py-2 px-2" :class="getBadgeColor(warga.desil)"
+                                            x-text="warga.desil ? 'Desil ' + warga.desil : 'Desil 6+'">
+                                        </span>
+                                    </td>
+                                    <td class="px-3 text-center">
+                                        {{-- Tombol Aksi Alpine --}}
+                                        <button type="button" class="btn btn-sm btn-primary" @click="openModal(warga)">
+                                            <i class="bi bi-plus-circle me-1"></i> Ajukan
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+
+                            {{-- Jika Hasil Pencarian Kosong --}}
+                            <tr x-show="filteredWarga.length === 0">
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-search fs-1 d-block mb-2 opacity-50"></i>
+                                    Tidak ada data yang cocok dengan pencarian "<span x-text="searchQuery"></span>".
                                 </td>
                             </tr>
-                        </template>
-
-                        {{-- Jika Hasil Pencarian Kosong --}}
-                        <tr x-show="filteredWarga.length === 0">
-                            <td colspan="5" class="text-center py-5 text-muted">
-                                <i class="bi bi-search fs-1 d-block mb-2 opacity-50"></i>
-                                Tidak ada data yang cocok dengan pencarian "<span x-text="searchQuery"></span>".
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="mt-3">
@@ -153,6 +153,19 @@
                     return this.allWarga.filter(item => {
                         return item.searchable.includes(lowerSearch);
                     });
+                },
+
+                getBadgeColor(desil) {
+                    // Pastikan desil dianggap angka
+                    const d = parseInt(desil);
+
+                    if (d === 1) return 'bg-danger text-white border'; // Merah (Sangat Miskin)
+                    if (d === 2) return 'bg-warning text-dark'; // Kuning (Miskin)
+                    if (d === 3) return 'bg-primary text-white'; // Biru (Hampir Miskin)
+                    if (d >= 4) return 'bg-success text-white'; // Hijau (Rentan/Aman)
+
+                    // Default (Jika null/tidak ada desil)
+                    return 'bg-light text-secondary border border-secondary-subtle';
                 },
 
                 // Fungsi Buka Modal

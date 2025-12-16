@@ -196,7 +196,7 @@
                             <th scope="col" class="py-3 px-3">NIK Kepala Keluarga</th>
                             <th scope="col" class="py-3 px-3">Blok</th>
                             <th scope="col" class="py-3 px-3">Desil</th>
-                            <th scope="col" class="py-3 px-3">Aksi</th>
+                            <th scope="col" class="py-3 px-3 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -219,7 +219,7 @@
                                 <td class="px-3">{{ $keluarga->blok?->nama_blok ?? 'N/A' }}</td>
                                 <td class="px-3">{{ $keluarga->desil?->tingkat_desil ?? '6+' }}</td>
                                 <td class="px-3">
-                                    <div class="d-flex flex-nowrap gap-2">
+                                    <div class="d-flex flex-nowrap gap-2 text-center justify-content-center">
                                         @if (Auth::user()->role === 'Ketua RT' ||
                                                 (Auth::user()->role === 'Ketua Blok' && Auth::user()->id_blok === $keluarga->blok->id_blok))
                                             <a href="{{ route('data-warga.formEdit', $keluarga->id_keluarga) }}"
@@ -348,7 +348,6 @@
 
         {{-- Kanan: Kontrol Paginasi --}}
         <div class="d-flex align-items-center">
-            {{-- Ini akan otomatis rapi setelah fix di AppServiceProvider --}}
             {{ $dataKeluarga->links() }}
         </div>
 

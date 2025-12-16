@@ -32,4 +32,8 @@ class DataKeluarga extends Model
     {
         return $this->belongsTo(Desil::class, 'id_desil', 'id_desil');
     }
+    public function penerimaBansos()
+    {
+        return $this->hasOne(DataPenerimaBansos::class, 'id_keluarga', 'id_keluarga');
+    }
 }

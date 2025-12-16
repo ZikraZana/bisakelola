@@ -155,10 +155,10 @@
                                     </option>
                                     <option value="5" {{ ($filterDesil ?? '') == '5' ? 'selected' : '' }}>Desil 5
                                     </option>
-                                    <option value="6" {{ ($filterDesil ?? '') == '6' ? 'selected' : '' }}>Desil 6
+                                    {{-- Kita gunakan value="null" (string) untuk dikirim ke controller --}}
+                                    <option value="null" {{ ($filterDesil ?? '') == 'null' ? 'selected' : '' }}>
+                                        Desil 6+
                                     </option>
-                                    <option value="Tidak ada" {{ ($filterDesil ?? '') == 'Tidak ada' ? 'selected' : '' }}>
-                                        Tidak ada</option>
                                 </select>
                             </div>
                             {{-- Filter Status --}}
@@ -217,7 +217,7 @@
                                 <td class="px-3">{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}</td>
                                 <td class="px-3">{{ $kepalaKeluarga?->nik_anggota ?? 'N/A' }}</td>
                                 <td class="px-3">{{ $keluarga->blok?->nama_blok ?? 'N/A' }}</td>
-                                <td class="px-3">{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}</td>
+                                <td class="px-3">{{ $keluarga->desil?->tingkat_desil ?? '6+' }}</td>
                                 <td class="px-3">
                                     <div class="d-flex flex-nowrap gap-2">
                                         @if (Auth::user()->role === 'Ketua RT' ||
@@ -229,7 +229,7 @@
                                             data-bs-target="#detailModal" data-nokk="{{ $keluarga->no_kk }}"
                                             data-kepala="{{ $kepalaKeluarga?->nama_lengkap ?? 'N/A' }}"
                                             data-blok="{{ $keluarga->blok?->nama_blok ?? 'N/A' }}"
-                                            data-desil="{{ $keluarga->desil?->tingkat_desil ?? 'Tidak ada' }}"
+                                            data-desil="{{ $keluarga->desil?->tingkat_desil ?? '6+' }}"
                                             data-anggota="{{ $keluarga->anggotaKeluarga->toJson() }}"
                                             data-foto-ktp="{{ $keluarga->foto_ktp }}"
                                             data-foto-kk="{{ $keluarga->foto_kk }}">

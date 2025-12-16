@@ -56,11 +56,18 @@ class DataKeluargaController extends Controller
         }
 
         // 7. BARU: Terapkan logika FILTER DESIL
-        if ($filterDesil) {
-            // Gunakan whereHas untuk filter berdasarkan relasi 'desil'
-            $query->whereHas('desil', function ($q) use ($filterDesil) {
-                $q->where('tingkat_desil', $filterDesil);
-            });
+        if ($request->has('filter_desil') && $request->filter_desil != '') {
+            if ($request->filter_desil == 'null') {
+                // Jika user pilih "Non-Desil", cari yang desil-nya NULL atau tidak punya desil
+                $query->whereHas('desil', function ($q) {
+                    $q->whereNull('tingkat_desil');
+                })->orWhereDoesntHave('desil'); // Opsional: jika keluarga belum diset relasinya
+            } else {
+                // Jika user pilih angka 1-5
+                $query->whereHas('desil', function ($q) use ($request) {
+                    $q->where('tingkat_desil', $request->filter_desil);
+                });
+            }
         }
 
         // 8. BARU: Logika FILTER STATUS
@@ -135,7 +142,7 @@ class DataKeluargaController extends Controller
     {
         // 1. Validasi Data
         $validator = Validator::make($request->all(), [
-            'no_kk' => 'required|numeric|min:16|unique:data_keluarga,no_kk',
+            'no_kk' => 'required|numeric|digits:16|unique:data_keluarga,no_kk',
             'blok' => 'required|string|exists:blok,nama_blok',
             'desil' => 'nullable|exists:desil,tingkat_desil',
 
@@ -157,14 +164,14 @@ class DataKeluargaController extends Controller
                 },
             ],
 
-            'anggota_keluarga.*.nik' => 'required|numeric|min:16|distinct|unique:data_anggota_keluarga,nik_anggota',
+            'anggota_keluarga.*.nik' => 'required|numeric|digits:16|distinct|unique:data_anggota_keluarga,nik_anggota',
             'anggota_keluarga.*.nama' => 'required|string|max:255',
             'anggota_keluarga.*.tempat_lahir' => 'required|string|max:100',
             'anggota_keluarga.*.tanggal_lahir' => 'required|date|before:today',
             'anggota_keluarga.*.jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'anggota_keluarga.*.agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghuchu',
-            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai Mati,Cerai Hidup',
-            'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Istri,Anak',
+            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin Belum Tercatat,Kawin Tercatat,Cerai Mati,Cerai Hidup',
+            'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Suami,Istri,Anak,Menantu,Cucu,Orangtua,Mertua,Famili Lain,Pembantu,Lainnya',
             'anggota_keluarga.*.pendidikan' => 'required|string',
             'anggota_keluarga.*.pekerjaan' => 'required|string',
 
@@ -173,7 +180,7 @@ class DataKeluargaController extends Controller
         ], [
             'no_kk.required' => 'Nomor Kartu Keluarga wajib diisi.',
             'no_kk.numeric' => 'Nomor Kartu Keluarga harus berupa angka.',
-            'no_kk.min' => 'Nomor Kartu Keluarga harus terdiri dari 16 angka',
+            'no_kk.digits' => 'Nomor Kartu Keluarga harus terdiri dari 16 angka',
             'no_kk.unique' => 'Nomor Kartu Keluarga sudah terdaftar.',
             'blok.required' => 'Blok wajib diisi.',
             'blok.exists' => 'Blok tidak valid.',
@@ -184,7 +191,7 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.min' => 'Minimal harus ada satu anggota keluarga.',
             'anggota_keluarga.*.nik.required' => 'NIK anggota keluarga wajib diisi.',
             'anggota_keluarga.*.nik.numeric' => 'NIK anggota keluarga harus berupa angka.',
-            'anggota_keluarga.*.nik.min' => 'NIK anggota keluarga harus terdiri dari 16 angka',
+            'anggota_keluarga.*.nik.digits' => 'NIK anggota keluarga harus terdiri dari 16 angka',
             'anggota_keluarga.*.nik.distinct' => 'NIK anggota keluarga tidak boleh sama dalam satu form.', // Pesan u/ distinct
             'anggota_keluarga.*.nik.unique' => 'NIK anggota keluarga sudah terdaftar.',
             'anggota_keluarga.*.nama.required' => 'Nama lengkap anggota keluarga wajib diisi.',
@@ -313,7 +320,7 @@ class DataKeluargaController extends Controller
 
         // 1. Validasi Data
         $validator = Validator::make($request->all(), [
-            'no_kk' => ['required', 'numeric', 'min:16', Rule::unique('data_keluarga', 'no_kk')->ignore($dataKeluarga->id_keluarga, 'id_keluarga')],
+            'no_kk' => ['required', 'numeric', 'digits:16', Rule::unique('data_keluarga', 'no_kk')->ignore($dataKeluarga->id_keluarga, 'id_keluarga')],
             'blok' => 'required|exists:blok,nama_blok',
             'desil' => 'nullable|exists:desil,tingkat_desil',
 
@@ -335,7 +342,7 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.*.nik' => [
                 'required',
                 'numeric',
-                'min:16',
+                'digits:16',
                 'distinct',
                 Rule::unique('data_anggota_keluarga', 'nik_anggota')
                     ->where(function ($query) use ($dataKeluarga) {
@@ -348,8 +355,8 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.*.tanggal_lahir' => 'required|date|before:today',
             'anggota_keluarga.*.jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'anggota_keluarga.*.agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghuchu',
-            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai Mati, Cerai Hidup',
-            'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Istri,Anak',
+            'anggota_keluarga.*.status_perkawinan' => 'required|in:Belum Kawin,Kawin Belum Tercatat,Kawin Tercatat,Cerai Mati,Cerai Hidup',
+            'anggota_keluarga.*.status_dalam_keluarga' => 'required|in:Kepala Keluarga,Suami,Istri,Anak,Menantu,Cucu,Orangtua,Mertua,Famili Lain,Pembantu,Lainnya',
             'anggota_keluarga.*.pendidikan' => 'required|string',
             'anggota_keluarga.*.pekerjaan' => 'required|string',
             // Validasi Foto (Nullable: artinya boleh kosong jika tidak ingin diganti)
@@ -358,7 +365,7 @@ class DataKeluargaController extends Controller
         ], [
             'no_kk.required' => 'Nomor Kartu Keluarga wajib diisi.',
             'no_kk.numeric' => 'Nomor Kartu Keluarga harus berupa angka.',
-            'no_kk.min' => 'Nomor Kartu Keluarga harus terdiri dari 16 angka',
+            'no_kk.digits' => 'Nomor Kartu Keluarga harus terdiri dari 16 angka',
             'no_kk.unique' => 'Nomor Kartu Keluarga sudah terdaftar untuk keluarga lain.',
             'blok.required' => 'Blok wajib diisi.',
             'blok.string' => 'Blok harus berupa teks.',
@@ -371,7 +378,7 @@ class DataKeluargaController extends Controller
             'anggota_keluarga.min' => 'Minimal harus ada satu anggota keluarga.',
             'anggota_keluarga.*.nik.required' => 'NIK anggota keluarga wajib diisi.',
             'anggota_keluarga.*.nik.numeric' => 'NIK anggota keluarga harus berupa angka.',
-            'anggota_keluarga.*.nik.min' => 'NIK anggota keluarga harus terdiri dari 16 angka',
+            'anggota_keluarga.*.nik.digits' => 'NIK anggota keluarga harus terdiri dari 16 angka',
             'anggota_keluarga.*.nik.distinct' => 'NIK anggota keluarga tidak boleh sama dalam satu form.',
             'anggota_keluarga.*.nik.unique' => 'NIK anggota keluarga sudah terdaftar untuk anggota keluarga lain.',
             'anggota_keluarga.*.nama.required' => 'Nama lengkap anggota keluarga wajib diisi.',
@@ -407,7 +414,7 @@ class DataKeluargaController extends Controller
             $admin = Auth::user();
 
             // --- LOGIKA UPDATE FOTO (BARU) ---
-            
+
             // Siapkan data dasar untuk diupdate
             $dataToUpdate = [
                 // 'id_admin' => $user->id_admin, // Opsional: update admin terakhir yang edit atau tidak

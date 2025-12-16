@@ -16,25 +16,6 @@
             <form action="{{ route('data-warga.store') }}" method="POST" enctype="multipart/form-data"> {{-- Sesuaikan dengan route Anda --}}
                 @csrf
 
-                {{-- TAMBAHAN: Menampilkan ringkasan error dari file dummy --}}
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <strong>Whoops!</strong> Ada masalah dengan input Anda.<br><br>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                @if (session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                @endif
-                {{-- AKHIR TAMBAHAN --}}
-
-
                 {{-- Bagian Data Keluarga (Disesuaikan dengan name & id dari dummy) --}}
                 <h4 class="fw-bold mb-3">Data Keluarga</h4>
                 <div class="row g-3 mb-4">
@@ -88,8 +69,7 @@
                         <option value="3" @if (old('desil') == '3') selected @endif>Desil 3</option>
                         <option value="4" @if (old('desil') == '4') selected @endif>Desil 4</option>
                         <option value="5" @if (old('desil') == '5') selected @endif>Desil 5</option>
-                        <option value="6" @if (old('desil') == '6') selected @endif>Desil 6</option>
-                        <option value="" @if (old('desil') == '') selected @endif>Tidak ada desil
+                        <option value="" @if (old('desil') == null) selected @endif>Desil 6+</option>
                         </option>
                     </select>
                     @error('desil')
@@ -195,25 +175,36 @@
                                         id="pendidikan_anggota_{{ $index }}"
                                         name="anggota_keluarga[{{ $index }}][pendidikan]" required>
                                         <option value="">Pilih Pendidikan</option>
-                                        <option value="Tidak Sekolah"
-                                            @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'Tidak Sekolah') selected @endif>Tidak Sekolah</option>
-                                        <option value="SD" @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'SD') selected @endif>SD
+                                        <option value="Tidak/Belum Sekolah"
+                                            @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'Tidak/Belum Sekolah') selected @endif>Tidak/Belum Sekolah
                                         </option>
-                                        <option value="SMP" @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'SMP') selected @endif>SMP
+                                        <option value="Belum Tamat SD/Sederajat"
+                                            @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'Belum Tamat SD/Sederajat') selected @endif>Belum Tamat SD/Sederajat
                                         </option>
-                                        <option value="SMA" @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'SMA') selected @endif>SMA
+                                        <option value="Tamat SD/Sederajat"
+                                            @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'Tamat SD/Sederajat') selected @endif>Tamat SD/Sederajat
                                         </option>
-                                        <option value="D1" @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'D1') selected @endif>D1
+                                        <option value="SLTP/Sederajat"
+                                            @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'SLTP/Sederajat') selected @endif>SLTP/Sederajat
                                         </option>
-                                        <option value="D2" @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'D2') selected @endif>D2
+                                        <option value="SLTA/Sederajat"
+                                            @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'SLTA/Sederajat') selected @endif>SLTA/Sederajat
                                         </option>
-                                        <option value="D3" @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'D3') selected @endif>D3
+                                        <option value="Diploma I/II"
+                                            @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'Diploma I/II') selected @endif>Diploma I/II
                                         </option>
-                                        <option value="D4/S1" @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'D4/S1') selected @endif>
-                                            D4/S1</option>
-                                        <option value="S2" @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'S2') selected @endif>S2
+                                        <option value="Akademi/Diploma III/Sarjana Muda"
+                                            @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'Akademi/Diploma III/Sarjana Muda') selected @endif>Akademi/Diploma
+                                            III/Sarjana Muda
                                         </option>
-                                        <option value="S3" @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'S3') selected @endif>S3
+                                        <option value="Diploma IV/Strata I"
+                                            @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'Diploma IV/Strata I') selected @endif>Diploma IV/Strata I
+                                        </option>
+                                        <option value="Strata II" @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'Strata II') selected @endif>
+                                            Strata II
+                                        </option>
+                                        <option value="Strata III" @if (isset($anggota['pendidikan']) && $anggota['pendidikan'] == 'Strata III') selected @endif>
+                                            Strata III
                                         </option>
                                     </select>
                                     @error("anggota_keluarga.$index.pendidikan")
@@ -306,36 +297,45 @@
                                     <label for="status_dalam_keluarga_anggota_{{ $index }}"
                                         class="form-label">Status dalam Keluarga</label>
 
-                                    {{-- SELECT BOX --}}
                                     <select
                                         class="form-select @error("anggota_keluarga.$index.status_dalam_keluarga") is-invalid @enderror"
                                         id="status_dalam_keluarga_anggota_{{ $index }}"
                                         name="anggota_keluarga[{{ $index }}][status_dalam_keluarga]" required
-                                        {{-- MODIFIKASI 1: Disable jika index 0 --}}
+                                        {{-- Logika Disable untuk Anggota Pertama (Kepala Keluarga) --}}
                                         @if ($index === 0) disabled style="background-color: #e9ecef;" @endif>
 
                                         <option value="">Pilih Status Dalam Keluarga</option>
 
-                                        {{-- Opsi Kepala Keluarga (Otomatis Selected jika index 0) --}}
+                                        {{-- Opsi Kepala Keluarga --}}
                                         <option value="Kepala Keluarga"
                                             @if (($anggota['status_dalam_keluarga'] ?? '') == 'Kepala Keluarga' || $index === 0) selected @endif>
                                             Kepala Keluarga
                                         </option>
 
+                                        {{-- Opsi Lainnya --}}
+                                        <option value="Suami" @if (($anggota['status_dalam_keluarga'] ?? '') == 'Suami') selected @endif>
+                                            Suami</option>
                                         <option value="Istri" @if (($anggota['status_dalam_keluarga'] ?? '') == 'Istri') selected @endif>
-                                            Istri
+                                            Istri</option>
+                                        <option value="Anak" @if (($anggota['status_dalam_keluarga'] ?? '') == 'Anak') selected @endif>Anak
                                         </option>
-                                        <option value="Anak" @if (($anggota['status_dalam_keluarga'] ?? '') == 'Anak') selected @endif>
-                                            Anak
+                                        <option value="Menantu" @if (($anggota['status_dalam_keluarga'] ?? '') == 'Menantu') selected @endif>
+                                            Menantu</option>
+                                        <option value="Cucu" @if (($anggota['status_dalam_keluarga'] ?? '') == 'Cucu') selected @endif>Cucu
                                         </option>
+                                        <option value="Orangtua" @if (($anggota['status_dalam_keluarga'] ?? '') == 'Orangtua') selected @endif>
+                                            Orangtua</option>
+                                        <option value="Mertua" @if (($anggota['status_dalam_keluarga'] ?? '') == 'Mertua') selected @endif>
+                                            Mertua</option>
                                         <option value="Famili Lain"
-                                            @if (($anggota['status_dalam_keluarga'] ?? '') == 'Famili Lain') selected @endif>
-                                            Famili Lain
-                                        </option>
+                                            @if (($anggota['status_dalam_keluarga'] ?? '') == 'Famili Lain') selected @endif>Famili Lain</option>
+                                        <option value="Pembantu" @if (($anggota['status_dalam_keluarga'] ?? '') == 'Pembantu') selected @endif>
+                                            Pembantu</option>
+                                        <option value="Lainnya" @if (($anggota['status_dalam_keluarga'] ?? '') == 'Lainnya') selected @endif>
+                                            Lainnya</option>
                                     </select>
 
-                                    {{-- MODIFIKASI 2: Input Hidden khusus untuk Index 0 --}}
-                                    {{-- Ini penting agar value 'Kepala Keluarga' tetap terkirim ke controller --}}
+                                    {{-- Input Hidden untuk Kepala Keluarga (Wajib ada agar value terkirim saat disabled) --}}
                                     @if ($index === 0)
                                         <input type="hidden"
                                             name="anggota_keluarga[{{ $index }}][status_dalam_keluarga]"
@@ -372,8 +372,12 @@
                                         <option value="">Pilih Status Perkawinan</option>
                                         <option value="Belum Kawin"
                                             @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Belum Kawin') selected @endif>Belum Kawin</option>
-                                        <option value="Kawin" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Kawin') selected @endif>
-                                            Kawin</option>
+                                        <option value="Kawin Belum Tercatat"
+                                            @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Kawin Belum Tercatat') selected @endif>
+                                            Kawin Belum Tercatat</option>
+                                        <option value="Kawin Tercatat"
+                                            @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Kawin Tercatat') selected @endif>
+                                            Kawin Tercatat</option>
                                         <option value="Cerai Mati" @if (isset($anggota['status_perkawinan']) && $anggota['status_perkawinan'] == 'Cerai Mati') selected @endif>
                                             Cerai Mati</option>
                                         <option value="Cerai Hidup"
@@ -722,6 +726,15 @@
                 select.removeAttribute('disabled');
                 select.style.backgroundColor = '';
             });
+
+            // Karena anggota ke-2 dst tidak boleh jadi Kepala Keluarga
+            const statusSelect = newForm.querySelector('select[id^="status_dalam_keluarga_anggota"]');
+            if (statusSelect) {
+                const kepalaOption = statusSelect.querySelector('option[value="Kepala Keluarga"]');
+                if (kepalaOption) {
+                    kepalaOption.remove();
+                }
+            }
 
             // --- Hapus Input Hidden 'Kepala Keluarga' ---
             // (Agar anggota baru tidak terdeteksi sebagai kepala keluarga)

@@ -18,7 +18,7 @@
             <div class="card border-2 rounded-3">
                 <div class="card-body text-center py-4 text-utama1">
                     <p class="text-body-secondary mb-1">Perlu Diproses</p>
-                    <h3 class="fw-bold mb-0 text-warning">{{ $stats['diajukan'] ?? 0 }}</h3>
+                    <h3 class="fw-bold mb-0">{{ $stats['diajukan'] ?? 0 }}</h3>
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
             <div class="card border-2 rounded-3">
                 <div class="card-body text-center py-4 text-utama1">
                     <p class="text-body-secondary mb-1">Disetujui</p>
-                    <h3 class="fw-bold mb-0 text-success">{{ $stats['disetujui'] ?? 0 }}</h3>
+                    <h3 class="fw-bold mb-0">{{ $stats['disetujui'] ?? 0 }}</h3>
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
             <div class="card border-2 rounded-3">
                 <div class="card-body text-center py-4 text-utama1">
                     <p class="text-body-secondary mb-1">Ditolak</p>
-                    <h3 class="fw-bold mb-0 text-danger">{{ $stats['ditolak'] ?? 0 }}</h3>
+                    <h3 class="fw-bold mb-0">{{ $stats['ditolak'] ?? 0 }}</h3>
                 </div>
             </div>
         </div>

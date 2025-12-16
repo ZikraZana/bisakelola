@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_blok')->nullable(); 
 
             $table->string('bagian')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
     }

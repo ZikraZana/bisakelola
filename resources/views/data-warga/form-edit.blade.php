@@ -16,22 +16,6 @@
                 @csrf
                 @method('PUT')
 
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <strong>Whoops!</strong> Ada masalah dengan input Anda.<br><br>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                @if (session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
 
                 <h4 class="fw-bold mb-3">Data Keluarga</h4>
                 <div class="row g-3 mb-4">
@@ -90,8 +74,7 @@
                             <option value="3" @if (old('desil', $dataKeluarga->desil->tingkat_desil) == '3') selected @endif>Desil 3</option>
                             <option value="4" @if (old('desil', $dataKeluarga->desil->tingkat_desil) == '4') selected @endif>Desil 4</option>
                             <option value="5" @if (old('desil', $dataKeluarga->desil->tingkat_desil) == '5') selected @endif>Desil 5</option>
-                            <option value="6" @if (old('desil', $dataKeluarga->desil->tingkat_desil) == '6') selected @endif>Desil 6</option>
-                            <option value="" @if (old('desil', $dataKeluarga->desil->tingkat_desil) == null) selected @endif>Tidak ada desil
+                            <option value="" @if (old('desil', $dataKeluarga->desil->tingkat_desil) == null) selected @endif>Desil 6+</option>
                             </option>
                         </select>
                         @error('desil')
@@ -218,36 +201,36 @@
                                             id="pendidikan_anggota_{{ $index }}"
                                             name="anggota_keluarga[{{ $index }}][pendidikan]" required>
                                             <option value="">Pilih Pendidikan</option>
-                                            <option value="Tidak Sekolah"
-                                                {{ ($anggota['pendidikan'] ?? '') == 'Tidak Sekolah' ? 'selected' : '' }}>
-                                                Tidak Sekolah</option>
-                                            <option value="SD"
-                                                {{ ($anggota['pendidikan'] ?? '') == 'SD' ? 'selected' : '' }}>SD
-                                            </option>
-                                            <option value="SMP"
-                                                {{ ($anggota['pendidikan'] ?? '') == 'SMP' ? 'selected' : '' }}>SMP
-                                            </option>
-                                            <option value="SMA"
-                                                {{ ($anggota['pendidikan'] ?? '') == 'SMA' ? 'selected' : '' }}>SMA
-                                            </option>
-                                            <option value="D1"
-                                                {{ ($anggota['pendidikan'] ?? '') == 'D1' ? 'selected' : '' }}>D1
-                                            </option>
-                                            <option value="D2"
-                                                {{ ($anggota['pendidikan'] ?? '') == 'D2' ? 'selected' : '' }}>D2
-                                            </option>
-                                            <option value="D3"
-                                                {{ ($anggota['pendidikan'] ?? '') == 'D3' ? 'selected' : '' }}>D3
-                                            </option>
-                                            <option value="D4/S1"
-                                                {{ ($anggota['pendidikan'] ?? '') == 'D4/S1' ? 'selected' : '' }}>
-                                                D4/S1</option>
-                                            <option value="S2"
-                                                {{ ($anggota['pendidikan'] ?? '') == 'S2' ? 'selected' : '' }}>S2
-                                            </option>
-                                            <option value="S3"
-                                                {{ ($anggota['pendidikan'] ?? '') == 'S3' ? 'selected' : '' }}>S3
-                                            </option>
+                                            <option value="Tidak/Belum Sekolah"
+                                                {{ ($anggota['pendidikan'] ?? '') == 'Tidak/Belum Sekolah' ? 'selected' : '' }}>
+                                                Tidak/Belum Sekolah</option>
+                                            <option value="Belum Tamat SD/Sederajat"
+                                                {{ ($anggota['pendidikan'] ?? '') == 'Belum Tamat SD/Sederajat' ? 'selected' : '' }}>
+                                                Belum Tamat SD/Sederajat</option>
+                                            <option value="Tamat SD/Sederajat"
+                                                {{ ($anggota['pendidikan'] ?? '') == 'Tamat SD/Sederajat' ? 'selected' : '' }}>
+                                                Tamat SD/Sederajat</option>
+                                            <option value="SLTP/Sederajat"
+                                                {{ ($anggota['pendidikan'] ?? '') == 'SLTP/Sederajat' ? 'selected' : '' }}>
+                                                SLTP/Sederajat</option>
+                                            <option value="SLTA/Sederajat"
+                                                {{ ($anggota['pendidikan'] ?? '') == 'SLTA/Sederajat' ? 'selected' : '' }}>
+                                                SLTA/Sederajat</option>
+                                            <option value="Diploma I/II"
+                                                {{ ($anggota['pendidikan'] ?? '') == 'Diploma I/II' ? 'selected' : '' }}>
+                                                Diploma I/II</option>
+                                            <option value="Akademi/Diploma III/Sarjana Muda"
+                                                {{ ($anggota['pendidikan'] ?? '') == 'Akademi/Diploma III/Sarjana Muda' ? 'selected' : '' }}>
+                                                Akademi/Diploma III/Sarjana Muda</option>
+                                            <option value="Diploma IV/Strata I"
+                                                {{ ($anggota['pendidikan'] ?? '') == 'Diploma IV/Strata I' ? 'selected' : '' }}>
+                                                Diploma IV/Strata I</option>
+                                            <option value="Strata II"
+                                                {{ ($anggota['pendidikan'] ?? '') == 'Strata II' ? 'selected' : '' }}>
+                                                Strata II</option>
+                                            <option value="Strata III"
+                                                {{ ($anggota['pendidikan'] ?? '') == 'Strata III' ? 'selected' : '' }}>
+                                                Strata III</option>
                                         </select>
                                         @error("anggota_keluarga.$index.pendidikan")
                                             <i class="text-danger small">{{ $message }}</i>
@@ -357,18 +340,46 @@
                                             class="form-select @error("anggota_keluarga.$index.status_dalam_keluarga") is-invalid @enderror"
                                             id="status_dalam_keluarga_anggota_{{ $index }}"
                                             name="anggota_keluarga[{{ $index }}][status_dalam_keluarga]" required>
+
                                             <option value="">Pilih Status Dalam Keluarga</option>
+
                                             <option value="Kepala Keluarga"
                                                 {{ ($anggota['status_dalam_keluarga'] ?? '') == 'Kepala Keluarga' ? 'selected' : '' }}>
-                                                Kepala Keluarga</option>
+                                                Kepala Keluarga
+                                            </option>
+
+                                            <option value="Suami"
+                                                {{ ($anggota['status_dalam_keluarga'] ?? '') == 'Suami' ? 'selected' : '' }}>
+                                                Suami</option>
                                             <option value="Istri"
                                                 {{ ($anggota['status_dalam_keluarga'] ?? '') == 'Istri' ? 'selected' : '' }}>
                                                 Istri</option>
                                             <option value="Anak"
                                                 {{ ($anggota['status_dalam_keluarga'] ?? '') == 'Anak' ? 'selected' : '' }}>
-                                                Anak
-                                            </option>
+                                                Anak</option>
+                                            <option value="Menantu"
+                                                {{ ($anggota['status_dalam_keluarga'] ?? '') == 'Menantu' ? 'selected' : '' }}>
+                                                Menantu</option>
+                                            <option value="Cucu"
+                                                {{ ($anggota['status_dalam_keluarga'] ?? '') == 'Cucu' ? 'selected' : '' }}>
+                                                Cucu</option>
+                                            <option value="Orangtua"
+                                                {{ ($anggota['status_dalam_keluarga'] ?? '') == 'Orangtua' ? 'selected' : '' }}>
+                                                Orangtua</option>
+                                            <option value="Mertua"
+                                                {{ ($anggota['status_dalam_keluarga'] ?? '') == 'Mertua' ? 'selected' : '' }}>
+                                                Mertua</option>
+                                            <option value="Famili Lain"
+                                                {{ ($anggota['status_dalam_keluarga'] ?? '') == 'Famili Lain' ? 'selected' : '' }}>
+                                                Famili Lain</option>
+                                            <option value="Pembantu"
+                                                {{ ($anggota['status_dalam_keluarga'] ?? '') == 'Pembantu' ? 'selected' : '' }}>
+                                                Pembantu</option>
+                                            <option value="Lainnya"
+                                                {{ ($anggota['status_dalam_keluarga'] ?? '') == 'Lainnya' ? 'selected' : '' }}>
+                                                Lainnya</option>
                                         </select>
+
                                         @error("anggota_keluarga.$index.status_dalam_keluarga")
                                             <i class="text-danger small">{{ $message }}</i>
                                         @enderror
@@ -400,9 +411,12 @@
                                             <option value="Belum Kawin"
                                                 {{ ($anggota['status_perkawinan'] ?? '') == 'Belum Kawin' ? 'selected' : '' }}>
                                                 Belum Kawin</option>
-                                            <option value="Kawin"
-                                                {{ ($anggota['status_perkawinan'] ?? '') == 'Kawin' ? 'selected' : '' }}>
-                                                Kawin</option>
+                                            <option value="Kawin Belum Tercatat"
+                                                {{ ($anggota['status_perkawinan'] ?? '') == 'Kawin Belum Tercatat' ? 'selected' : '' }}>
+                                                Kawin Belum Tercatat</option>
+                                            <option value="Kawin Tercatat"
+                                                {{ ($anggota['status_perkawinan'] ?? '') == 'Kawin Tercatat' ? 'selected' : '' }}>
+                                                Kawin Tercatat</option>
                                             <option value="Cerai Mati"
                                                 {{ ($anggota['status_perkawinan'] ?? '') == 'Cerai Mati' ? 'selected' : '' }}>
                                                 Cerai Mati</option>
@@ -556,7 +570,7 @@
                 </div>
 
 
-                
+
 
                 <div class="d-flex justify-content-end mt-4">
                     {{-- FIX 3: Menggunakan route 'index' yang konsisten --}}
@@ -577,170 +591,176 @@
 @push('scripts')
     {{-- JavaScript Anda sudah benar dan tidak perlu diubah. --}}
     <script>
-    // ==========================================
-    // 1. FUNGSI FILE UPLOAD (RESET & PREVIEW)
-    // ==========================================
-    window.resetFile = function(type) {
-        const input = document.getElementById('foto_' + type);
-        const dropArea = document.getElementById('drop-area-' + type);
-        const previewArea = document.getElementById('preview-area-' + type);
-        
-        // Reset Input Value (artinya user ingin menghapus file baru/lama untuk diganti)
-        input.value = '';
-        
-        // Tampilkan Dropzone, Sembunyikan Preview
-        dropArea.classList.remove('d-none');
-        previewArea.classList.add('d-none');
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        
-        // --- SETUP UPLOAD LOGIC ---
-        function setupFileUpload(type) {
-            const dropArea = document.getElementById('drop-area-' + type);
+        // ==========================================
+        // 1. FUNGSI FILE UPLOAD (RESET & PREVIEW)
+        // ==========================================
+        window.resetFile = function(type) {
             const input = document.getElementById('foto_' + type);
+            const dropArea = document.getElementById('drop-area-' + type);
             const previewArea = document.getElementById('preview-area-' + type);
-            const filenameLabel = document.getElementById('filename-' + type);
-            const imgPreview = document.getElementById('img-preview-' + type);
-            const pdfPreview = document.getElementById('pdf-preview-' + type);
 
-            dropArea.addEventListener('click', () => input.click());
+            // Reset Input Value (artinya user ingin menghapus file baru/lama untuk diganti)
+            input.value = '';
 
-            input.addEventListener('change', function() {
-                handleFiles(this.files);
+            // Tampilkan Dropzone, Sembunyikan Preview
+            dropArea.classList.remove('d-none');
+            previewArea.classList.add('d-none');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // --- SETUP UPLOAD LOGIC ---
+            function setupFileUpload(type) {
+                const dropArea = document.getElementById('drop-area-' + type);
+                const input = document.getElementById('foto_' + type);
+                const previewArea = document.getElementById('preview-area-' + type);
+                const filenameLabel = document.getElementById('filename-' + type);
+                const imgPreview = document.getElementById('img-preview-' + type);
+                const pdfPreview = document.getElementById('pdf-preview-' + type);
+
+                dropArea.addEventListener('click', () => input.click());
+
+                input.addEventListener('change', function() {
+                    handleFiles(this.files);
+                });
+
+                // Drag & Drop
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropArea.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }, false);
+                });
+
+                dropArea.addEventListener('dragover', () => dropArea.classList.add('bg-secondary-subtle'));
+                dropArea.addEventListener('dragleave', () => dropArea.classList.remove('bg-secondary-subtle'));
+                dropArea.addEventListener('drop', (e) => {
+                    dropArea.classList.remove('bg-secondary-subtle');
+                    input.files = e.dataTransfer.files;
+                    handleFiles(input.files);
+                });
+
+                function handleFiles(files) {
+                    if (files.length > 0) {
+                        const file = files[0];
+                        if (file.size > 5 * 1024 * 1024) {
+                            alert('Ukuran file terlalu besar! Maksimal 5MB.');
+                            input.value = '';
+                            return;
+                        }
+
+                        filenameLabel.textContent = file.name;
+                        dropArea.classList.add('d-none');
+                        previewArea.classList.remove('d-none');
+
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                imgPreview.src = e.target.result;
+                                imgPreview.style.display = 'block';
+                                pdfPreview.style.display = 'none';
+                            }
+                            reader.readAsDataURL(file);
+                        } else if (file.type === 'application/pdf') {
+                            imgPreview.style.display = 'none';
+                            pdfPreview.style.display = 'block';
+                            // Sembunyikan link "Lihat File" lama jika ada, karena ini file baru
+                            const oldLink = pdfPreview.querySelector('a');
+                            if (oldLink) oldLink.style.display = 'none';
+                        }
+                    }
+                }
+            }
+
+            setupFileUpload('ktp');
+            setupFileUpload('kk');
+
+
+            // ==========================================
+            // 2. DYNAMIC FORM LOGIC (SAMA SEPERTI CREATE)
+            // ==========================================
+            const container = document.getElementById('anggota-keluarga-container');
+            const addButton = document.getElementById('add-anggota-keluarga');
+            const jumlahInput = document.getElementById('jumlah');
+
+            function updateJumlahInput() {
+                const count = container.querySelectorAll('.anggota-keluarga-item').length;
+                jumlahInput.value = count;
+            }
+            updateJumlahInput(); // Init
+
+            addButton.addEventListener('click', function() {
+                const template = container.querySelector('.anggota-keluarga-item');
+                const newForm = template.cloneNode(true);
+                const newIndex = container.querySelectorAll('.anggota-keluarga-item').length;
+
+                newForm.querySelector('.anggota-keluarga-title').textContent = 'Anggota Keluarga ' + (
+                    newIndex + 1);
+
+                // Reset Inputs
+                newForm.querySelectorAll('input, select').forEach(input => {
+                    if (input.tagName.toLowerCase() === 'select') {
+                        input.selectedIndex = 0;
+                        input.removeAttribute('disabled');
+                        input.style.backgroundColor = '';
+                    } else {
+                        if (input.type !== 'hidden') input.value = '';
+                    }
+                    input.classList.remove('is-invalid');
+                });
+
+                // Hapus Hidden Input (Kepala Keluarga)
+                const hiddenInput = newForm.querySelector('.status-hidden-input');
+                if (hiddenInput) hiddenInput.remove();
+
+                // Tambah Tombol Hapus jika belum ada
+                if (!newForm.querySelector('.remove-anggota-keluarga')) {
+                    const header = newForm.querySelector('.card-header');
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'btn btn-danger btn-sm remove-anggota-keluarga';
+                    btn.innerHTML = '<i class="bi bi-trash"></i> Hapus';
+                    header.appendChild(btn);
+                } else {
+                    newForm.querySelector('.remove-anggota-keluarga').style.display = 'block';
+                }
+
+                // Update Name Attributes
+                newForm.querySelectorAll('[name]').forEach(el => {
+                    const name = el.getAttribute('name');
+                    if (name) {
+                        const newName = name.replace(/\[\d+\]/g, '[' + newIndex + ']');
+                        el.setAttribute('name', newName);
+                    }
+                });
+
+                container.appendChild(newForm);
+                updateJumlahInput();
             });
 
-            // Drag & Drop
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropArea.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
-            });
-
-            dropArea.addEventListener('dragover', () => dropArea.classList.add('bg-secondary-subtle'));
-            dropArea.addEventListener('dragleave', () => dropArea.classList.remove('bg-secondary-subtle'));
-            dropArea.addEventListener('drop', (e) => {
-                dropArea.classList.remove('bg-secondary-subtle');
-                input.files = e.dataTransfer.files;
-                handleFiles(input.files);
-            });
-
-            function handleFiles(files) {
-                if (files.length > 0) {
-                    const file = files[0];
-                    if(file.size > 5 * 1024 * 1024) {
-                        alert('Ukuran file terlalu besar! Maksimal 5MB.');
-                        input.value = '';
+            container.addEventListener('click', function(e) {
+                if (e.target.closest('.remove-anggota-keluarga')) {
+                    if (container.querySelectorAll('.anggota-keluarga-item').length <= 1) {
+                        alert('Minimal satu anggota keluarga.');
                         return;
                     }
+                    e.target.closest('.anggota-keluarga-item').remove();
 
-                    filenameLabel.textContent = file.name;
-                    dropArea.classList.add('d-none');
-                    previewArea.classList.remove('d-none');
-
-                    if (file.type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            imgPreview.src = e.target.result;
-                            imgPreview.style.display = 'block';
-                            pdfPreview.style.display = 'none';
-                        }
-                        reader.readAsDataURL(file);
-                    } else if (file.type === 'application/pdf') {
-                        imgPreview.style.display = 'none';
-                        pdfPreview.style.display = 'block';
-                        // Sembunyikan link "Lihat File" lama jika ada, karena ini file baru
-                        const oldLink = pdfPreview.querySelector('a');
-                        if(oldLink) oldLink.style.display = 'none';
-                    }
-                }
-            }
-        }
-
-        setupFileUpload('ktp');
-        setupFileUpload('kk');
-
-
-        // ==========================================
-        // 2. DYNAMIC FORM LOGIC (SAMA SEPERTI CREATE)
-        // ==========================================
-        const container = document.getElementById('anggota-keluarga-container');
-        const addButton = document.getElementById('add-anggota-keluarga');
-        const jumlahInput = document.getElementById('jumlah');
-
-        function updateJumlahInput() {
-            const count = container.querySelectorAll('.anggota-keluarga-item').length;
-            jumlahInput.value = count;
-        }
-        updateJumlahInput(); // Init
-
-        addButton.addEventListener('click', function() {
-            const template = container.querySelector('.anggota-keluarga-item');
-            const newForm = template.cloneNode(true);
-            const newIndex = container.querySelectorAll('.anggota-keluarga-item').length;
-
-            newForm.querySelector('.anggota-keluarga-title').textContent = 'Anggota Keluarga ' + (newIndex + 1);
-
-            // Reset Inputs
-            newForm.querySelectorAll('input, select').forEach(input => {
-                if (input.tagName.toLowerCase() === 'select') {
-                    input.selectedIndex = 0;
-                    input.removeAttribute('disabled');
-                    input.style.backgroundColor = '';
-                } else {
-                    if(input.type !== 'hidden') input.value = '';
-                }
-                input.classList.remove('is-invalid');
-            });
-
-            // Hapus Hidden Input (Kepala Keluarga)
-            const hiddenInput = newForm.querySelector('.status-hidden-input');
-            if(hiddenInput) hiddenInput.remove();
-
-            // Tambah Tombol Hapus jika belum ada
-            if (!newForm.querySelector('.remove-anggota-keluarga')) {
-                const header = newForm.querySelector('.card-header');
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'btn btn-danger btn-sm remove-anggota-keluarga';
-                btn.innerHTML = '<i class="bi bi-trash"></i> Hapus';
-                header.appendChild(btn);
-            } else {
-                newForm.querySelector('.remove-anggota-keluarga').style.display = 'block';
-            }
-
-            // Update Name Attributes
-            newForm.querySelectorAll('[name]').forEach(el => {
-                const name = el.getAttribute('name');
-                if (name) {
-                    const newName = name.replace(/\[\d+\]/g, '[' + newIndex + ']');
-                    el.setAttribute('name', newName);
-                }
-            });
-
-            container.appendChild(newForm);
-            updateJumlahInput();
-        });
-
-        container.addEventListener('click', function(e) {
-            if (e.target.closest('.remove-anggota-keluarga')) {
-                if (container.querySelectorAll('.anggota-keluarga-item').length <= 1) {
-                    alert('Minimal satu anggota keluarga.');
-                    return;
-                }
-                e.target.closest('.anggota-keluarga-item').remove();
-                
-                // Re-Index
-                container.querySelectorAll('.anggota-keluarga-item').forEach((form, index) => {
-                    form.querySelector('.anggota-keluarga-title').textContent = 'Anggota Keluarga ' + (index + 1);
-                    form.querySelectorAll('[name]').forEach(el => {
-                        const name = el.getAttribute('name');
-                        if (name) {
-                            el.setAttribute('name', name.replace(/\[\d+\]/g, '[' + index + ']'));
-                        }
+                    // Re-Index
+                    container.querySelectorAll('.anggota-keluarga-item').forEach((form, index) => {
+                        form.querySelector('.anggota-keluarga-title').textContent =
+                            'Anggota Keluarga ' + (index + 1);
+                        form.querySelectorAll('[name]').forEach(el => {
+                            const name = el.getAttribute('name');
+                            if (name) {
+                                el.setAttribute('name', name.replace(/\[\d+\]/g, '[' +
+                                    index + ']'));
+                            }
+                        });
                     });
-                });
-                updateJumlahInput();
-            }
+                    updateJumlahInput();
+                }
+            });
         });
-    });
-</script>
+    </script>
 @endpush

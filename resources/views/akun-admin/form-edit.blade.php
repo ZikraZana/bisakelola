@@ -73,7 +73,7 @@
                         <label for="role" class="form-label">Role</label>
                         @php
                             $isDisabled =
-                                Auth::user()->role == 'Ketua Blok' ||
+                                Auth::user()->role == 'Ketua Blok' || 
                                 Auth::user()->role == 'Ketua Bagian' ||
                                 Auth::user()->id_admin == $admin->id_admin;
                             $isKetuaRtEditingOther =
@@ -83,6 +83,12 @@
                             required {{ $isDisabled ? 'disabled' : '' }}>
                             @if ($isKetuaRtEditingOther)
                                 {{-- Ketua RT mengedit orang lain: tampilkan hanya 2 opsi (tanpa Ketua RT) --}}
+                                <option value="Wakil Ketua RT"
+                                    {{ old('role', $admin->role) == 'Wakil Ketua RT' ? 'selected' : '' }}>Wakil Ketua RT</option>
+                                <option value="Sekretaris RT"
+                                    {{ old('role', $admin->role) == 'Sekretaris RT' ? 'selected' : '' }}>Sekretaris RT</option>
+                                <option value="Bendahara RT"
+                                    {{ old('role', $admin->role) == 'Bendahara RT' ? 'selected' : '' }}>Bendahara RT</option>
                                 <option value="Ketua Blok"
                                     {{ old('role', $admin->role) == 'Ketua Blok' ? 'selected' : '' }}>Ketua Blok</option>
                                 <option value="Ketua Bagian"
@@ -92,6 +98,12 @@
                                 {{-- Default: semua opsi --}}
                                 <option value="Ketua RT" {{ old('role', $admin->role) == 'Ketua RT' ? 'selected' : '' }}>
                                     Ketua RT</option>
+                                <option value="Wakil Ketua RT"
+                                    {{ old('role', $admin->role) == 'Wakil Ketua RT' ? 'selected' : '' }}>Wakil Ketua RT</option>
+                                <option value="Sekretaris RT"
+                                    {{ old('role', $admin->role) == 'Sekretaris RT' ? 'selected' : '' }}>Sekretaris RT</option>
+                                <option value="Bendahara RT"
+                                    {{ old('role', $admin->role) == 'Bendahara RT' ? 'selected' : '' }}>Bendahara RT</option>
                                 <option value="Ketua Blok"
                                     {{ old('role', $admin->role) == 'Ketua Blok' ? 'selected' : '' }}>Ketua Blok</option>
                                 <option value="Ketua Bagian"
@@ -172,7 +184,6 @@
             </form>
         </div>
     </div>
-
 @endsection
 
 @push('scripts')

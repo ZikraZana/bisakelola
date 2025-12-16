@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('nama_lengkap');
             $table->string('no_handphone');
-            $table->enum('role', ['Ketua Blok', 'Ketua RT', 'Ketua Bagian']);
+            $table->enum('role', ['Ketua Blok', 'Ketua RT', 'Ketua Bagian', 'Wakil Ketua RT', 'Sekretaris RT', 'Bendahara RT']);
 
             // 1. Ganti dari 'blok' ke 'id_blok'
             // 2. Tipe datanya HARUS sama dengan $table->id('id_blok') di tabel blok

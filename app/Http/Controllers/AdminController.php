@@ -40,7 +40,7 @@ class AdminController extends Controller
             'password_confirmation' => 'required|string|min:8',
             'nama_lengkap' => 'required|string|max:255',
             'no_handphone' => 'nullable|string|max:20',
-            'role' => 'required|in:Ketua Blok,Ketua Bagian',
+            'role' => 'required|in:Ketua Blok,Wakil Ketua RT,Sekretaris RT,Bendahara RT,Ketua Bagian',
 
             'id_blok' => 'nullable|required_if:role,Ketua Blok|integer|exists:blok,id_blok',
             'bagian' => 'nullable|string',
@@ -136,7 +136,7 @@ class AdminController extends Controller
 
             'nama_lengkap' => 'required|string|max:255',
             'no_handphone' => 'nullable|string|max:20',
-            'role' => 'required|in:Ketua Blok,Ketua Bagian',
+            'role' => 'required|in:Ketua Blok,Wakil Ketua RT,Sekretaris RT,Bendahara RT,Ketua Bagian',
             'id_blok' => 'nullable|required_if:role,Ketua Blok|integer|exists:blok,id_blok',
             'bagian' => 'nullable|string',
         ], [

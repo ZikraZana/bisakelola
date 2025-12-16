@@ -61,7 +61,10 @@
                     </button>
                 </div>
                 <div>
-                    @if (Auth::user()->role === 'Ketua RT')
+                    @if (Auth::user()->role === 'Ketua RT' ||
+                            Auth::user()->role === 'Wakil Ketua RT' ||
+                            Auth::user()->role === 'Sekretaris RT' ||
+                            Auth::user()->role === 'Bendahara RT')
                         <a href="{{ route('data-penerima-bansos.formTambah') }}" class="btn btn-primary">
                             <i class="bi bi-plus-circle me-1"></i> Ajukan Warga
                         </a>
@@ -127,7 +130,7 @@
                                 <th class="py-3 px-3">Kepala Keluarga</th>
                                 <th class="py-3 px-3">Keterangan</th>
                                 <th class="py-3 px-3">Jenis Bansos</th>
-                                <th class="py-3 px-3 text-center">Status</th> 
+                                <th class="py-3 px-3 text-center">Status</th>
                                 <th class="py-3 px-3 text-center">Penyaluran</th>
                                 <th class="py-3 px-3 text-center">Aksi</th>
                             </tr>

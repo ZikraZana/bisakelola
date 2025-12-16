@@ -69,6 +69,12 @@
                         <select class="form-control @error('role') is-invalid @enderror" id="role" name="role"
                             required>
                             <option value="">Pilih Role</option> {{-- Default option --}}
+                            <option value="Wakil Ketua RT" {{ old('role') == 'Wakil Ketua RT' ? 'selected' : '' }}>Wakil Ketua RT
+                            </option>
+                            <option value="Sekretaris RT" {{ old('role') == 'Sekretaris RT' ? 'selected' : '' }}>Sekretaris RT
+                            </option>
+                            <option value="Bendahara RT" {{ old('role') == 'Bendahara RT' ? 'selected' : '' }}>Bendahara RT
+                            </option>
                             <option value="Ketua Blok" {{ old('role') == 'Ketua Blok' ? 'selected' : '' }}>Ketua Blok
                             </option>
                             <option value="Ketua Bagian" {{ old('role') == 'Ketua Bagian' ? 'selected' : '' }}>Ketua Bagian
@@ -116,12 +122,16 @@
                             <option value="">Pilih Bagian</option>
 
                             {{-- UBAH INI: Gunakan old('bagian') --}}
-                            <option value="Keuangan" {{ old('bagian') == 'Keuangan' ? 'selected' : '' }}>Bagian Keuangan
-                            </option>
-                            <option value="SDM" {{ old('bagian') == 'SDM' ? 'selected' : '' }}>Bagian SDM</option>
-                            <option value="Operasional" {{ old('bagian') == 'Operasional' ? 'selected' : '' }}>Bagian
-                                Operasional
-                            </option>
+                            
+                            <option value="Keamanan & Ketertiban" {{ old('bagian') == 'Keamanan & Ketertiban' ? 'selected' : '' }}>Bagian Keamanan & Ketertiban</option>
+                            <option value="Pemberdayaan Masyarakat" {{ old('bagian') == 'Pemberdayaan Masyarakat' ? 'selected' : '' }}>Bagian Pemberdayaan Masyarakat</option>
+                            <option value="Pembangunan" {{ old('bagian') == 'Pembangunan' ? 'selected' : '' }}>Bagian Pembangunan</option>
+                            <option value="Keagamaan" {{ old('bagian') == 'Keagamaan' ? 'selected' : '' }}>Bagian Keagamaan</option>
+                            <option value="Humas, Sosial, Olahraga" {{ old('bagian') == 'Humas, Sosial, Olahraga' ? 'selected' : '' }}>Bagian Humas, Sosial, Olahraga</option>
+                            <option value="Lembaga Adat Masyarakat" {{ old('bagian') == 'Lembaga Adat Masyarakat' ? 'selected' : '' }}>Bagian Lembaga Adat Masyarakat</option>
+                            <option value="Kebersihan" {{ old('bagian') == 'Kebersihan' ? 'selected' : '' }}>Bagian Kebersihan</option>
+                            <option value="Perlengkapan" {{ old('bagian') == 'Perlengkapan' ? 'selected' : '' }}>Bagian Perlengkapan</option>
+
                         </select>
                         {{-- UBAH INI: @error('bagian') --}}
                         @error('bagian')

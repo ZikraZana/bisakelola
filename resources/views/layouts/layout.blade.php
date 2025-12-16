@@ -52,7 +52,10 @@
                         </a>
                     </li>
                     @if (Auth::user()->role === 'Ketua RT' ||
-                            (Auth::user()->role === 'Ketua Blok'))
+                            Auth::user()->role === 'Wakil Ketua RT' ||
+                            Auth::user()->role === 'Sekretaris RT' ||
+                            Auth::user()->role === 'Bendahara RT' ||
+                            Auth::user()->role === 'Ketua Blok')
                         <li>
                             <a href="{{ route('data-penerima-bansos.index') }}"
                                 class="nav-link text-putih {{ Request::routeIs('data-penerima-bansos.*') ? 'bg-utama2' : '' }}">
@@ -68,7 +71,10 @@
                             Akun Admin
                         </a>
                     </li>
-                    @if (Auth::user()->role === 'Ketua RT')
+                    @if (Auth::user()->role === 'Ketua RT' ||
+                            Auth::user()->role === 'Wakil Ketua RT' ||
+                            Auth::user()->role === 'Sekretaris RT' ||
+                            Auth::user()->role === 'Bendahara RT')
                         <li>
                             <a href="{{ route('kelola-bansos.index') }}"
                                 class="nav-link text-putih {{ Request::routeIs('kelola-bansos.*') ? 'bg-utama2' : '' }}">

@@ -67,7 +67,11 @@
                 </div>
 
                 {{-- button Tambah Data --}}
-                @if (Auth::user()->role === 'Ketua RT' || Auth::user()->role === 'Ketua Blok')
+                @if (Auth::user()->role === 'Ketua RT' ||
+                        Auth::user()->role === 'Wakil Ketua RT' ||
+                        Auth::user()->role === 'Sekretaris RT' ||
+                        Auth::user()->role === 'Bendahara RT' ||
+                        Auth::user()->role === 'Ketua Blok')
                     <div>
                         <a href="{{ route('data-warga.formTambah') }}" class="btn btn-primary">
                             Tambah Data
@@ -221,6 +225,9 @@
                                 <td class="px-3">
                                     <div class="d-flex flex-nowrap gap-2 text-center justify-content-center">
                                         @if (Auth::user()->role === 'Ketua RT' ||
+                                                Auth::user()->role === 'Wakil Ketua RT' ||
+                                                Auth::user()->role === 'Sekretaris RT' ||
+                                                Auth::user()->role === 'Bendahara RT' ||
                                                 (Auth::user()->role === 'Ketua Blok' && Auth::user()->id_blok === $keluarga->blok->id_blok))
                                             <a href="{{ route('data-warga.formEdit', $keluarga->id_keluarga) }}"
                                                 class="btn btn-warning btn-sm">Edit</a>
@@ -237,6 +244,9 @@
                                         </button>
 
                                         @if (Auth::user()->role === 'Ketua RT' ||
+                                                Auth::user()->role === 'Wakil Ketua RT' ||
+                                                Auth::user()->role === 'Sekretaris RT' ||
+                                                Auth::user()->role === 'Bendahara RT' ||
                                                 (Auth::user()->role === 'Ketua Blok' && Auth::user()->id_blok === $keluarga->blok->id_blok))
                                             {{-- Tombol Aksi Status --}}
                                             {{-- Cek kondisi: Jika Status 1 (Aktif), tombol Merah (Nonaktifkan). Jika 0, tombol Hijau (Aktifkan) --}}

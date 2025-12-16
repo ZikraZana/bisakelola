@@ -228,7 +228,6 @@
                 <div class="col-md-4">
                     <h6 class="fw-bold mb-3">Kontak</h6>
                     <ul class="list-unstyled small text-white-50">
-                        <li class="mb-2"><i class="bi bi-telephone me-2"></i>(021) XXXX-XXXX</li>
                         <li><i class="bi bi-geo-alt me-2"></i>Jl. Sunan Gunung Jati, RT 14, Kel. Kenali Asam,
                             Kec. Kota Baru</li>
                     </ul>

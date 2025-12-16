@@ -19,7 +19,12 @@
     @php
         // Cek Permission di sini agar kode di bawah lebih bersih
         // Jika RT/Blok, boleh lihat data bansos. Jika 'Ketua Bagian', tidak boleh.
-        $canViewBansos = Auth::user()->role === 'Ketua RT' || Auth::user()->role === 'Ketua Blok';
+        $canViewBansos =
+            Auth::user()->role === 'Ketua RT' ||
+            Auth::user()->role === 'Wakil Ketua RT' ||
+            Auth::user()->role === 'Sekretaris RT' ||
+            Auth::user()->role === 'Bendahara RT' ||
+            Auth::user()->role === 'Ketua Blok';
 
         // Tentukan lebar kolom secara dinamis
         // Jika bisa lihat bansos: Bagi 3 (col-lg-4). Jika tidak: Bagi 2 (col-lg-6)
@@ -252,7 +257,10 @@
 
     </div>
 
-    @if (Auth::user()->role === 'Ketua RT')
+    @if (Auth::user()->role === 'Ketua RT' ||
+            Auth::user()->role === 'Wakil Ketua RT' ||
+            Auth::user()->role === 'Sekretaris RT' ||
+            Auth::user()->role === 'Bendahara RT')
         {{-- 3. TABEL AKTIVITAS TERBARU --}}
         <div class="card border-0 shadow-sm rounded-3">
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">

@@ -33,7 +33,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::prefix('data-warga')->name('data-warga.')->group(function () {
         // GET /data-warga (Menampilkan semua data)
         Route::get('/', [DataKeluargaController::class, 'index'])->name('index');
-        Route::get('/tambah-data', [DataKeluargaController::class, 'formTambah'])->name('formTambah')->middleware('role:Ketua RT,Ketua Blok');
+        Route::get('/tambah-data', [DataKeluargaController::class, 'formTambah'])->name('formTambah')->middleware('role:Ketua RT,Wakil Ketua RT,Sekretaris RT,Bendahara RT,Ketua Blok');
         Route::post('/', [DataKeluargaController::class, 'store'])->name('store');
         Route::get('/{dataKeluarga:id_keluarga}/edit', [DataKeluargaController::class, 'formEdit'])->name('formEdit');
         Route::put('/{dataKeluarga:id_keluarga}', [DataKeluargaController::class, 'update'])->name('update');
@@ -41,11 +41,11 @@ Route::middleware('auth:admin')->group(function () {
     });
 
     // Data Penerima Bansos
-    Route::prefix('data-penerima-bansos')->name('data-penerima-bansos.')->middleware('role:Ketua RT,Ketua Blok')->group(function () {
+    Route::prefix('data-penerima-bansos')->name('data-penerima-bansos.')->middleware('role:Ketua RT,Wakil Ketua RT,Sekretaris RT,Bendahara RT,Ketua Blok')->group(function () {
         Route::get('/', [DataPenerimaBansosController::class, 'index'])->name('index');
 
         // 2. Tampilkan form tambah data
-        Route::get('/tambah-data', [DataPenerimaBansosController::class, 'formTambah'])->name('formTambah')->middleware('role:Ketua RT');
+        Route::get('/tambah-data', [DataPenerimaBansosController::class, 'formTambah'])->name('formTambah')->middleware('role:Ketua RT,Wakil Ketua RT,Sekretaris RT,Bendahara RT');
 
         // 3. Simpan data baru (dari form dinamis)
         Route::post('/', [DataPenerimaBansosController::class, 'store'])->name('store');

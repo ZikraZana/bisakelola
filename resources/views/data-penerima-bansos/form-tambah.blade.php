@@ -12,7 +12,6 @@
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
                 <div>
                     <h4 class="fw-bold mb-1">Daftar Warga Potensial</h4>
-                    <p class="text-muted mb-0">Cari warga secara realtime untuk diajukan.</p>
                 </div>
 
                 <div class="col-md-4">

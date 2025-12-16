@@ -30,9 +30,6 @@ class DesilSeeder extends Seeder
                 'tingkat_desil' => 5,
             ],
             [
-                'tingkat_desil' => 6,
-            ],
-            [
                 'tingkat_desil' => null,
             ],
         ]);

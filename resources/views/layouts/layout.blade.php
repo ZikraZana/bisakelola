@@ -7,6 +7,7 @@
     <title>@yield('title')</title>
 
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="icon" href="{{asset('images/logo/BISA_logo.png')}}" type="image/png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
